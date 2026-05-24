@@ -211,10 +211,12 @@ Definition of done:
 - [x] Dar feedback visual do perfil selecionado.
   - Exemplo: avatar destacado, borda/anel, tooltip/texto curto ou resumo “Perfil salvo: Lucas”.
   - O resumo mostra o perfil salvo e o botão do perfil ativo usa destaque tonal.
-- [ ] Validar perfil obrigatório antes de ações que alteram a sala.
+- [x] Validar perfil obrigatório antes de ações que alteram a sala.
+  - A ação inicial de pegar a chave bloqueia alterações quando nenhum perfil está selecionado.
 - [x] Salvar perfil selecionado localmente.
   - O seletor da tela inicial salva a escolha via `RepositorioLocalDoPerfil`.
-- [ ] Usar perfil selecionado nas ações.
+- [x] Usar perfil selecionado nas ações.
+  - A ação inicial `Pegar chave na portaria` usa o perfil salvo como pessoa responsável e grava o evento no histórico.
 - [x] Permitir trocar perfil rapidamente pela tela inicial, sem apagar estado nem histórico.
 - [x] Testar fluxo básico de seleção/troca de perfil local.
   - Coberto por `test/widget_test.dart`.

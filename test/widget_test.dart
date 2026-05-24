@@ -136,4 +136,58 @@ void main() {
     expect(find.text('Chave com Vitor'), findsOneWidget);
     expect(find.text('Histórico: 0 registros'), findsOneWidget);
   });
+
+  testWidgets('bloqueia ação quando nenhum perfil foi selecionado', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Pegar chave na portaria'));
+    await testador.tap(find.text('Pegar chave na portaria'));
+    await testador.pumpAndSettle();
+
+    expect(
+      find.text('Escolha um perfil antes de alterar a sala.'),
+      findsOneWidget,
+    );
+    expect(
+      await repositorioDaSala.carregarSituacaoAtual(),
+      SituacaoDaSala.inicial(),
+    );
+    expect(find.text('Histórico: 0 registros'), findsOneWidget);
+  });
+
+  testWidgets('usa o perfil selecionado ao registrar ação da sala', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Clara');
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Pegar chave na portaria'));
+    await testador.tap(find.text('Pegar chave na portaria'));
+    await testador.pumpAndSettle();
+
+    final situacaoSalva = await repositorioDaSala.carregarSituacaoAtual();
+
+    expect(
+      situacaoSalva.localizacaoDaChave,
+      LocalizacaoDaChave.comPessoa('Clara'),
+    );
+    expect(situacaoSalva.pessoaUltimaAtualizacao, 'Clara');
+    expect(situacaoSalva.historico.single.pessoa, 'Clara');
+    expect(
+      situacaoSalva.historico.single.descricao,
+      'Clara pegou a chave na portaria.',
+    );
+    expect(find.text('Chave com Clara'), findsOneWidget);
+    expect(find.text('Histórico: 1 registro'), findsOneWidget);
+  });
 }

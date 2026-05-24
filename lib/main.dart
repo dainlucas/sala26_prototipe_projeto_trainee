@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'funcionalidades/configuracoes/dados/repositorio_local_do_perfil.dart';
 import 'funcionalidades/sala/dados/repositorio_local_da_sala.dart';
+import 'funcionalidades/sala/dominio/controlador_da_sala.dart';
 import 'funcionalidades/sala/dominio/estado_da_sala.dart';
 import 'funcionalidades/sala/dominio/localizacao_da_chave.dart';
 import 'funcionalidades/sala/dominio/situacao_da_sala.dart';
@@ -116,7 +117,10 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    _ResumoDosDadosRestaurados(dados: dados),
+                    _ResumoDosDadosRestaurados(
+                      dados: dados,
+                      aoPegarChaveNaPortaria: _pegarChaveNaPortaria,
+                    ),
                   ],
                 ),
               ),
@@ -134,6 +138,41 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     setState(() {
       _dadosLocais = _carregarDadosLocais();
     });
+  }
+
+  Future<void> _pegarChaveNaPortaria(_DadosLocaisRestaurados dados) async {
+    final perfil = dados.perfilSelecionado?.trim();
+
+    if (perfil == null || perfil.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Escolha um perfil antes de alterar a sala.'),
+        ),
+      );
+      return;
+    }
+
+    final resultado = ControladorDaSala().pegarChaveNaPortaria(
+      situacaoAtual: dados.situacao,
+      pessoaLogada: perfil,
+      momento: DateTime.now(),
+    );
+
+    if (resultado.sucesso) {
+      final repositorioDaSala = await RepositorioLocalDaSala.criar();
+      await repositorioDaSala.salvarSituacaoAtual(resultado.situacao);
+      setState(() {
+        _dadosLocais = _carregarDadosLocais();
+      });
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(resultado.mensagem)));
   }
 
   Future<_DadosLocaisRestaurados> _carregarDadosLocais() async {
@@ -192,9 +231,14 @@ class _SeletorRapidoDePerfil extends StatelessWidget {
 }
 
 class _ResumoDosDadosRestaurados extends StatelessWidget {
-  const _ResumoDosDadosRestaurados({required this.dados});
+  const _ResumoDosDadosRestaurados({
+    required this.dados,
+    required this.aoPegarChaveNaPortaria,
+  });
 
   final _DadosLocaisRestaurados dados;
+  final Future<void> Function(_DadosLocaisRestaurados dados)
+  aoPegarChaveNaPortaria;
 
   @override
   Widget build(BuildContext contexto) {
@@ -215,6 +259,11 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
             Text(_textoDoEstado(situacao.estado)),
             Text(_textoDaLocalizacao(situacao.localizacaoDaChave)),
             Text(_textoDoHistorico(situacao.historico.length)),
+            const SizedBox(height: 12),
+            FilledButton(
+              onPressed: () => aoPegarChaveNaPortaria(dados),
+              child: const Text('Pegar chave na portaria'),
+            ),
           ],
         ),
       ),
