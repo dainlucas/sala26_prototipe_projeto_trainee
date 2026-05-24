@@ -230,12 +230,19 @@ Definition of done:
 
 ## Marco 4 — Histórico simples
 
-- [ ] Criar lista de histórico na tela principal.
-- [ ] Mostrar as últimas movimentações com data/hora e nome.
-- [ ] Ordenar histórico do mais recente para o mais antigo.
-- [ ] Criar estado vazio amigável quando não houver histórico.
-- [ ] Testar renderização de histórico vazio.
-- [ ] Testar renderização de histórico com itens.
+- [x] Criar lista de histórico na tela principal.
+  - Documentado em `documentos/funcionalidades/005-historico-simples.md`.
+- [x] Mostrar as últimas movimentações com data/hora e nome.
+- [x] Ordenar histórico do mais recente para o mais antigo.
+- [x] Criar estado vazio amigável quando não houver histórico.
+- [x] Testar renderização de histórico vazio.
+  - Coberto por `test/widget_test.dart`.
+- [x] Testar renderização de histórico com itens.
+  - Coberto por `test/widget_test.dart`.
+- [x] Testar histórico longo com rolagem até movimentações antigas.
+  - Coberto por `test/widget_test.dart`.
+- [x] Testar formatação de data/hora em dias, meses e horários limite.
+  - Coberto por `test/widget_test.dart`.
 
 Definition of done:
 

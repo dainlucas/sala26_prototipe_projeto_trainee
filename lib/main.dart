@@ -264,6 +264,8 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
               onPressed: () => aoPegarChaveNaPortaria(dados),
               child: const Text('Pegar chave na portaria'),
             ),
+            const SizedBox(height: 16),
+            _HistoricoDaSala(situacao: situacao),
           ],
         ),
       ),
@@ -292,6 +294,79 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
     }
 
     return 'Histórico: $quantidade registros';
+  }
+}
+
+class _HistoricoDaSala extends StatelessWidget {
+  const _HistoricoDaSala({required this.situacao});
+
+  final SituacaoDaSala situacao;
+
+  @override
+  Widget build(BuildContext contexto) {
+    final eventosMaisRecentes = situacao.historico.reversed.toList();
+    final estiloDoTitulo = Theme.of(contexto).textTheme.titleMedium;
+    final estiloDeApoio = Theme.of(contexto).textTheme.bodySmall;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Histórico da sala', style: estiloDoTitulo),
+        const SizedBox(height: 8),
+        if (eventosMaisRecentes.isEmpty)
+          const _EstadoVazioDoHistorico()
+        else
+          for (final evento in eventosMaisRecentes) ...[
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(evento.descricao),
+              subtitle: Text(_formatarMomento(evento.momento)),
+              trailing: Text(
+                evento.pessoa,
+                style: estiloDeApoio?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            if (evento != eventosMaisRecentes.last) const Divider(height: 1),
+          ],
+      ],
+    );
+  }
+
+  String _formatarMomento(DateTime momento) {
+    final dia = _doisDigitos(momento.day);
+    final mes = _doisDigitos(momento.month);
+    final ano = momento.year.toString();
+    final hora = _doisDigitos(momento.hour);
+    final minuto = _doisDigitos(momento.minute);
+
+    return '$dia/$mes/$ano às $hora:$minuto';
+  }
+
+  String _doisDigitos(int valor) {
+    return valor.toString().padLeft(2, '0');
+  }
+}
+
+class _EstadoVazioDoHistorico extends StatelessWidget {
+  const _EstadoVazioDoHistorico();
+
+  @override
+  Widget build(BuildContext contexto) {
+    final estiloDeTexto = Theme.of(contexto).textTheme.bodyMedium;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ainda não há movimentações registradas.',
+          style: estiloDeTexto?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Quando alguém mexer na chave, a movimentação aparecerá aqui.',
+        ),
+      ],
+    );
   }
 }
 
