@@ -102,7 +102,10 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                         aoPassarChaveParaOutraPessoa:
                             _passarChaveParaOutraPessoa,
                       ),
-                      _AbaHistorico(situacao: dados.situacao),
+                      _AbaHistorico(
+                        dados: dados,
+                        aoLimparHistorico: _limparHistorico,
+                      ),
                     ],
                   ),
                 ),
@@ -525,6 +528,25 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     ).showSnackBar(SnackBar(content: Text(resultado.mensagem)));
   }
 
+  Future<void> _limparHistorico(_DadosLocaisRestaurados dados) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    await repositorioDaSala.salvarSituacaoAtual(
+      dados.situacao.copiarCom(historico: []),
+    );
+
+    setState(() {
+      _dadosLocais = _carregarDadosLocais();
+    });
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Histórico limpo para testes.')),
+    );
+  }
+
   Future<_DadosLocaisRestaurados> _carregarDadosLocais() async {
     final repositorioDaSala = await RepositorioLocalDaSala.criar();
     final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
@@ -570,11 +592,20 @@ class _CabecalhoChave26 extends StatelessWidget {
             Container(
               width: 40,
               height: 40,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: CoresPrototipe.azulCiano,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: CoresPrototipe.contornoSuave),
               ),
-              child: const Icon(Icons.key, color: Colors.white, size: 22),
+              child: Transform.scale(
+                scale: 1.18,
+                child: Image.asset(
+                  'recursos/imagens/logo_prototipe.jpeg',
+                  semanticLabel: 'Logo da Prototipe',
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             const SizedBox(width: 12),
             const Expanded(
@@ -671,18 +702,35 @@ class _AbaInicio extends StatelessWidget {
 }
 
 class _AbaHistorico extends StatelessWidget {
-  const _AbaHistorico({required this.situacao});
+  const _AbaHistorico({required this.dados, required this.aoLimparHistorico});
 
-  final SituacaoDaSala situacao;
+  final _DadosLocaisRestaurados dados;
+  final Future<void> Function(_DadosLocaisRestaurados dados) aoLimparHistorico;
 
   @override
   Widget build(BuildContext contexto) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
-        child: _HistoricoDaSala(
-          situacao: situacao,
-          titulo: 'Histórico completo',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _HistoricoDaSala(
+              situacao: dados.situacao,
+              titulo: 'Histórico completo',
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: dados.situacao.historico.isEmpty
+                    ? null
+                    : () => aoLimparHistorico(dados),
+                icon: const Icon(Icons.delete_sweep_outlined, size: 18),
+                label: const Text('Limpar histórico'),
+              ),
+            ),
+          ],
         ),
       ),
     );

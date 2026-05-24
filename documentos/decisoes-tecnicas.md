@@ -377,6 +377,7 @@ Pendências irrelevantes para o MVP atual:
 Asset visual inicial:
 
 - `recursos/imagens/mascote_prototipe.png` contém o mascote fornecido para a identidade do app.
+- `recursos/imagens/logo_prototipe.jpeg` é usado somente no cabeçalho da tela inicial, ao lado de `Chave 26` e `Prototipe`.
 
 Comandos principais:
 

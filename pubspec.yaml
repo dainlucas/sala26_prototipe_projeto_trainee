@@ -61,6 +61,7 @@ flutter:
 
   assets:
     - recursos/imagens/mascote_prototipe.png
+    - recursos/imagens/logo_prototipe.jpeg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -32,6 +32,7 @@ A referência do v0 mostrou que a tela inicial deve priorizar a leitura rápida 
   - `Início`, com status, ações e histórico recente;
   - `Histórico`, com a lista completa de movimentações.
 - O histórico recente da aba inicial mostra somente as últimas movimentações, mantendo a lista completa na aba própria.
+- A aba `Histórico` recebeu um botão discreto e temporário `Limpar histórico`, usado apenas como ferramenta de teste durante a apresentação/desenvolvimento.
 - A troca de perfil passou para um modal inferior, mantendo o botão do cabeçalho limpo para a apresentação.
 - O botão `Abrir sala`/`Fechar sala` respeita a condição de posse/responsabilidade da chave.
 - A transferência continua pedindo confirmação antes de persistir.
@@ -59,6 +60,7 @@ Coberturas adicionadas ou atualizadas:
 - card principal com `Sala 26`, status, `Chave com`, `Localização` e `Última atualização`;
 - menu inferior com `Início` e `Histórico`;
 - separação entre `Histórico recente` e `Histórico completo`;
+- limpeza temporária do histórico pela aba `Histórico`, preservando estado e localização atuais;
 - botão `Abrir sala`/`Fechar sala` condicionado ao perfil com a chave;
 - preservação dos fluxos existentes de persistência, confirmação, transferência e histórico;
 - escolha/cadastro de destino ao guardar a chave;

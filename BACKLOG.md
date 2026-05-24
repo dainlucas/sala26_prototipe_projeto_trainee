@@ -66,6 +66,7 @@ Prazo-alvo: 6 dias.
 - [x] Definir como representar a identidade visual da Prototipe no MVP.
   - Paleta de cores registrada em `documentos/identidade-visual-prototipe.md`.
   - Mascote/imagem já incluído em `recursos/imagens/mascote_prototipe.png`.
+  - Logo `recursos/imagens/logo_prototipe.jpeg` aplicada no cabeçalho ao lado de `Chave 26`/`Prototipe`.
   - Pendente para a implementação visual: transformar a paleta em constantes Dart e aplicar na UI.
 
 - [x] Definir biblioteca de estado.
@@ -308,6 +309,8 @@ Definition of done:
 - [x] Adicionar navegação inferior entre Início e Histórico.
   - `Início` mostra status, ações e histórico recente.
   - `Histórico` mostra a lista completa.
+- [x] Adicionar ferramenta temporária para limpar histórico durante testes.
+  - Botão discreto `Limpar histórico` na aba `Histórico`, preservando estado/localização atuais da sala.
 - [x] Testar renderização básica da tela inicial.
   - Coberto por `test/widget_test.dart`, incluindo estrutura v0, abas, botão abrir/fechar, confirmações e histórico.
 

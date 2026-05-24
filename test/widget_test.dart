@@ -23,11 +23,16 @@ void main() {
     expect(find.text('Prototipe'), findsOneWidget);
   });
 
-  testWidgets('mostra ícone de chave na identidade inicial', (testador) async {
+  testWidgets('mostra logo da Prototipe no cabeçalho inicial', (
+    testador,
+  ) async {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.byIcon(Icons.key), findsWidgets);
+    expect(
+      find.image(const AssetImage('recursos/imagens/logo_prototipe.jpeg')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('mostra situação inicial quando não há dados salvos', (
@@ -1049,6 +1054,54 @@ void main() {
       );
     },
   );
+
+  testWidgets('limpa histórico pela ferramenta temporária na aba histórico', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final historico = [
+      EventoHistorico(
+        momento: DateTime(2026, 5, 24, 8),
+        pessoa: 'Lucas',
+        descricao: 'Lucas pegou a chave na portaria.',
+      ),
+      EventoHistorico(
+        momento: DateTime(2026, 5, 24, 9),
+        pessoa: 'Lucas',
+        descricao: 'Lucas abriu a sala 26.',
+      ),
+    ];
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.aberta,
+        localizacaoDaChave: const LocalizacaoDaChave.naSala(),
+        historico: historico,
+        pessoaUltimaAtualizacao: 'Lucas',
+        atualizadaEm: historico.last.momento,
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Lucas abriu a sala 26.'), findsOneWidget);
+    await testador.tap(find.text('Limpar histórico'));
+    await testador.pumpAndSettle();
+
+    final situacao = await repositorioDaSala.carregarSituacaoAtual();
+    expect(situacao.historico, isEmpty);
+    expect(situacao.estado, EstadoDaSala.aberta);
+    expect(situacao.localizacaoDaChave, const LocalizacaoDaChave.naSala());
+    expect(
+      find.text('Ainda não há movimentações registradas.'),
+      findsOneWidget,
+    );
+    expect(find.text('Histórico limpo para testes.'), findsOneWidget);
+  });
 
   testWidgets('usa menu inferior para separar início e histórico completo', (
     testador,
