@@ -84,6 +84,15 @@ Ao fechar a sala, o usuário precisa informar o destino da chave:
 - ficou com outra pessoa;
 - foi devolvida para a portaria.
 
+Implementação inicial do Marco 1:
+
+- os modelos de domínio ficam em `lib/funcionalidades/sala/dominio/`;
+- os nomes do domínio seguem português: `EstadoDaSala`, `LocalizacaoDaChave`, `SituacaoDaSala`, `EventoHistorico` e `ControladorDaSala`;
+- ações esperadamente inválidas não lançam exceções; retornam `ResultadoAcaoDaSala` com `sucesso: false`, a situação original preservada e mensagem compreensível;
+- ações válidas registram `EventoHistorico`, pessoa responsável e horário da atualização;
+- validações mínimas de nomes ficam no domínio, não só na interface, para evitar estado inválido quando o controlador for chamado por persistência, testes ou telas futuras;
+- fechar a sala passando a chave para outro membro é regra de domínio suportada por `fecharSalaEPassarChaveParaOutraPessoa`.
+
 ## Gerenciamento de estado
 
 Decisão: Riverpod pode ser usado no MVP.
@@ -160,8 +169,8 @@ Arquivos principais:
 
 - `contexto.md`: contexto geral e decisões de produto.
 - `BACKLOG.md`: progresso, pendências, riscos e próximos passos.
-- `docs/decisoes-tecnicas.md`: stack, bibliotecas, arquitetura e trade-offs.
-- `docs/`: documentação das funcionalidades implementadas.
+- `documentos/decisoes-tecnicas.md`: stack, bibliotecas, arquitetura e trade-offs.
+- `documentos/`: documentação das funcionalidades implementadas.
 
 ## Arquitetura de código
 
@@ -172,30 +181,30 @@ Estrutura sugerida:
 ```text
 lib/
   main.dart
-  app.dart
-  core/
-    theme/
-      app_theme.dart
-  features/
-    auth/
-      login_screen.dart
-      user_controller.dart
-    room/
-      domain/
-        room_status.dart
-        key_location.dart
-        room_snapshot.dart
-        history_event.dart
-        room_action_service.dart
-      data/
-        room_repository.dart
-        local_room_repository.dart
-      presentation/
-        home_screen.dart
-        widgets/
-          status_card.dart
-          room_action_buttons.dart
-          history_list.dart
+  aplicativo.dart
+  nucleo/
+    tema/
+      tema_app.dart
+  funcionalidades/
+    autenticacao/
+      tela_login.dart
+      controlador_usuario.dart
+    sala/
+      dominio/
+        estado_da_sala.dart
+        localizacao_da_chave.dart
+        situacao_da_sala.dart
+        evento_historico.dart
+        controlador_da_sala.dart
+      dados/
+        repositorio_sala.dart
+        repositorio_local_sala.dart
+      apresentacao/
+        tela_inicial.dart
+        componentes/
+          cartao_status.dart
+          botoes_acao_sala.dart
+          lista_historico.dart
 ```
 
 Essa estrutura evita colocar tudo em `main.dart`, mas também não força uma arquitetura pesada.
@@ -215,7 +224,7 @@ Direção visual:
 
 Paleta registrada:
 
-- a paleta oficial/referencial da Prototipe está documentada em `docs/identidade-visual-prototipe.md`;
+- a paleta oficial/referencial da Prototipe está documentada em `documentos/identidade-visual-prototipe.md`;
 - o gradiente principal recomendado vai de `#0397DD` para `#274299`, passando por `#0E7CC7` e `#1D58AA`;
 - títulos podem usar o creme `#FDFBDB`;
 - detalhes claros podem usar `#F7FBFF`;
@@ -245,8 +254,8 @@ Arquivos principais:
 
 - `README.md`: visão geral, como rodar, funcionalidades e decisões resumidas.
 - `BACKLOG.md`: planejamento e acompanhamento.
-- `docs/decisoes-tecnicas.md`: decisões técnicas.
-- `docs/features/`: notas curtas por marco implementado, se o desenvolvimento avançar em etapas.
+- `documentos/decisoes-tecnicas.md`: decisões técnicas.
+- `documentos/funcionalidades/`: notas curtas por marco implementado, se o desenvolvimento avançar em etapas.
 
 ## Ambiente atual
 
@@ -307,7 +316,7 @@ Pendências irrelevantes para o MVP atual:
 
 Asset visual inicial:
 
-- `assets/images/mascote_prototipe.png` contém o mascote fornecido para a identidade do app.
+- `recursos/imagens/mascote_prototipe.png` contém o mascote fornecido para a identidade do app.
 
 Comandos principais:
 

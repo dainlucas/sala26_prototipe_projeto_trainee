@@ -52,7 +52,7 @@ class TelaInicialChave26 extends StatelessWidget {
                   child: Column(
                     children: [
                       Image.asset(
-                        'assets/images/mascote_prototipe.png',
+                        'recursos/imagens/mascote_prototipe.png',
                         height: 120,
                         semanticLabel: 'Mascote da Prototipe',
                       ),

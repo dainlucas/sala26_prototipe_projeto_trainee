@@ -17,7 +17,7 @@ Preparar a base do projeto Chave 26 para desenvolvimento mobile/Android em Flutt
 - Adicionadas dependências:
   - `flutter_riverpod` para organização de estado;
   - `shared_preferences` para persistência local simples.
-- Movida a imagem fornecida do mascote para `assets/images/mascote_prototipe.png`.
+- Movida a imagem fornecida do mascote para `recursos/imagens/mascote_prototipe.png`.
 - Registrado o mascote como asset no `pubspec.yaml`.
 - Substituído o app padrão de contador por uma tela inicial simples do Chave 26 com o mascote.
 - Adicionados testes de widget para validar a identidade inicial do app e a presença do mascote.
@@ -29,8 +29,8 @@ Preparar a base do projeto Chave 26 para desenvolvimento mobile/Android em Flutt
 - `test/widget_test.dart`
 - `README.md`
 - `BACKLOG.md`
-- `docs/decisoes-tecnicas.md`
-- `docs/plano-inicial.md`
+- `documentos/decisoes-tecnicas.md`
+- `documentos/plano-inicial.md`
 
 ## Teste adicionado
 
@@ -69,7 +69,7 @@ All tests passed!
 
 - O app ainda não implementa login, regras da sala, persistência real ou histórico.
 - O visual ainda usa paleta provisória; cores oficiais da Prototipe serão adicionadas depois.
-- O mascote já foi incluído como asset local em `assets/images/mascote_prototipe.png`.
+- O mascote já foi incluído como asset local em `recursos/imagens/mascote_prototipe.png`.
 - Para rodar em celular físico, ainda será necessário conectar o dispositivo ao WSL/ADB.
   - Opção recomendada: usar depuração sem fio do Android e `adb pair`/`adb connect` pelo WSL.
   - Alternativa: usar USB pass-through com `usbipd-win`.

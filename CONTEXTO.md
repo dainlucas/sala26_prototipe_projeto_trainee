@@ -135,13 +135,13 @@ Decisões tomadas para o desenvolvimento inicial:
 - ao fechar a sala, o usuário deverá escolher se a chave ficou com ele, foi passada para outra pessoa ou voltou para a portaria;
 - o app deverá ter uma interface amigável, divertida e alinhada à identidade visual da Prototipe;
 - o mascote da Prototipe já foi incluído como asset local;
-- a paleta de cores da Prototipe foi registrada em `docs/identidade-visual-prototipe.md`;
+- a paleta de cores da Prototipe foi registrada em `documentos/identidade-visual-prototipe.md`;
 - o app terá poucos testes automatizados, mas úteis;
 - o app terá README, backlog e documentação.
 
 ## Identidade visual da Prototipe
 
-A interface deve usar como referência a paleta visual da Prototipe registrada em `docs/identidade-visual-prototipe.md`.
+A interface deve usar como referência a paleta visual da Prototipe registrada em `documentos/identidade-visual-prototipe.md`.
 
 Cores principais:
 
@@ -180,8 +180,8 @@ Sempre que uma parte relevante do app for implementada ou alterada, a documenta�
 
 - `contexto.md` para decisões e contexto geral do produto;
 - `BACKLOG.md` para progresso, pendências, limitações e próximos passos;
-- `docs/decisoes-tecnicas.md` para decisões de stack, arquitetura e bibliotecas;
-- documentos em `docs/` para funcionalidades implementadas.
+- `documentos/decisoes-tecnicas.md` para decisões de stack, arquitetura e bibliotecas;
+- documentos em `documentos/` para funcionalidades implementadas.
 
 ## Possíveis melhorias futuras
 

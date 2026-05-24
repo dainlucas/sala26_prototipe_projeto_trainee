@@ -111,6 +111,6 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 - `contexto.md`: contexto do produto e decisões gerais.
 - `BACKLOG.md`: planejamento, marcos, riscos e progresso.
-- `docs/decisoes-tecnicas.md`: decisões de stack, arquitetura e trade-offs.
-- `docs/plano-inicial.md`: plano inicial do MVP.
-- `docs/features/`: registros das etapas implementadas.
+- `documentos/decisoes-tecnicas.md`: decisões de stack, arquitetura e trade-offs.
+- `documentos/plano-inicial.md`: plano inicial do MVP.
+- `documentos/funcionalidades/`: registros das etapas implementadas.

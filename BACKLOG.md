@@ -49,6 +49,7 @@ Prazo-alvo: 6 dias.
 - [x] Poderemos usar SharedPreferences com JSON para persistência local simples.
 - [x] Decisões, bibliotecas, regras, limitações e mudanças relevantes devem ser documentadas constantemente conforme o desenvolvimento.
 - [x] Nomes de classes, variáveis, enums, atributos e métodos ligados ao domínio do app devem ser em português para facilitar a leitura e a explicação do projeto.
+- [x] Pastas alteráveis do projeto devem usar nomes em português quando isso não quebrar convenções obrigatórias do Flutter/Android.
 
 ---
 
@@ -62,8 +63,8 @@ Prazo-alvo: 6 dias.
   - Sugestão: `chave_26`.
 
 - [x] Definir como representar a identidade visual da Prototipe no MVP.
-  - Paleta de cores registrada em `docs/identidade-visual-prototipe.md`.
-  - Mascote/imagem já incluído em `assets/images/mascote_prototipe.png`.
+  - Paleta de cores registrada em `documentos/identidade-visual-prototipe.md`.
+  - Mascote/imagem já incluído em `recursos/imagens/mascote_prototipe.png`.
   - Pendente para a implementação visual: transformar a paleta em constantes Dart e aplicar na UI.
 
 - [x] Definir biblioteca de estado.
@@ -122,7 +123,7 @@ Prazo-alvo: 6 dias.
 - [~] Configurar estrutura inicial de pastas.
   - Projeto Flutter criado; estrutura por feature será expandida no Marco 1.
 - [x] Criar README inicial.
-- [x] Criar docs/decisoes-tecnicas.md.
+- [x] Criar documentos/decisoes-tecnicas.md.
 - [x] Configurar dependências escolhidas.
   - `flutter_riverpod`.
   - `shared_preferences`.
@@ -136,7 +137,7 @@ Definition of done:
 - Testes iniciais passam.
 - README explica objetivo e como rodar.
 - Backlog e decisões técnicas existem.
-- Documentação da etapa existe em `docs/features/001-preparacao-projeto-flutter.md`.
+- Documentação da etapa existe em `documentos/funcionalidades/001-preparacao-projeto-flutter.md`.
 
 ---
 
@@ -144,19 +145,23 @@ Definition of done:
 
 Observação de nomenclatura: no domínio do app, usar nomes em português para facilitar a leitura, o aprendizado e a apresentação do projeto. Exemplos: `EstadoDaSala`, `LocalizacaoDaChave`, `SituacaoDaSala`, `EventoHistorico` e `ControladorDaSala`.
 
-- [ ] Criar modelos de domínio com nomes em português:
+- [x] Criar modelos de domínio com nomes em português:
   - `EstadoDaSala`.
   - `LocalizacaoDaChave`.
   - `SituacaoDaSala`.
   - `EventoHistorico`.
-- [ ] Criar serviço/controlador de regras da sala com nome em português, por exemplo `ControladorDaSala`.
-- [ ] Testar ação “peguei a chave”.
-- [ ] Testar ação “abri a sala”.
-- [ ] Testar ação “fechei a sala com chave comigo”.
-- [ ] Testar ação “fechei a sala e devolvi para portaria”.
-- [ ] Testar ação “passei a chave para outra pessoa”.
-- [ ] Testar bloqueios de ações inválidas.
-- [ ] Atualizar docs com as regras implementadas.
+- [x] Criar serviço/controlador de regras da sala com nome em português, por exemplo `ControladorDaSala`.
+  - Implementado em `lib/funcionalidades/sala/dominio/controlador_da_sala.dart` com resultado explícito de sucesso/falha.
+  - Ações principais e bloqueios inválidos cobertos por testes unitários em `test/funcionalidades/sala/dominio/controlador_da_sala_test.dart`.
+- [x] Testar ação “peguei a chave”.
+- [x] Testar ação “abri a sala”.
+- [x] Testar ação “fechei a sala com chave comigo”.
+- [x] Testar ação “fechei a sala e devolvi para portaria”.
+- [x] Testar ação “passei a chave para outra pessoa”.
+- [x] Testar bloqueios de ações inválidas.
+  - Bloqueios separados por regra, incluindo nomes vazios/espaços e transferência para a própria pessoa.
+- [x] Atualizar docs com as regras implementadas.
+  - Regras documentadas em `documentos/funcionalidades/002-modelos-e-controlador-da-sala.md`.
 
 Definition of done:
 
