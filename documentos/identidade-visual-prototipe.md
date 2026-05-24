@@ -35,6 +35,12 @@ background: linear-gradient(
 );
 ```
 
+## Uso nativo Android
+
+- O ícone do launcher e a splash screen nativa usam `recursos/imagens/logo.png` como fonte visual.
+- A splash screen nativa e os ícones Android usam fundo branco `#FFFFFF` para manter contraste com a nova logo.
+- Para Android 12+, a cor base da SplashScreen API é `#FFFFFF`, com a logo como ícone central.
+
 ## Variáveis CSS de referência
 
 Mesmo o app sendo Flutter/Dart, estas variáveis servem como referência visual e podem ser traduzidas depois para constantes Dart.

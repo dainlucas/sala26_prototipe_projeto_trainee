@@ -30,7 +30,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(
-      find.image(const AssetImage('recursos/imagens/logo_prototipe.jpeg')),
+      find.image(const AssetImage('recursos/imagens/logo.png')),
       findsOneWidget,
     );
   });
@@ -41,7 +41,7 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Perfil'), findsOneWidget);
+    expect(find.text('Escolher perfil'), findsOneWidget);
     expect(find.text('Fechada'), findsOneWidget);
     expect(find.text('Portaria'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
@@ -174,12 +174,12 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(
-      find.text('Escolha um perfil para ver as ações disponíveis.'),
+      find.text('Escolha quem está usando o app para liberar as ações.'),
       findsOneWidget,
     );
     expect(find.text('Pegar chave na portaria'), findsNothing);
     expect(find.text('Guardar chave'), findsNothing);
-    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+    expect(find.text('Escolher pessoa'), findsNothing);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
@@ -196,7 +196,7 @@ void main() {
 
     expect(find.text('Pegar chave na portaria'), findsOneWidget);
     expect(find.text('Guardar chave'), findsNothing);
-    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+    expect(find.text('Escolher pessoa'), findsNothing);
 
     await repositorioDaSala.salvarSituacaoAtual(
       SituacaoDaSala(
@@ -210,7 +210,7 @@ void main() {
 
     expect(find.text('Pegar chave na portaria'), findsNothing);
     expect(find.text('Guardar chave'), findsOneWidget);
-    expect(find.text('Passar chave para outra pessoa'), findsOneWidget);
+    expect(find.text('Escolher pessoa'), findsOneWidget);
 
     await repositorioDaSala.salvarSituacaoAtual(
       SituacaoDaSala(
@@ -224,7 +224,7 @@ void main() {
 
     expect(find.text('Pegar chave na portaria'), findsNothing);
     expect(find.text('Guardar chave'), findsNothing);
-    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+    expect(find.text('Escolher pessoa'), findsNothing);
     expect(
       find.text(
         'A chave está com Clara. Apenas Clara pode guardar ou passar a chave.',
@@ -244,7 +244,7 @@ void main() {
 
     expect(find.text('Pegar chave em Maker Space'), findsOneWidget);
     expect(find.text('Guardar chave'), findsNothing);
-    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+    expect(find.text('Escolher pessoa'), findsNothing);
   });
 
   testWidgets('usa o perfil selecionado ao registrar ação da sala', (
@@ -325,7 +325,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text('Quando alguém mexer na chave, a movimentação aparecerá aqui.'),
+      find.text('Quando alguém registrar uma ação, ela aparecerá aqui.'),
       findsOneWidget,
     );
   });
@@ -493,7 +493,7 @@ void main() {
     await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+    expect(find.text('Onde você vai guardar a chave?'), findsOneWidget);
     final seletorDeDestino = find.byType(BottomSheet);
     expect(
       find.descendant(of: seletorDeDestino, matching: find.text('Portaria')),
@@ -545,7 +545,7 @@ void main() {
     await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    await testador.tap(find.text('Adicionar destino'));
+    await testador.tap(find.text('Adicionar novo local'));
     await testador.pumpAndSettle();
     await testador.enterText(find.byType(TextField), 'Biblioteca');
     await testador.tap(find.text('Salvar'));
@@ -593,7 +593,7 @@ void main() {
       await testador.tap(find.text('Guardar chave'));
       await testador.pumpAndSettle();
 
-      await testador.tap(find.text('Adicionar destino'));
+      await testador.tap(find.text('Adicionar novo local'));
       await testador.pumpAndSettle();
       await testador.enterText(find.byType(TextField), 'Biblioteca');
       await testador.tap(find.text('Salvar'));
@@ -675,7 +675,7 @@ void main() {
     await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+    expect(find.text('Onde você vai guardar a chave?'), findsOneWidget);
 
     await testador.tapAt(const Offset(10, 10));
     await testador.pumpAndSettle();
@@ -706,7 +706,7 @@ void main() {
     await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    await testador.tap(find.text('Adicionar destino'));
+    await testador.tap(find.text('Adicionar novo local'));
     await testador.pumpAndSettle();
     await testador.enterText(find.byType(TextField), '   ');
     await testador.tap(find.text('Salvar'));
@@ -717,7 +717,7 @@ void main() {
       'Maker Space',
     ]);
     expect(find.byType(BottomSheet), findsOneWidget);
-    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+    expect(find.text('Onde você vai guardar a chave?'), findsOneWidget);
   });
 
   testWidgets('não duplica destino customizado já existente', (testador) async {
@@ -740,7 +740,7 @@ void main() {
     await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    await testador.tap(find.text('Adicionar destino'));
+    await testador.tap(find.text('Adicionar novo local'));
     await testador.pumpAndSettle();
     await testador.enterText(find.byType(TextField), 'Biblioteca');
     await testador.tap(find.text('Salvar'));
@@ -857,11 +857,11 @@ void main() {
       await testador.pumpWidget(const AplicativoChave26());
       await testador.pumpAndSettle();
 
-      await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
-      await testador.tap(find.text('Passar chave para outra pessoa'));
+      await testador.ensureVisible(find.text('Escolher pessoa'));
+      await testador.tap(find.text('Escolher pessoa'));
       await testador.pumpAndSettle();
 
-      expect(find.text('Passar chave para quem?'), findsOneWidget);
+      expect(find.text('Escolha quem vai receber a chave'), findsOneWidget);
       final dialogoDeDestino = find.byType(SimpleDialog);
       expect(
         find.descendant(of: dialogoDeDestino, matching: find.text('Clara')),
@@ -881,9 +881,9 @@ void main() {
       );
       await testador.pumpAndSettle();
 
-      expect(find.text('Passar chave?'), findsOneWidget);
+      expect(find.text('Confirmar passagem da chave'), findsOneWidget);
       expect(
-        find.text('Confirme que Lucas está passando a chave para Amanda.'),
+        find.text('Você confirma que Lucas está passando a chave para Amanda?'),
         findsOneWidget,
       );
 
@@ -892,8 +892,8 @@ void main() {
 
       expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
 
-      await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
-      await testador.tap(find.text('Passar chave para outra pessoa'));
+      await testador.ensureVisible(find.text('Escolher pessoa'));
+      await testador.tap(find.text('Escolher pessoa'));
       await testador.pumpAndSettle();
       final dialogoDeDestinoParaConfirmar = find.byType(SimpleDialog);
       await testador.tap(
@@ -947,11 +947,11 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Fechar sala'), findsOneWidget);
-    expect(find.text('Transferir para'), findsOneWidget);
-    expect(find.text('Passar chave para outra pessoa'), findsOneWidget);
+    expect(find.text('Passar a chave para'), findsOneWidget);
+    expect(find.text('Escolher pessoa'), findsOneWidget);
 
-    await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
-    await testador.tap(find.text('Passar chave para outra pessoa'));
+    await testador.ensureVisible(find.text('Escolher pessoa'));
+    await testador.tap(find.text('Escolher pessoa'));
     await testador.pumpAndSettle();
     await testador.tap(
       find.descendant(
@@ -1007,8 +1007,8 @@ void main() {
     expect(find.text('Com Lucas'), findsOneWidget);
     expect(find.text('Última atualização'), findsOneWidget);
     expect(find.text('Hoje, 12:10'), findsOneWidget);
-    expect(find.text('Ações rápidas'), findsOneWidget);
-    expect(find.text('Transferir para'), findsOneWidget);
+    expect(find.text('O que você quer fazer agora?'), findsOneWidget);
+    expect(find.text('Passar a chave para'), findsOneWidget);
     expect(find.text('Histórico recente'), findsOneWidget);
   });
 
@@ -1089,7 +1089,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Lucas abriu a sala 26.'), findsOneWidget);
-    await testador.tap(find.text('Limpar histórico'));
+    await testador.tap(find.text('Limpar histórico da demo'));
     await testador.pumpAndSettle();
 
     final situacao = await repositorioDaSala.carregarSituacaoAtual();
@@ -1100,7 +1100,7 @@ void main() {
       find.text('Ainda não há movimentações registradas.'),
       findsOneWidget,
     );
-    expect(find.text('Histórico limpo para testes.'), findsOneWidget);
+    expect(find.text('Histórico apagado para a demonstração.'), findsOneWidget);
   });
 
   testWidgets('usa menu inferior para separar início e histórico completo', (
@@ -1137,7 +1137,7 @@ void main() {
     await testador.tap(find.text('Histórico'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico completo'), findsOneWidget);
+    expect(find.text('Histórico de movimentações'), findsOneWidget);
     expect(find.text('Movimentação completa 1.'), findsOneWidget);
   });
 }

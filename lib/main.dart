@@ -293,7 +293,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Onde a chave vai ficar?',
+                        'Onde você vai guardar a chave?',
                         style: Theme.of(contextoDoSheet).textTheme.titleLarge
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
@@ -353,7 +353,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                       OutlinedButton.icon(
                         onPressed: () async {
                           final novoDestino = await _pedirNomeDestino(
-                            titulo: 'Adicionar destino',
+                            titulo: 'Adicionar novo local',
                           );
                           if (novoDestino == null) {
                             return;
@@ -366,7 +366,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                           await recarregar(setSheetState);
                         },
                         icon: const Icon(Icons.add),
-                        label: const Text('Adicionar destino'),
+                        label: const Text('Adicionar novo local'),
                       ),
                     ],
                   ),
@@ -393,8 +393,8 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
             controller: controlador,
             autofocus: true,
             decoration: const InputDecoration(
-              labelText: 'Nome do destino',
-              hintText: 'Ex: Biblioteca',
+              labelText: 'Nome do local',
+              hintText: 'Ex: Biblioteca ou Maker Space',
             ),
           ),
           actions: [
@@ -437,9 +437,9 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
       context: context,
       builder: (contextoDoDialogo) {
         return AlertDialog(
-          title: const Text('Passar chave?'),
+          title: const Text('Confirmar passagem da chave'),
           content: Text(
-            'Confirme que $perfil está passando a chave para $destino.',
+            'Você confirma que $perfil está passando a chave para $destino?',
           ),
           actions: [
             TextButton(
@@ -478,7 +478,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
             .toList();
 
         return SimpleDialog(
-          title: const Text('Passar chave para quem?'),
+          title: const Text('Escolha quem vai receber a chave'),
           children: [
             for (final pessoa in perfisDisponiveis)
               SimpleDialogOption(
@@ -501,7 +501,9 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     if (perfil == null || perfil.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Escolha um perfil antes de alterar a sala.'),
+          content: Text(
+            'Escolha um perfil antes de registrar uma movimentação.',
+          ),
         ),
       );
       return null;
@@ -543,7 +545,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Histórico limpo para testes.')),
+      const SnackBar(content: Text('Histórico apagado para a demonstração.')),
     );
   }
 
@@ -601,7 +603,7 @@ class _CabecalhoChave26 extends StatelessWidget {
               child: Transform.scale(
                 scale: 1.18,
                 child: Image.asset(
-                  'recursos/imagens/logo_prototipe.jpeg',
+                  'recursos/imagens/logo.png',
                   semanticLabel: 'Logo da Prototipe',
                   fit: BoxFit.cover,
                 ),
@@ -637,7 +639,7 @@ class _CabecalhoChave26 extends StatelessWidget {
               child: FilledButton.tonalIcon(
                 onPressed: aoTrocarPerfil,
                 icon: _AvatarDePerfil(nome: nome ?? '?', selecionado: true),
-                label: Text(temPerfil ? nome : 'Perfil'),
+                label: Text(temPerfil ? nome : 'Escolher perfil'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.only(left: 6, right: 10),
                   minimumSize: const Size(0, 44),
@@ -717,7 +719,7 @@ class _AbaHistorico extends StatelessWidget {
           children: [
             _HistoricoDaSala(
               situacao: dados.situacao,
-              titulo: 'Histórico completo',
+              titulo: 'Histórico de movimentações',
             ),
             const SizedBox(height: 12),
             Align(
@@ -727,7 +729,7 @@ class _AbaHistorico extends StatelessWidget {
                     ? null
                     : () => aoLimparHistorico(dados),
                 icon: const Icon(Icons.delete_sweep_outlined, size: 18),
-                label: const Text('Limpar histórico'),
+                label: const Text('Limpar histórico da demo'),
               ),
             ),
           ],
@@ -942,7 +944,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 4),
           child: Text(
-            'Ações rápidas',
+            'O que você quer fazer agora?',
             style: TextStyle(
               color: CoresPrototipe.textoSecundario,
               fontSize: 14,
@@ -953,7 +955,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
         const SizedBox(height: 12),
         if (!temPerfil)
           const _AvisoDeEstado(
-            texto: 'Escolha um perfil para ver as ações disponíveis.',
+            texto: 'Escolha quem está usando o app para liberar as ações.',
           )
         else if (chaveDisponivelEmLocal)
           _BotaoAcaoPrincipal(
@@ -1003,7 +1005,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 4),
             child: Text(
-              'Transferir para',
+              'Passar a chave para',
               style: TextStyle(
                 color: CoresPrototipe.textoSecundario,
                 fontSize: 14,
@@ -1015,7 +1017,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: () => aoPassarChaveParaOutraPessoa(dados),
             icon: const Icon(Icons.arrow_forward),
-            label: const Text('Passar chave para outra pessoa'),
+            label: const Text('Escolher pessoa'),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
               shape: RoundedRectangleBorder(
@@ -1292,7 +1294,7 @@ class _EstadoVazioDoHistorico extends StatelessWidget {
         ),
         SizedBox(height: 4),
         Text(
-          'Quando alguém mexer na chave, a movimentação aparecerá aqui.',
+          'Quando alguém registrar uma ação, ela aparecerá aqui.',
           style: TextStyle(color: CoresPrototipe.textoSecundario),
         ),
       ],

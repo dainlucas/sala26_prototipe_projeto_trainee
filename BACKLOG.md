@@ -66,7 +66,8 @@ Prazo-alvo: 6 dias.
 - [x] Definir como representar a identidade visual da Prototipe no MVP.
   - Paleta de cores registrada em `documentos/identidade-visual-prototipe.md`.
   - Mascote/imagem já incluído em `recursos/imagens/mascote_prototipe.png`.
-  - Logo `recursos/imagens/logo_prototipe.jpeg` aplicada no cabeçalho ao lado de `Chave 26`/`Prototipe`.
+  - Logo `recursos/imagens/logo.png` aplicada no cabeçalho ao lado de `Chave 26`/`Prototipe`.
+  - A mesma logo também alimenta o ícone Android e a splash screen nativa documentados em `documentos/funcionalidades/009-abertura-nativa-android.md`.
   - Pendente para a implementação visual: transformar a paleta em constantes Dart e aplicar na UI.
 
 - [x] Definir biblioteca de estado.
@@ -303,7 +304,7 @@ Definition of done:
   - Cancelar o seletor, salvar nome vazio ou tentar cadastrar duplicidade não altera estado nem histórico/destinos válidos.
   - Depois que a chave fica em um destino, a tela volta a oferecer a ação de pegar a chave desse local.
 - [~] Criar área visual divertida com mascote/placeholder do mascote.
-  - O cabeçalho usa ícone de chave e identidade Prototipe; o mascote/imagem ainda pode voltar como decoração leve no polimento final sem competir com o status.
+  - O cabeçalho usa a logo e identidade Prototipe; o mascote/imagem ainda pode voltar como decoração leve no polimento final sem competir com o status.
 - [ ] Adicionar confirmação antes de apagar destino customizado.
   - Hoje o botão `Apagar` remove diretamente; aceitável para o MVP local, mas é uma microinteração destrutiva que merece confirmação no polimento.
 - [x] Adicionar navegação inferior entre Início e Histórico.
@@ -325,8 +326,14 @@ Definition of done:
 
 ## Marco 7 — Polimento final para apresentação
 
+- [x] Personalizar abertura nativa e ícone Android.
+  - App label Android: `Chave 26`.
+  - Splash nativa com fundo branco e a nova logo centralizada com respiro visual.
+  - Ícone launcher clássico/adaptativo gerado a partir de `recursos/imagens/logo.png`, com fundo branco para contraste e margens internas para evitar corte por máscaras do Android.
+  - Documentado em `documentos/funcionalidades/009-abertura-nativa-android.md`.
 - [ ] Revisar responsividade em celular.
-- [ ] Revisar textos da interface.
+- [x] Revisar textos da interface.
+  - Ajustados textos de perfil, ações, transferência, escolha de local e histórico para ficarem mais naturais na apresentação.
 - [ ] Revisar README.
 - [ ] Atualizar prints/instruções, se necessário.
 - [ ] Rodar testes completos.

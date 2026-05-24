@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="prototipe_azul_ciano">#0397DD</color>
+    <color name="prototipe_azul_medio">#0E7CC7</color>
+    <color name="prototipe_azul_royal">#1D58AA</color>
+    <color name="prototipe_azul_indigo">#274299</color>
+    <color name="prototipe_azul_marinho">#060D5B</color>
+    <color name="prototipe_branco">#FFFFFF</color>
+</resources>
