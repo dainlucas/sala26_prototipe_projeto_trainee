@@ -83,7 +83,7 @@ Se existir dado salvo, o app mostra um resumo com:
 - perfil salvo;
 - estado da sala;
 - localização da chave;
-- quantidade de registros no histórico.
+- presença da seção de histórico, sem exibir contador de registros na tela.
 
 Se não existir situação salva, o app usa `SituacaoDaSala.inicial()`.
 

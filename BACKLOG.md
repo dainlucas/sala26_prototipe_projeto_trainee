@@ -209,8 +209,8 @@ Definition of done:
   - Documentado em `documentos/funcionalidades/004-perfis-locais-tela-inicial.md`.
 - [x] Disponibilizar perfis pré-definidos: Lucas, Clara, Amanda e Vitor.
 - [x] Dar feedback visual do perfil selecionado.
-  - Exemplo: avatar destacado, borda/anel, tooltip/texto curto ou resumo “Perfil salvo: Lucas”.
-  - O resumo mostra o perfil salvo e o botão do perfil ativo usa destaque tonal.
+  - Exemplo: avatar destacado, borda/anel, tooltip/texto curto ou resumo “Usuário atual: Lucas”.
+  - O resumo mostra o usuário atual e o botão do perfil ativo usa destaque tonal.
 - [x] Validar perfil obrigatório antes de ações que alteram a sala.
   - A ação inicial de pegar a chave bloqueia alterações quando nenhum perfil está selecionado.
 - [x] Salvar perfil selecionado localmente.

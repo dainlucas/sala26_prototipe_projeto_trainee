@@ -418,10 +418,9 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
               style: Theme.of(contexto).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            Text('Perfil salvo: ${dados.perfilSelecionado ?? 'nenhum'}'),
+            Text('Usuário atual: ${dados.perfilSelecionado ?? 'nenhum'}'),
             Text(_textoDoEstado(situacao.estado)),
             Text(_textoDaLocalizacao(situacao.localizacaoDaChave)),
-            Text(_textoDoHistorico(situacao.historico.length)),
             const SizedBox(height: 12),
             if (!temPerfilSelecionado)
               const Text('Escolha um perfil para ver as ações disponíveis.'),
@@ -468,14 +467,6 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
       TipoLocalizacaoDaChave.pessoa =>
         'Chave com ${localizacao.nomeDaPessoa ?? 'alguém'}',
     };
-  }
-
-  String _textoDoHistorico(int quantidade) {
-    if (quantidade == 1) {
-      return 'Histórico: 1 registro';
-    }
-
-    return 'Histórico: $quantidade registros';
   }
 }
 

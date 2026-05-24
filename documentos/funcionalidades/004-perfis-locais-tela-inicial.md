@@ -12,7 +12,7 @@ Esta fatia inicia o Marco 3 com a troca funcional de perfis locais diretamente n
   - Vitor.
 - Cada perfil aparece como um botão curto com a inicial do nome.
 - Tocar em um perfil salva a seleção localmente usando `RepositorioLocalDoPerfil`.
-- Após a troca, o resumo local passa a mostrar o perfil salvo, por exemplo `Perfil salvo: Clara`.
+- Após a troca, o resumo local passa a mostrar o usuário atual, por exemplo `Usuário atual: Clara`.
 - A troca de perfil não apaga o estado da sala nem o histórico salvo.
 - A tela inicial oferece a primeira ação funcional do MVP: `Pegar chave na portaria`.
 - Essa ação usa o perfil selecionado como responsável pela alteração.

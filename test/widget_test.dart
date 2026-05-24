@@ -41,10 +41,10 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Perfil salvo: nenhum'), findsOneWidget);
+    expect(find.text('Usuário atual: nenhum'), findsOneWidget);
     expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Chave na portaria'), findsOneWidget);
-    expect(find.text('Histórico: 0 registros'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
   });
 
   testWidgets('oferece os quatro perfis predefinidos na tela inicial', (
@@ -78,7 +78,7 @@ void main() {
     await testador.tap(find.byTooltip('Selecionar perfil Clara'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Perfil salvo: Clara'), findsOneWidget);
+    expect(find.text('Usuário atual: Clara'), findsOneWidget);
     expect(await repositorioDoPerfil.carregarPerfilSelecionado(), 'Clara');
     expect(find.text('Sala aberta'), findsOneWidget);
     expect(find.text('Chave na sala'), findsOneWidget);
@@ -109,10 +109,10 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Perfil salvo: Clara'), findsOneWidget);
+    expect(find.text('Usuário atual: Clara'), findsOneWidget);
     expect(find.text('Sala aberta'), findsOneWidget);
     expect(find.text('Chave na sala'), findsOneWidget);
-    expect(find.text('Histórico: 1 registro'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
   });
 
   testWidgets('mostra chave com pessoa quando esse dado está salvo', (
@@ -132,10 +132,10 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Perfil salvo: Vitor'), findsOneWidget);
+    expect(find.text('Usuário atual: Vitor'), findsOneWidget);
     expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Chave com Vitor'), findsOneWidget);
-    expect(find.text('Histórico: 0 registros'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
   });
 
   testWidgets('pede seleção de perfil antes de mostrar ações de movimentação', (
@@ -151,7 +151,7 @@ void main() {
     expect(find.text('Pegar chave na portaria'), findsNothing);
     expect(find.text('Devolver chave para a portaria'), findsNothing);
     expect(find.text('Passar chave para outra pessoa'), findsNothing);
-    expect(find.text('Histórico: 0 registros'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
   });
 
   testWidgets('mostra apenas ações disponíveis conforme localização da chave', (
@@ -232,7 +232,7 @@ void main() {
       'Clara pegou a chave na portaria.',
     );
     expect(find.text('Chave com Clara'), findsOneWidget);
-    expect(find.text('Histórico: 1 registro'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
   });
 
   testWidgets('mostra estado vazio amigável quando não há histórico', (
@@ -331,7 +331,7 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico: 30 registros'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
     expect(find.text('Movimentação número 30.'), findsOneWidget);
     expect(find.text('10/03/2026 às 08:29'), findsOneWidget);
 
@@ -425,7 +425,7 @@ void main() {
 
     expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
     expect(find.text('Chave com Clara'), findsOneWidget);
-    expect(find.text('Histórico: 1 registro'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
 
     await testador.ensureVisible(find.text('Devolver chave para a portaria'));
     await testador.tap(find.text('Devolver chave para a portaria'));
@@ -444,7 +444,7 @@ void main() {
       'Clara devolveu a chave para a portaria.',
     );
     expect(find.text('Chave na portaria'), findsOneWidget);
-    expect(find.text('Histórico: 2 registros'), findsOneWidget);
+    expect(find.textContaining('Histórico:'), findsNothing);
     expect(find.text('Clara devolveu a chave para a portaria.'), findsWidgets);
   });
 
@@ -506,7 +506,7 @@ void main() {
         'Lucas passou a chave para Amanda.',
       );
       expect(find.text('Chave com Amanda'), findsOneWidget);
-      expect(find.text('Histórico: 1 registro'), findsOneWidget);
+      expect(find.textContaining('Histórico:'), findsNothing);
       expect(find.text('Lucas passou a chave para Amanda.'), findsWidgets);
     },
   );
