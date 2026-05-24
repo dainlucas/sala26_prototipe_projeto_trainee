@@ -176,15 +176,20 @@ Definition of done:
 
 ## Marco 2 — Persistência local/offline
 
-- [ ] Criar repositório local para estado atual.
-- [ ] Criar repositório local para histórico.
-- [ ] Salvar perfil local selecionado.
-- [ ] Salvar estado da sala.
-- [ ] Salvar histórico.
+- [x] Criar repositório local para estado atual.
+  - Implementado em `lib/funcionalidades/sala/dados/repositorio_local_da_sala.dart`.
+- [x] Criar repositório local para histórico.
+  - O histórico é carregado a partir da `SituacaoDaSala` salva inteira, conforme trade-off documentado.
+- [x] Salvar perfil local selecionado.
+  - Implementado em `lib/funcionalidades/configuracoes/dados/repositorio_local_do_perfil.dart`.
+- [x] Salvar estado da sala.
+- [x] Salvar histórico.
 - [ ] Restaurar dados ao reabrir o app.
-- [ ] Testar serialização/desserialização dos modelos.
+- [x] Testar serialização/desserialização dos modelos.
+  - Coberto por `test/funcionalidades/sala/dados/repositorio_local_da_sala_test.dart`.
 - [ ] Documentar limitações da persistência local.
   - Trade-offs iniciais registrados em `TRADEOFFS.md`.
+  - Fatia inicial documentada em `documentos/funcionalidades/003-persistencia-local-inicial.md`.
 
 Definition of done:
 

@@ -157,7 +157,16 @@ Detalhamento de trade-off:
 
 - a `SituacaoDaSala` será salva inteira como um único JSON, incluindo o histórico;
 - essa escolha reduz complexidade e evita inconsistência entre estado atual e histórico no protótipo;
+- o repositório local da sala expõe tanto a situação atual quanto o histórico, mas ambos vêm do mesmo JSON salvo;
+- o perfil local selecionado é salvo separadamente por `RepositorioLocalDoPerfil`;
 - os trade-offs dessa decisão estão registrados em `TRADEOFFS.md`.
+
+Implementação inicial do Marco 2:
+
+- `SerializadoresDaSala` converte `SituacaoDaSala` para JSON e de volta;
+- `RepositorioLocalDaSala` salva e carrega a situação atual da sala com histórico;
+- `RepositorioLocalDoPerfil` salva e carrega o perfil local selecionado;
+- a documentação da fatia está em `documentos/funcionalidades/003-persistencia-local-inicial.md`.
 
 Limitação:
 
