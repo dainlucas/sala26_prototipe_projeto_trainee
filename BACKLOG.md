@@ -228,7 +228,38 @@ Definition of done:
 
 ---
 
-## Marco 4 — UI principal bonita e amigável
+## Marco 4 — Histórico simples
+
+- [ ] Criar lista de histórico na tela principal.
+- [ ] Mostrar as últimas movimentações com data/hora e nome.
+- [ ] Ordenar histórico do mais recente para o mais antigo.
+- [ ] Criar estado vazio amigável quando não houver histórico.
+- [ ] Testar renderização de histórico vazio.
+- [ ] Testar renderização de histórico com itens.
+
+Definition of done:
+
+- Usuário entende rapidamente o que aconteceu antes.
+- Histórico é simples e legível.
+
+---
+
+## Marco 5 — Confirmações e microinterações
+
+- [ ] Confirmar devolução da chave para a portaria.
+- [ ] Confirmar transferência da chave para outra pessoa.
+- [ ] Exibir feedback de sucesso após ações.
+- [ ] Exibir mensagens claras para ações inválidas.
+- [ ] Testar pelo menos um diálogo de confirmação.
+
+Definition of done:
+
+- Ações sensíveis não acontecem por acidente.
+- Erros são explicados de forma simples.
+
+---
+
+## Marco 6 — UI principal bonita e amigável
 
 - [ ] Criar seletor/atalho visual de perfis na tela inicial.
   - Refinar como quatro avatares/carinha discretos no canto superior direito.
@@ -248,37 +279,6 @@ Definition of done:
 - Ao abrir o app, a situação da sala fica óbvia em poucos segundos.
 - Visual parece intencional, não apenas padrão Flutter.
 - Tela funciona bem em celular.
-
----
-
-## Marco 5 — Histórico simples
-
-- [ ] Criar lista de histórico na tela principal.
-- [ ] Mostrar as últimas movimentações com data/hora e nome.
-- [ ] Ordenar histórico do mais recente para o mais antigo.
-- [ ] Criar estado vazio amigável quando não houver histórico.
-- [ ] Testar renderização de histórico vazio.
-- [ ] Testar renderização de histórico com itens.
-
-Definition of done:
-
-- Usuário entende rapidamente o que aconteceu antes.
-- Histórico é simples e legível.
-
----
-
-## Marco 6 — Confirmações e microinterações
-
-- [ ] Confirmar devolução da chave para a portaria.
-- [ ] Confirmar transferência da chave para outra pessoa.
-- [ ] Exibir feedback de sucesso após ações.
-- [ ] Exibir mensagens claras para ações inválidas.
-- [ ] Testar pelo menos um diálogo de confirmação.
-
-Definition of done:
-
-- Ações sensíveis não acontecem por acidente.
-- Erros são explicados de forma simples.
 
 ---
 
@@ -347,7 +347,7 @@ Definition of done:
 4. Implementar domínio com testes primeiro.
 5. Implementar persistência local.
 6. Implementar perfis locais em configurações.
-7. Implementar UI principal.
-8. Implementar histórico.
-9. Implementar confirmações.
+7. Implementar histórico.
+8. Implementar confirmações.
+9. Implementar UI principal.
 10. Polir documentação e apresentação.
