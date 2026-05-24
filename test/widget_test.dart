@@ -15,6 +15,7 @@ void main() {
 
   testWidgets('mostra a identidade inicial do Chave 26', (testador) async {
     await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
 
     expect(find.text('Chave 26'), findsOneWidget);
     expect(find.text('Sala 26'), findsOneWidget);
@@ -28,6 +29,7 @@ void main() {
     testador,
   ) async {
     await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
 
     expect(find.bySemanticsLabel('Mascote da Prototipe'), findsOneWidget);
   });
@@ -42,6 +44,43 @@ void main() {
     expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Chave na portaria'), findsOneWidget);
     expect(find.text('Histórico: 0 registros'), findsOneWidget);
+  });
+
+  testWidgets('oferece os quatro perfis predefinidos na tela inicial', (
+    testador,
+  ) async {
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.byTooltip('Selecionar perfil Lucas'), findsOneWidget);
+    expect(find.byTooltip('Selecionar perfil Clara'), findsOneWidget);
+    expect(find.byTooltip('Selecionar perfil Amanda'), findsOneWidget);
+    expect(find.byTooltip('Selecionar perfil Vitor'), findsOneWidget);
+  });
+
+  testWidgets('troca e salva o perfil pela tela inicial sem apagar estado', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.aberta,
+        localizacaoDaChave: const LocalizacaoDaChave.naSala(),
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.byTooltip('Selecionar perfil Clara'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Perfil salvo: Clara'), findsOneWidget);
+    expect(await repositorioDoPerfil.carregarPerfilSelecionado(), 'Clara');
+    expect(find.text('Sala aberta'), findsOneWidget);
+    expect(find.text('Chave na sala'), findsOneWidget);
   });
 
   testWidgets('restaura dados locais salvos ao abrir o app', (testador) async {

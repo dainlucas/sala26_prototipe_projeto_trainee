@@ -52,7 +52,7 @@ Motivo: essa combinação equilibra simplicidade, organização e demonstração
 2. Criar projeto Flutter. — concluído com target Android.
 3. Criar modelos e regras de negócio com testes.
 4. Criar persistência local.
-5. Criar seleção de perfil local em configurações.
+5. Criar seleção rápida de perfil local na tela inicial, sem tela de configurações separada.
 6. Criar tela principal.
 7. Criar histórico.
 8. Criar confirmações.

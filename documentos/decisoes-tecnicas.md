@@ -42,7 +42,9 @@ Evolução futura:
 
 Decisão: perfis locais simples e pré-definidos para o protótipo.
 
-Em vez de login real ou campo livre de nome, o app terá um setor simples de configurações para selecionar um perfil local.
+Em vez de login real, campo livre de nome ou tela de configurações separada, o app terá um seletor rápido de perfil na tela inicial.
+
+A direção de apresentação é mostrar quatro avatares/carinha discretos no canto superior direito da tela. Ao tocar em um deles, o perfil ativo muda. Isso deixa a demonstração mais natural do que abrir uma área de configurações para trocar de pessoa.
 
 Perfis do protótipo:
 

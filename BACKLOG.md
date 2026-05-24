@@ -203,13 +203,21 @@ Definition of done:
 
 ## Marco 3 — Perfis locais simples
 
-- [ ] Criar setor de configurações simples para escolher perfil.
-- [ ] Disponibilizar perfis pré-definidos: Lucas, Clara, Amanda e Vitor.
-- [ ] Validar perfil obrigatório.
-- [ ] Salvar perfil selecionado localmente.
+- [x] Criar seletor rápido de perfil na tela inicial, sem tela de configurações separada.
+  - Ideia de apresentação: quatro avatares/carinha discretos no canto superior direito.
+  - Implementado primeiro como troca funcional com botões de iniciais; refinamento visual de avatares/carinha permanece no Marco 4.
+  - Documentado em `documentos/funcionalidades/004-perfis-locais-tela-inicial.md`.
+- [x] Disponibilizar perfis pré-definidos: Lucas, Clara, Amanda e Vitor.
+- [x] Dar feedback visual do perfil selecionado.
+  - Exemplo: avatar destacado, borda/anel, tooltip/texto curto ou resumo “Perfil salvo: Lucas”.
+  - O resumo mostra o perfil salvo e o botão do perfil ativo usa destaque tonal.
+- [ ] Validar perfil obrigatório antes de ações que alteram a sala.
+- [x] Salvar perfil selecionado localmente.
+  - O seletor da tela inicial salva a escolha via `RepositorioLocalDoPerfil`.
 - [ ] Usar perfil selecionado nas ações.
-- [ ] Permitir trocar perfil em uma tela/configuração simples.
-- [ ] Testar fluxo básico de seleção/troca de perfil local.
+- [x] Permitir trocar perfil rapidamente pela tela inicial, sem apagar estado nem histórico.
+- [x] Testar fluxo básico de seleção/troca de perfil local.
+  - Coberto por `test/widget_test.dart`.
 
 Definition of done:
 
@@ -220,6 +228,9 @@ Definition of done:
 
 ## Marco 4 — UI principal bonita e amigável
 
+- [ ] Criar seletor/atalho visual de perfis na tela inicial.
+  - Refinar como quatro avatares/carinha discretos no canto superior direito.
+  - Destacar claramente o perfil ativo sem roubar atenção do status da sala.
 - [ ] Criar tema visual inicial da Prototipe.
 - [ ] Criar card principal de status da sala.
 - [ ] Mostrar se a sala está aberta ou fechada.

@@ -132,7 +132,9 @@ Em uma versão mais profissional, separar:
 
 ### Decisão atual
 
-Usar um setor simples de configurações no app para selecionar um perfil local pré-definido.
+Usar um seletor rápido na tela inicial para selecionar um perfil local pré-definido, sem login real e sem tela de configurações separada.
+
+A direção de interface para apresentação é usar quatro avatares/carinha discretos no canto superior direito. Tocar em um avatar troca o perfil ativo.
 
 Perfis:
 
@@ -152,9 +154,9 @@ Perfis:
 
 ### Exemplo de apresentação
 
-1. Selecionar perfil `Lucas`.
+1. Selecionar perfil `Lucas` pelo atalho de perfis na tela inicial.
 2. Lucas pega a chave ou transfere a chave.
-3. Trocar para perfil `Clara` nas configurações.
+3. Tocar no avatar de `Clara` para trocar rapidamente o perfil ativo.
 4. Clara faz outra ação.
 5. O histórico mostra ações com nomes diferentes, simulando o uso por pessoas distintas.
 

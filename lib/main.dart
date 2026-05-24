@@ -39,7 +39,7 @@ class TelaInicialChave26 extends StatefulWidget {
 }
 
 class _TelaInicialChave26State extends State<TelaInicialChave26> {
-  late final Future<_DadosLocaisRestaurados> _dadosLocais;
+  late Future<_DadosLocaisRestaurados> _dadosLocais;
 
   @override
   void initState() {
@@ -55,63 +55,85 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
       backgroundColor: esquemaDeCores.surface,
       appBar: AppBar(title: const Text('Chave 26'), centerTitle: true),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Card(
-                elevation: 0,
-                color: esquemaDeCores.primaryContainer,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'recursos/imagens/mascote_prototipe.png',
-                        height: 120,
-                        semanticLabel: 'Mascote da Prototipe',
+        child: FutureBuilder<_DadosLocaisRestaurados>(
+          future: _dadosLocais,
+          builder: (contexto, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final dados = snapshot.data!;
+
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: _SeletorRapidoDePerfil(
+                        perfilSelecionado: dados.perfilSelecionado,
+                        aoSelecionar: _selecionarPerfil,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Sala 26',
-                        style: Theme.of(contexto).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: esquemaDeCores.onPrimaryContainer,
+                    ),
+                    const SizedBox(height: 12),
+                    Card(
+                      elevation: 0,
+                      color: esquemaDeCores.primaryContainer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'recursos/imagens/mascote_prototipe.png',
+                              height: 120,
+                              semanticLabel: 'Mascote da Prototipe',
                             ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'MVP local para acompanhar a chave da Prototipe',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(contexto).textTheme.bodyLarge?.copyWith(
-                          color: esquemaDeCores.onPrimaryContainer,
+                            const SizedBox(height: 16),
+                            Text(
+                              'Sala 26',
+                              style: Theme.of(contexto).textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: esquemaDeCores.onPrimaryContainer,
+                                  ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'MVP local para acompanhar a chave da Prototipe',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(contexto).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: esquemaDeCores.onPrimaryContainer,
+                                  ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                    _ResumoDosDadosRestaurados(dados: dados),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
-              FutureBuilder<_DadosLocaisRestaurados>(
-                future: _dadosLocais,
-                builder: (contexto, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  return _ResumoDosDadosRestaurados(dados: snapshot.data!);
-                },
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
+  }
+
+  Future<void> _selecionarPerfil(String perfil) async {
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+    await repositorioDoPerfil.salvarPerfilSelecionado(perfil);
+
+    setState(() {
+      _dadosLocais = _carregarDadosLocais();
+    });
   }
 
   Future<_DadosLocaisRestaurados> _carregarDadosLocais() async {
@@ -125,6 +147,46 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     return _DadosLocaisRestaurados(
       perfilSelecionado: perfilSelecionado,
       situacao: situacao,
+    );
+  }
+}
+
+class _SeletorRapidoDePerfil extends StatelessWidget {
+  const _SeletorRapidoDePerfil({
+    required this.perfilSelecionado,
+    required this.aoSelecionar,
+  });
+
+  static const perfisPreDefinidos = ['Lucas', 'Clara', 'Amanda', 'Vitor'];
+
+  final String? perfilSelecionado;
+  final ValueChanged<String> aoSelecionar;
+
+  @override
+  Widget build(BuildContext contexto) {
+    final esquemaDeCores = Theme.of(contexto).colorScheme;
+
+    return Wrap(
+      spacing: 4,
+      children: [
+        for (final perfil in perfisPreDefinidos)
+          IconButton.filledTonal(
+            tooltip: 'Selecionar perfil $perfil',
+            style: IconButton.styleFrom(
+              backgroundColor: perfil == perfilSelecionado
+                  ? esquemaDeCores.primaryContainer
+                  : esquemaDeCores.surfaceContainerHighest,
+              foregroundColor: perfil == perfilSelecionado
+                  ? esquemaDeCores.onPrimaryContainer
+                  : esquemaDeCores.onSurfaceVariant,
+            ),
+            onPressed: () => aoSelecionar(perfil),
+            icon: Text(
+              perfil.characters.first,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+          ),
+      ],
     );
   }
 }
