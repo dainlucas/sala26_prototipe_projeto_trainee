@@ -58,5 +58,5 @@ Coberturas adicionadas ou atualizadas:
 
 ## Limitações ainda abertas
 
-- As microinterações visuais ainda são simples; refinamento de aparência e hierarquia fica para o marco de UI principal.
-- Os botões ainda ficam dentro do card de dados restaurados, para manter a fatia pequena antes do redesenho visual do Marco 6.
+- As confirmações ainda usam diálogos simples do Material; o polimento visual final pode ajustar textos, espaçamentos e responsividade.
+- A fatia seguinte reorganizou os botões no redesenho do Marco 6; este documento preserva a decisão de confirmação/segurança das ações sensíveis.

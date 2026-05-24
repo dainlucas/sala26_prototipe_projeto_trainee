@@ -107,6 +107,36 @@ Implementação inicial do Marco 1:
 - validações mínimas de nomes ficam no domínio, não só na interface, para evitar estado inválido quando o controlador for chamado por persistência, testes ou telas futuras;
 - fechar a sala passando a chave para outro membro é regra de domínio suportada por `fecharSalaEPassarChaveParaOutraPessoa`.
 
+## UI principal
+
+Decisão: a tela principal seguirá a hierarquia visual validada na referência do v0, implementada em Flutter/Material 3 nativo.
+
+Estrutura escolhida para o MVP:
+
+- cabeçalho com ícone, nome `Chave 26`, subtítulo `Prototipe` e botão discreto de troca de perfil;
+- card principal de status com `Aberta`/`Fechada` em destaque;
+- linhas de leitura rápida para `Chave com`, `Localização` e `Última atualização`;
+- seção `Ações rápidas` com botões condicionados às regras reais do domínio;
+- seção `Transferir para` quando a chave está com o perfil atual;
+- navegação inferior com `Início` e `Histórico`;
+- histórico recente na tela inicial e histórico completo em aba separada.
+
+Motivo:
+
+- o estado da sala precisa ser entendido em poucos segundos;
+- o histórico completo não deve competir com o status principal;
+- a troca de perfil é necessária para a demonstração, mas não deve dominar a tela.
+
+Implementação inicial do Marco 6:
+
+- constantes de cor da Prototipe aplicadas em `lib/main.dart`;
+- documento da fatia em `documentos/funcionalidades/007-ui-principal-inspirada-v0.md`;
+- testes de widget atualizados em `test/widget_test.dart`.
+
+Limitação:
+
+- as constantes de tema ainda podem ser extraídas para `lib/nucleo/tema/` em uma refatoração futura.
+
 ## Gerenciamento de estado
 
 Decisão: Riverpod pode ser usado no MVP.

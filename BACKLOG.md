@@ -111,7 +111,7 @@ Prazo-alvo: 6 dias.
   - ficou com outra pessoa;
   - devolvi para a portaria.
 - [ ] Só é possível devolver a chave se ela estiver com a pessoa logada.
-- [ ] Só é possível passar a chave para outra pessoa se ela estiver com a pessoa logada.
+- [ ] Só é possível passar a chave para outra pessoa se ela estiver com a pessoa logada ou se a sala estiver aberta, a chave estiver guardada na sala, e a pessoa logada for quem abriu/responde pela sala.
 - [ ] Toda ação gera um item no histórico com data/hora, pessoa e descrição.
 
 ---
@@ -273,24 +273,36 @@ Definition of done:
 
 ## Marco 6 — UI principal bonita e amigável
 
-- [ ] Criar seletor/atalho visual de perfis na tela inicial.
-  - Refinar como quatro avatares/carinha discretos no canto superior direito.
-  - Destacar claramente o perfil ativo sem roubar atenção do status da sala.
-- [ ] Criar tema visual inicial da Prototipe.
-- [ ] Criar card principal de status da sala.
-- [ ] Mostrar se a sala está aberta ou fechada.
-- [ ] Mostrar onde está a chave.
-- [ ] Mostrar quem fez a última atualização.
-- [ ] Mostrar horário da última atualização.
-- [ ] Criar botões de ação com boa usabilidade.
-- [ ] Criar área visual divertida com mascote/placeholder do mascote.
-- [ ] Testar renderização básica da tela inicial.
+- [x] Registrar referência de produto/UX do v0 como direção do redesenho.
+  - Documentado em `documentos/funcionalidades/007-ui-principal-inspirada-v0.md`.
+- [x] Criar seletor/atalho visual de perfis na tela inicial.
+  - O perfil ativo fica no cabeçalho em botão tonal discreto com tooltip `Trocar perfil` e abre um modal inferior com Lucas, Clara, Amanda e Vitor.
+  - O seletor foi refinado para não roubar atenção do status da sala.
+- [x] Criar tema visual inicial da Prototipe.
+  - Paleta aplicada na UI com Material 3 e constantes em `lib/main.dart`.
+- [x] Criar card principal de status da sala.
+- [x] Mostrar se a sala está aberta ou fechada.
+- [x] Mostrar onde está a chave.
+- [x] Mostrar quem está com a chave/responsável pela última ação relevante.
+- [x] Mostrar horário da última atualização.
+- [x] Criar botões de ação com boa usabilidade.
+  - Ações rápidas mostram apenas caminhos válidos para o estado/perfil atual.
+  - `Abrir sala`/`Fechar sala` aparece condicionado à pessoa com a chave ou responsável pela sala aberta.
+  - `Transferir para` também aparece para o responsável pela sala aberta quando a chave está guardada na sala, permitindo entregar a chave a outra pessoa sem fechar a sala.
+- [~] Criar área visual divertida com mascote/placeholder do mascote.
+  - O cabeçalho usa ícone de chave e identidade Prototipe; o mascote/imagem ainda pode voltar como decoração leve no polimento final sem competir com o status.
+- [x] Adicionar navegação inferior entre Início e Histórico.
+  - `Início` mostra status, ações e histórico recente.
+  - `Histórico` mostra a lista completa.
+- [x] Testar renderização básica da tela inicial.
+  - Coberto por `test/widget_test.dart`, incluindo estrutura v0, abas, botão abrir/fechar, confirmações e histórico.
 
 Definition of done:
 
 - Ao abrir o app, a situação da sala fica óbvia em poucos segundos.
 - Visual parece intencional, não apenas padrão Flutter.
 - Tela funciona bem em celular.
+- Documentação da etapa existe em `documentos/funcionalidades/007-ui-principal-inspirada-v0.md`.
 
 ---
 

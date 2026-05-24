@@ -327,6 +327,34 @@ void main() {
       );
     });
 
+    test('permite que quem abriu a sala passe a chave guardada na sala', () {
+      final controlador = ControladorDaSala();
+      final salaAberta = _situacaoAbertaPeloLucas(controlador);
+      final momentoPassou = DateTime(2026, 1, 2, 15, 10);
+
+      final resultado = controlador.passarChaveParaOutraPessoa(
+        situacaoAtual: salaAberta,
+        pessoaLogada: 'Lucas',
+        outraPessoa: 'Maria',
+        momento: momentoPassou,
+      );
+
+      expect(resultado.sucesso, isTrue);
+      expect(resultado.mensagem, 'Lucas passou a chave para Maria.');
+      expect(resultado.situacao.estado, EstadoDaSala.aberta);
+      expect(
+        resultado.situacao.localizacaoDaChave,
+        LocalizacaoDaChave.comPessoa('Maria'),
+      );
+      expect(resultado.situacao.historico, hasLength(3));
+      _esperarUltimaAtualizacao(
+        resultado.situacao,
+        pessoa: 'Lucas',
+        momento: momentoPassou,
+        descricao: 'Lucas passou a chave para Maria.',
+      );
+    });
+
     test('mantém a sequência completa do histórico na ordem das ações', () {
       final controlador = ControladorDaSala();
       final momentoPegou = DateTime(2026, 1, 2, 14, 20);
@@ -458,24 +486,45 @@ void main() {
         );
       });
 
-      test('bloqueia passar a chave sem estar com ela', () {
+      test('bloqueia outro perfil de fechar a sala aberta por Lucas', () {
         final controlador = ControladorDaSala();
-        final situacaoInicial = SituacaoDaSala.inicial();
+        final salaAberta = _situacaoAbertaPeloLucas(controlador);
 
-        final resultado = controlador.passarChaveParaOutraPessoa(
-          situacaoAtual: situacaoInicial,
-          pessoaLogada: 'Lucas',
-          outraPessoa: 'Maria',
-          momento: DateTime(2026, 1, 2, 15),
+        final resultado = controlador.fecharSalaComChaveComigo(
+          situacaoAtual: salaAberta,
+          pessoaLogada: 'Clara',
+          momento: DateTime(2026, 1, 2, 17, 40),
         );
 
         _esperarFalhaSemAlterarSituacao(
           resultado,
-          situacaoEsperada: situacaoInicial,
+          situacaoEsperada: salaAberta,
           mensagemEsperada:
-              'Lucas precisa estar com a chave para passar para outra pessoa.',
+              'Clara só pode fechar se estiver com a chave ou se for responsável pela sala aberta.',
         );
       });
+
+      test(
+        'bloqueia passar a chave sem estar com ela ou sem ser responsável',
+        () {
+          final controlador = ControladorDaSala();
+          final situacaoInicial = SituacaoDaSala.inicial();
+
+          final resultado = controlador.passarChaveParaOutraPessoa(
+            situacaoAtual: situacaoInicial,
+            pessoaLogada: 'Lucas',
+            outraPessoa: 'Maria',
+            momento: DateTime(2026, 1, 2, 15),
+          );
+
+          _esperarFalhaSemAlterarSituacao(
+            resultado,
+            situacaoEsperada: situacaoInicial,
+            mensagemEsperada:
+                'Lucas precisa estar com a chave ou ser responsável pela sala aberta para passar para outra pessoa.',
+          );
+        },
+      );
 
       test('bloqueia devolver a chave sem estar com ela', () {
         final controlador = ControladorDaSala();

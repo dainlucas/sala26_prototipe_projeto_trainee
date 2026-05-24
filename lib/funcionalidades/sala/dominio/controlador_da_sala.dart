@@ -119,6 +119,14 @@ class ControladorDaSala {
       return falhaSalaFechada;
     }
 
+    if (!_podeManusearChaveDaSala(situacaoAtual, pessoa)) {
+      return ResultadoAcaoDaSala.falha(
+        situacao: situacaoAtual,
+        mensagem:
+            '$pessoa só pode fechar se estiver com a chave ou se for responsável pela sala aberta.',
+      );
+    }
+
     return _sucessoComEvento(
       situacaoAtual: situacaoAtual,
       pessoaLogada: pessoa,
@@ -211,11 +219,11 @@ class ControladorDaSala {
       return falhaNome;
     }
 
-    if (!situacaoAtual.localizacaoDaChave.estaCom(pessoa)) {
+    if (!_podeManusearChaveDaSala(situacaoAtual, pessoa)) {
       return ResultadoAcaoDaSala.falha(
         situacao: situacaoAtual,
         mensagem:
-            '$pessoa precisa estar com a chave para passar para outra pessoa.',
+            '$pessoa precisa estar com a chave ou ser responsável pela sala aberta para passar para outra pessoa.',
       );
     }
 
@@ -310,6 +318,16 @@ class ControladorDaSala {
     }
 
     return null;
+  }
+
+  bool _podeManusearChaveDaSala(SituacaoDaSala situacaoAtual, String pessoa) {
+    if (situacaoAtual.localizacaoDaChave.estaCom(pessoa)) {
+      return true;
+    }
+
+    return situacaoAtual.estado == EstadoDaSala.aberta &&
+        situacaoAtual.localizacaoDaChave.estaNaSala &&
+        situacaoAtual.pessoaUltimaAtualizacao == pessoa;
   }
 
   ResultadoAcaoDaSala _sucessoComEvento({

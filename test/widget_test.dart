@@ -5,7 +5,7 @@ import 'package:chave_26/funcionalidades/sala/dominio/evento_historico.dart';
 import 'package:chave_26/funcionalidades/sala/dominio/localizacao_da_chave.dart';
 import 'package:chave_26/funcionalidades/sala/dominio/situacao_da_sala.dart';
 import 'package:chave_26/main.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,20 +19,15 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Chave 26'), findsOneWidget);
-    expect(find.text('Sala 26'), findsOneWidget);
-    expect(
-      find.text('MVP local para acompanhar a chave da Prototipe'),
-      findsOneWidget,
-    );
+    expect(find.text('Sala 26'), findsWidgets);
+    expect(find.text('Prototipe'), findsOneWidget);
   });
 
-  testWidgets('mostra o mascote da Prototipe na tela inicial', (
-    testador,
-  ) async {
+  testWidgets('mostra ícone de chave na identidade inicial', (testador) async {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.bySemanticsLabel('Mascote da Prototipe'), findsOneWidget);
+    expect(find.byIcon(Icons.key), findsWidgets);
   });
 
   testWidgets('mostra situação inicial quando não há dados salvos', (
@@ -41,22 +36,25 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Usuário atual: nenhum'), findsOneWidget);
-    expect(find.text('Sala fechada'), findsOneWidget);
-    expect(find.text('Chave na portaria'), findsOneWidget);
+    expect(find.text('Perfil'), findsOneWidget);
+    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Portaria'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
-  testWidgets('oferece os quatro perfis predefinidos na tela inicial', (
+  testWidgets('oferece os quatro perfis predefinidos na troca de perfil', (
     testador,
   ) async {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.byTooltip('Selecionar perfil Lucas'), findsOneWidget);
-    expect(find.byTooltip('Selecionar perfil Clara'), findsOneWidget);
-    expect(find.byTooltip('Selecionar perfil Amanda'), findsOneWidget);
-    expect(find.byTooltip('Selecionar perfil Vitor'), findsOneWidget);
+    await testador.tap(find.byTooltip('Trocar perfil'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Lucas'), findsOneWidget);
+    expect(find.text('Clara'), findsOneWidget);
+    expect(find.text('Amanda'), findsOneWidget);
+    expect(find.text('Vitor'), findsOneWidget);
   });
 
   testWidgets('troca e salva o perfil pela tela inicial sem apagar estado', (
@@ -75,13 +73,15 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    await testador.tap(find.byTooltip('Selecionar perfil Clara'));
+    await testador.tap(find.byTooltip('Trocar perfil'));
+    await testador.pumpAndSettle();
+    await testador.tap(find.text('Clara'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Usuário atual: Clara'), findsOneWidget);
+    expect(find.text('Clara'), findsOneWidget);
     expect(await repositorioDoPerfil.carregarPerfilSelecionado(), 'Clara');
-    expect(find.text('Sala aberta'), findsOneWidget);
-    expect(find.text('Chave na sala'), findsOneWidget);
+    expect(find.text('Aberta'), findsOneWidget);
+    expect(find.text('Sala 26'), findsWidgets);
   });
 
   testWidgets('restaura dados locais salvos ao abrir o app', (testador) async {
@@ -109,9 +109,9 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Usuário atual: Clara'), findsOneWidget);
-    expect(find.text('Sala aberta'), findsOneWidget);
-    expect(find.text('Chave na sala'), findsOneWidget);
+    expect(find.text('Clara'), findsWidgets);
+    expect(find.text('Aberta'), findsOneWidget);
+    expect(find.text('Sala 26'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
@@ -132,9 +132,9 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Usuário atual: Vitor'), findsOneWidget);
-    expect(find.text('Sala fechada'), findsOneWidget);
-    expect(find.text('Chave com Vitor'), findsOneWidget);
+    expect(find.text('Vitor'), findsWidgets);
+    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Com Vitor'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
@@ -231,7 +231,7 @@ void main() {
       situacaoSalva.historico.single.descricao,
       'Clara pegou a chave na portaria.',
     );
-    expect(find.text('Chave com Clara'), findsOneWidget);
+    expect(find.text('Com Clara'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
@@ -241,7 +241,7 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico da sala'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsOneWidget);
     expect(
       find.text('Ainda não há movimentações registradas.'),
       findsOneWidget,
@@ -283,13 +283,13 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico da sala'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsOneWidget);
     expect(find.text('Vitor'), findsOneWidget);
     expect(
       find.text('Vitor devolveu a chave para a portaria.'),
       findsOneWidget,
     );
-    expect(find.text('02/01/2026 às 17:10'), findsOneWidget);
+    expect(find.text('02/01/2026 às 17:10'), findsWidgets);
     expect(find.text('Clara'), findsOneWidget);
     expect(find.text('Clara pegou a chave na portaria.'), findsOneWidget);
     expect(find.text('02/01/2026 às 14:30'), findsOneWidget);
@@ -333,7 +333,10 @@ void main() {
 
     expect(find.textContaining('Histórico:'), findsNothing);
     expect(find.text('Movimentação número 30.'), findsOneWidget);
-    expect(find.text('10/03/2026 às 08:29'), findsOneWidget);
+    expect(find.text('10/03/2026 às 08:29'), findsWidgets);
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
 
     final itemMaisAntigo = find.text('Movimentação número 1.');
     expect(itemMaisAntigo.hitTestable(), findsNothing);
@@ -382,7 +385,7 @@ void main() {
 
     expect(find.text('01/01/2026 às 00:00'), findsOneWidget);
     expect(find.text('05/09/2026 às 07:03'), findsOneWidget);
-    expect(find.text('31/12/2026 às 23:59'), findsOneWidget);
+    expect(find.text('31/12/2026 às 23:59'), findsWidgets);
   });
 
   testWidgets('confirma antes de devolver chave para a portaria', (
@@ -424,7 +427,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
-    expect(find.text('Chave com Clara'), findsOneWidget);
+    expect(find.text('Com Clara'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
 
     await testador.ensureVisible(find.text('Devolver chave para a portaria'));
@@ -443,7 +446,7 @@ void main() {
       situacaoFinal.historico.last.descricao,
       'Clara devolveu a chave para a portaria.',
     );
-    expect(find.text('Chave na portaria'), findsOneWidget);
+    expect(find.text('Portaria'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
     expect(find.text('Clara devolveu a chave para a portaria.'), findsWidgets);
   });
@@ -469,12 +472,23 @@ void main() {
       await testador.pumpAndSettle();
 
       expect(find.text('Passar chave para quem?'), findsOneWidget);
-      expect(find.text('Lucas'), findsNothing);
-      expect(find.text('Clara'), findsOneWidget);
-      expect(find.text('Amanda'), findsOneWidget);
-      expect(find.text('Vitor'), findsOneWidget);
+      final dialogoDeDestino = find.byType(SimpleDialog);
+      expect(
+        find.descendant(of: dialogoDeDestino, matching: find.text('Clara')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: dialogoDeDestino, matching: find.text('Amanda')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: dialogoDeDestino, matching: find.text('Vitor')),
+        findsOneWidget,
+      );
 
-      await testador.tap(find.text('Amanda'));
+      await testador.tap(
+        find.descendant(of: dialogoDeDestino, matching: find.text('Amanda')),
+      );
       await testador.pumpAndSettle();
 
       expect(find.text('Passar chave?'), findsOneWidget);
@@ -491,7 +505,13 @@ void main() {
       await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
       await testador.tap(find.text('Passar chave para outra pessoa'));
       await testador.pumpAndSettle();
-      await testador.tap(find.text('Amanda'));
+      final dialogoDeDestinoParaConfirmar = find.byType(SimpleDialog);
+      await testador.tap(
+        find.descendant(
+          of: dialogoDeDestinoParaConfirmar,
+          matching: find.text('Amanda'),
+        ),
+      );
       await testador.pumpAndSettle();
       await testador.tap(find.text('Confirmar transferência'));
       await testador.pumpAndSettle();
@@ -505,9 +525,181 @@ void main() {
         situacaoFinal.historico.single.descricao,
         'Lucas passou a chave para Amanda.',
       );
-      expect(find.text('Chave com Amanda'), findsOneWidget);
+      expect(find.text('Com Amanda'), findsOneWidget);
       expect(find.textContaining('Histórico:'), findsNothing);
       expect(find.text('Lucas passou a chave para Amanda.'), findsWidgets);
     },
   );
+
+  testWidgets('permite transferir a chave guardada na sala para outra pessoa', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+    final situacaoInicial = SituacaoDaSala(
+      estado: EstadoDaSala.aberta,
+      localizacaoDaChave: const LocalizacaoDaChave.naSala(),
+      historico: [
+        EventoHistorico(
+          momento: DateTime(2026, 1, 2, 14, 30),
+          pessoa: 'Lucas',
+          descricao: 'Lucas abriu a sala 26.',
+        ),
+      ],
+      pessoaUltimaAtualizacao: 'Lucas',
+      atualizadaEm: DateTime(2026, 1, 2, 14, 30),
+    );
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(situacaoInicial);
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Fechar sala'), findsOneWidget);
+    expect(find.text('Transferir para'), findsOneWidget);
+    expect(find.text('Passar chave para outra pessoa'), findsOneWidget);
+
+    await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
+    await testador.tap(find.text('Passar chave para outra pessoa'));
+    await testador.pumpAndSettle();
+    await testador.tap(
+      find.descendant(
+        of: find.byType(SimpleDialog),
+        matching: find.text('Clara'),
+      ),
+    );
+    await testador.pumpAndSettle();
+    await testador.tap(find.text('Confirmar transferência'));
+    await testador.pumpAndSettle();
+
+    final situacaoFinal = await repositorioDaSala.carregarSituacaoAtual();
+    expect(situacaoFinal.estado, EstadoDaSala.aberta);
+    expect(
+      situacaoFinal.localizacaoDaChave,
+      LocalizacaoDaChave.comPessoa('Clara'),
+    );
+    expect(
+      situacaoFinal.historico.last.descricao,
+      'Lucas passou a chave para Clara.',
+    );
+    expect(find.text('Com Clara'), findsOneWidget);
+  });
+
+  testWidgets('mostra estrutura visual inspirada no v0 na tela inicial', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+    final momento = DateTime(2026, 5, 24, 12, 10);
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+        pessoaUltimaAtualizacao: 'Lucas',
+        atualizadaEm: momento,
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Chave 26'), findsOneWidget);
+    expect(find.text('Prototipe'), findsOneWidget);
+    expect(find.byTooltip('Trocar perfil'), findsOneWidget);
+    expect(find.text('Sala 26'), findsOneWidget);
+    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Chave com'), findsOneWidget);
+    expect(find.text('Lucas'), findsWidgets);
+    expect(find.text('Localização'), findsOneWidget);
+    expect(find.text('Com Lucas'), findsOneWidget);
+    expect(find.text('Última atualização'), findsOneWidget);
+    expect(find.text('Hoje, 12:10'), findsOneWidget);
+    expect(find.text('Ações rápidas'), findsOneWidget);
+    expect(find.text('Transferir para'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsOneWidget);
+  });
+
+  testWidgets(
+    'permite abrir e fechar a sala quando o perfil está com a chave',
+    (testador) async {
+      final repositorioDaSala = await RepositorioLocalDaSala.criar();
+      final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+      await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+      await repositorioDaSala.salvarSituacaoAtual(
+        SituacaoDaSala(
+          estado: EstadoDaSala.fechada,
+          localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+        ),
+      );
+
+      await testador.pumpWidget(const AplicativoChave26());
+      await testador.pumpAndSettle();
+
+      expect(find.text('Abrir sala'), findsOneWidget);
+      await testador.tap(find.text('Abrir sala'));
+      await testador.pumpAndSettle();
+
+      var situacao = await repositorioDaSala.carregarSituacaoAtual();
+      expect(situacao.estado, EstadoDaSala.aberta);
+      expect(situacao.historico.last.descricao, 'Lucas abriu a sala 26.');
+
+      expect(find.text('Fechar sala'), findsOneWidget);
+      await testador.ensureVisible(find.text('Fechar sala'));
+      await testador.tap(find.text('Fechar sala'));
+      await testador.pumpAndSettle();
+
+      situacao = await repositorioDaSala.carregarSituacaoAtual();
+      expect(situacao.estado, EstadoDaSala.fechada);
+      expect(
+        situacao.localizacaoDaChave,
+        LocalizacaoDaChave.comPessoa('Lucas'),
+      );
+      expect(
+        situacao.historico.last.descricao,
+        'Lucas fechou a sala 26 e ficou com a chave.',
+      );
+    },
+  );
+
+  testWidgets('usa menu inferior para separar início e histórico completo', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final inicio = DateTime(2026, 5, 24, 8);
+    final historico = List.generate(4, (indice) {
+      final numero = indice + 1;
+      return EventoHistorico(
+        momento: inicio.add(Duration(minutes: indice)),
+        pessoa: 'Pessoa $numero',
+        descricao: 'Movimentação completa $numero.',
+      );
+    });
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: const LocalizacaoDaChave.naPortaria(),
+        historico: historico,
+        pessoaUltimaAtualizacao: 'Pessoa 4',
+        atualizadaEm: historico.last.momento,
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Histórico recente'), findsOneWidget);
+    expect(find.text('Movimentação completa 4.'), findsOneWidget);
+    expect(find.text('Movimentação completa 1.'), findsNothing);
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Histórico completo'), findsOneWidget);
+    expect(find.text('Movimentação completa 1.'), findsOneWidget);
+  });
 }

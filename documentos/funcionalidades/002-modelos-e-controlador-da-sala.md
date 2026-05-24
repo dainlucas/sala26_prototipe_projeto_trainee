@@ -53,11 +53,11 @@ Comportamentos testados nesta fatia:
 - `ControladorDaSala.situacaoInicial()` retorna a situação inicial padrão.
 - `pegarChaveNaPortaria` mantém a sala fechada, move a chave para a pessoa logada e registra histórico.
 - `abrirSala` exige a chave com a pessoa logada, abre a sala, move a chave para a sala e registra histórico.
-- `fecharSalaComChaveComigo` fecha a sala, deixa a chave com a pessoa logada e registra histórico.
+- `fecharSalaComChaveComigo` fecha a sala, deixa a chave com a pessoa logada e registra histórico; quando a chave está guardada na sala aberta, somente quem abriu/responde pela sala pode fechar.
 - `fecharSalaEDevolverChaveParaPortaria` fecha a sala, devolve a chave para a portaria e registra histórico.
 - `devolverChaveParaPortaria` cobre a devolução direta quando a pessoa está com a chave e a sala não precisa ser fechada nessa ação.
 - `fecharSalaEPassarChaveParaOutraPessoa` confirma a regra de domínio para fechar a sala e passar a chave a outro membro no mesmo fluxo.
-- `passarChaveParaOutraPessoa` move a chave para a outra pessoa informada e registra histórico.
+- `passarChaveParaOutraPessoa` move a chave para a outra pessoa informada e registra histórico, inclusive quando quem abriu a sala está com a chave guardada na própria sala.
 - A sequência completa do histórico permanece na ordem das ações.
 - O histórico de `SituacaoDaSala` não pode ser alterado diretamente por listas externas ou por `historico.add` fora do controlador.
 - `EventoHistorico`, `LocalizacaoDaChave` e `SituacaoDaSala` comparam por valor nos testes.
@@ -69,7 +69,9 @@ Comportamentos testados nesta fatia:
 - Não pega a chave na portaria quando ela já está com uma pessoa ou em outro lugar.
 - Não abre uma sala que já está aberta.
 - Não fecha uma sala que já está fechada.
-- Não passa a chave se ela não estiver com a pessoa logada.
+- Não permite que outro perfil feche a sala aberta por quem deixou a chave guardada na sala.
+- Não passa a chave se ela não estiver com a pessoa logada nem sob responsabilidade dela na sala aberta.
+- Permite que quem abriu a sala passe a chave guardada na sala para outra pessoa sem fechar a sala.
 - Não devolve a chave para a portaria se ela não estiver com a pessoa logada.
 - Não aceita pessoa logada vazia ou composta só por espaços; essa validação fica no domínio para proteger o app mesmo fora da UI.
 - Não aceita destinatário vazio em transferência de chave.
