@@ -50,6 +50,7 @@ class SerializadoresDaSala {
     return {
       'tipo': localizacao.tipo.name,
       'nomeDaPessoa': localizacao.nomeDaPessoa,
+      'nomeDoDestino': localizacao.nomeDoDestino,
     };
   }
 
@@ -61,6 +62,9 @@ class SerializadoresDaSala {
       TipoLocalizacaoDaChave.sala => const LocalizacaoDaChave.naSala(),
       TipoLocalizacaoDaChave.pessoa => LocalizacaoDaChave.comPessoa(
         mapa['nomeDaPessoa'] as String,
+      ),
+      TipoLocalizacaoDaChave.destino => LocalizacaoDaChave.guardadaEm(
+        mapa['nomeDoDestino'] as String,
       ),
     };
   }

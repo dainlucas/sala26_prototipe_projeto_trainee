@@ -199,6 +199,73 @@ class ControladorDaSala {
     );
   }
 
+  ResultadoAcaoDaSala guardarChaveEmDestino({
+    required SituacaoDaSala situacaoAtual,
+    required String pessoaLogada,
+    required String destino,
+    required DateTime momento,
+  }) {
+    final pessoa = pessoaLogada.trim();
+    final destinoNormalizado = destino.trim();
+    final falhaNome = _falhaSePessoaLogadaInvalida(situacaoAtual, pessoa);
+    if (falhaNome != null) {
+      return falhaNome;
+    }
+
+    if (destinoNormalizado.isEmpty) {
+      return ResultadoAcaoDaSala.falha(
+        situacao: situacaoAtual,
+        mensagem: 'Informe onde a chave será guardada.',
+      );
+    }
+
+    if (!_podeManusearChaveDaSala(situacaoAtual, pessoa)) {
+      return ResultadoAcaoDaSala.falha(
+        situacao: situacaoAtual,
+        mensagem:
+            '$pessoa precisa estar com a chave ou ser responsável pela sala aberta para guardar a chave.',
+      );
+    }
+
+    return _sucessoComEvento(
+      situacaoAtual: situacaoAtual,
+      pessoaLogada: pessoa,
+      momento: momento,
+      mensagem: '$pessoa guardou a chave em $destinoNormalizado.',
+      estado: situacaoAtual.estado,
+      localizacaoDaChave: LocalizacaoDaChave.guardadaEm(destinoNormalizado),
+    );
+  }
+
+  ResultadoAcaoDaSala devolverChaveParaPortaria({
+    required SituacaoDaSala situacaoAtual,
+    required String pessoaLogada,
+    required DateTime momento,
+  }) {
+    final pessoa = pessoaLogada.trim();
+    final falhaNome = _falhaSePessoaLogadaInvalida(situacaoAtual, pessoa);
+    if (falhaNome != null) {
+      return falhaNome;
+    }
+
+    if (!situacaoAtual.localizacaoDaChave.estaCom(pessoa)) {
+      return ResultadoAcaoDaSala.falha(
+        situacao: situacaoAtual,
+        mensagem:
+            '$pessoa precisa estar com a chave para devolver para a portaria.',
+      );
+    }
+
+    return _sucessoComEvento(
+      situacaoAtual: situacaoAtual,
+      pessoaLogada: pessoa,
+      momento: momento,
+      mensagem: '$pessoa devolveu a chave para a portaria.',
+      estado: situacaoAtual.estado,
+      localizacaoDaChave: const LocalizacaoDaChave.naPortaria(),
+    );
+  }
+
   ResultadoAcaoDaSala passarChaveParaOutraPessoa({
     required SituacaoDaSala situacaoAtual,
     required String pessoaLogada,
@@ -234,35 +301,6 @@ class ControladorDaSala {
       mensagem: '$pessoa passou a chave para $pessoaDestino.',
       estado: situacaoAtual.estado,
       localizacaoDaChave: LocalizacaoDaChave.comPessoa(pessoaDestino),
-    );
-  }
-
-  ResultadoAcaoDaSala devolverChaveParaPortaria({
-    required SituacaoDaSala situacaoAtual,
-    required String pessoaLogada,
-    required DateTime momento,
-  }) {
-    final pessoa = pessoaLogada.trim();
-    final falhaNome = _falhaSePessoaLogadaInvalida(situacaoAtual, pessoa);
-    if (falhaNome != null) {
-      return falhaNome;
-    }
-
-    if (!situacaoAtual.localizacaoDaChave.estaCom(pessoa)) {
-      return ResultadoAcaoDaSala.falha(
-        situacao: situacaoAtual,
-        mensagem:
-            '$pessoa precisa estar com a chave para devolver para a portaria.',
-      );
-    }
-
-    return _sucessoComEvento(
-      situacaoAtual: situacaoAtual,
-      pessoaLogada: pessoa,
-      momento: momento,
-      mensagem: '$pessoa devolveu a chave para a portaria.',
-      estado: situacaoAtual.estado,
-      localizacaoDaChave: const LocalizacaoDaChave.naPortaria(),
     );
   }
 

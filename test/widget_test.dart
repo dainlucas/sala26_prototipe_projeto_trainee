@@ -149,7 +149,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Pegar chave na portaria'), findsNothing);
-    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Guardar chave'), findsNothing);
     expect(find.text('Passar chave para outra pessoa'), findsNothing);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
@@ -166,7 +166,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Pegar chave na portaria'), findsOneWidget);
-    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Guardar chave'), findsNothing);
     expect(find.text('Passar chave para outra pessoa'), findsNothing);
 
     await repositorioDaSala.salvarSituacaoAtual(
@@ -180,7 +180,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Pegar chave na portaria'), findsNothing);
-    expect(find.text('Devolver chave para a portaria'), findsOneWidget);
+    expect(find.text('Guardar chave'), findsOneWidget);
     expect(find.text('Passar chave para outra pessoa'), findsOneWidget);
 
     await repositorioDaSala.salvarSituacaoAtual(
@@ -194,7 +194,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Pegar chave na portaria'), findsNothing);
-    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Guardar chave'), findsNothing);
     expect(find.text('Passar chave para outra pessoa'), findsNothing);
     expect(
       find.text(
@@ -388,9 +388,7 @@ void main() {
     expect(find.text('31/12/2026 às 23:59'), findsWidgets);
   });
 
-  testWidgets('confirma antes de devolver chave para a portaria', (
-    testador,
-  ) async {
+  testWidgets('escolhe destino antes de guardar a chave', (testador) async {
     final repositorioDaSala = await RepositorioLocalDaSala.criar();
     final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
     final situacaoInicial = SituacaoDaSala(
@@ -413,42 +411,78 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    await testador.ensureVisible(find.text('Devolver chave para a portaria'));
-    await testador.tap(find.text('Devolver chave para a portaria'));
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
     await testador.pumpAndSettle();
 
-    expect(find.text('Devolver chave?'), findsOneWidget);
-    expect(
-      find.text('Confirme que Clara está devolvendo a chave para a portaria.'),
-      findsOneWidget,
-    );
+    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+    expect(find.text('Portaria'), findsWidgets);
+    expect(find.text('Maker Space'), findsOneWidget);
 
-    await testador.tap(find.text('Cancelar'));
-    await testador.pumpAndSettle();
-
-    expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
-    expect(find.text('Com Clara'), findsOneWidget);
-    expect(find.textContaining('Histórico:'), findsNothing);
-
-    await testador.ensureVisible(find.text('Devolver chave para a portaria'));
-    await testador.tap(find.text('Devolver chave para a portaria'));
-    await testador.pumpAndSettle();
-    await testador.tap(find.text('Confirmar devolução'));
+    await testador.tap(find.text('Portaria').last);
     await testador.pumpAndSettle();
 
     final situacaoFinal = await repositorioDaSala.carregarSituacaoAtual();
     expect(
       situacaoFinal.localizacaoDaChave,
-      const LocalizacaoDaChave.naPortaria(),
+      LocalizacaoDaChave.guardadaEm('Portaria'),
     );
     expect(situacaoFinal.historico.length, 2);
     expect(
       situacaoFinal.historico.last.descricao,
-      'Clara devolveu a chave para a portaria.',
+      'Clara guardou a chave em Portaria.',
     );
-    expect(find.text('Portaria'), findsWidgets);
+    expect(find.text('Em Portaria'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
-    expect(find.text('Clara devolveu a chave para a portaria.'), findsWidgets);
+    expect(find.text('Clara guardou a chave em Portaria.'), findsWidgets);
+  });
+
+  testWidgets('adiciona destino customizado ao guardar a chave', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.text('Adicionar destino'));
+    await testador.pumpAndSettle();
+    await testador.enterText(find.byType(TextField), 'Biblioteca');
+    await testador.tap(find.text('Salvar'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Biblioteca'), findsOneWidget);
+
+    await testador.tap(find.text('Biblioteca'));
+    await testador.pumpAndSettle();
+
+    final situacaoFinal = await repositorioDaSala.carregarSituacaoAtual();
+    expect(
+      situacaoFinal.localizacaoDaChave,
+      LocalizacaoDaChave.guardadaEm('Biblioteca'),
+    );
+    expect(
+      situacaoFinal.historico.single.descricao,
+      'Lucas guardou a chave em Biblioteca.',
+    );
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+      'Biblioteca',
+    ]);
   });
 
   testWidgets(

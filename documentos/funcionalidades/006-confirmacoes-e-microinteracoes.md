@@ -4,7 +4,8 @@ Esta fatia amplia o Marco 5 com duas melhorias de usabilidade: ações sensívei
 
 ## O que foi implementado
 
-- A tela inicial continua expondo a ação `Devolver chave para a portaria` apenas quando ela faz sentido para o perfil selecionado.
+- A tela inicial expõe ações de movimentação apenas quando elas fazem sentido para o perfil selecionado.
+- Observação posterior: a ação fixa `Devolver chave para a portaria` foi substituída na UI pelo fluxo mais geral `Guardar chave`, documentado em `documentos/funcionalidades/008-destinos-customizados-da-chave.md`.
 - A tela inicial agora também expõe a ação `Passar chave para outra pessoa` quando a chave está com o perfil selecionado.
 - Antes da devolução, o app valida se o perfil selecionado realmente está com a chave.
 - Antes da transferência, o app pede a pessoa de destino e abre um diálogo de confirmação.
@@ -28,7 +29,7 @@ Para reduzir erro e deixar o app mais claro, a tela não mostra ações que não
 
 - Sem perfil selecionado: o app pede para escolher um perfil antes de mostrar ações de movimentação.
 - Chave na portaria com perfil selecionado: mostra `Pegar chave na portaria`.
-- Chave com o perfil selecionado: mostra `Devolver chave para a portaria` e `Passar chave para outra pessoa`.
+- Chave com o perfil selecionado: mostra `Guardar chave` e `Passar chave para outra pessoa`.
 - Chave com outra pessoa: oculta as ações e explica quem está com a chave.
 
 ## Decisão desta fatia
@@ -45,7 +46,7 @@ Arquivo atualizado:
 
 Coberturas adicionadas ou atualizadas:
 
-- diálogo de confirmação para devolver a chave à portaria;
+- fluxo histórico de confirmação para devolver a chave à portaria e, após a evolução da UI, seletor de destino para guardar a chave;
 - cancelamento sem alteração de estado nem histórico;
 - confirmação com persistência do novo estado e novo evento no histórico;
 - pedido de seleção de perfil antes de mostrar ações de movimentação;

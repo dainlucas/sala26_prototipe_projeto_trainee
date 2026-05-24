@@ -55,25 +55,29 @@ void main() {
       expect(restaurada.atualizadaEm, isNull);
     });
 
-    test('preservam as três localizações possíveis da chave', () {
-      final localizacoes = [
-        const LocalizacaoDaChave.naPortaria(),
-        const LocalizacaoDaChave.naSala(),
-        LocalizacaoDaChave.comPessoa('Vitor'),
-      ];
+    test(
+      'preservam localizações de pessoa, sala, portaria e destino customizado',
+      () {
+        final localizacoes = [
+          const LocalizacaoDaChave.naPortaria(),
+          const LocalizacaoDaChave.naSala(),
+          LocalizacaoDaChave.comPessoa('Vitor'),
+          LocalizacaoDaChave.guardadaEm('Biblioteca'),
+        ];
 
-      for (final localizacao in localizacoes) {
-        final situacao = SituacaoDaSala(
-          estado: EstadoDaSala.fechada,
-          localizacaoDaChave: localizacao,
-        );
+        for (final localizacao in localizacoes) {
+          final situacao = SituacaoDaSala(
+            estado: EstadoDaSala.fechada,
+            localizacaoDaChave: localizacao,
+          );
 
-        final json = SerializadoresDaSala.situacaoParaJson(situacao);
-        final restaurada = SerializadoresDaSala.situacaoDeJson(json);
+          final json = SerializadoresDaSala.situacaoParaJson(situacao);
+          final restaurada = SerializadoresDaSala.situacaoDeJson(json);
 
-        expect(restaurada.localizacaoDaChave, localizacao);
-      }
-    });
+          expect(restaurada.localizacaoDaChave, localizacao);
+        }
+      },
+    );
   });
 
   group('RepositorioLocalDaSala', () {
@@ -141,5 +145,30 @@ void main() {
       );
       expect(await repositorio.carregarHistorico(), isEmpty);
     });
+    test(
+      'gerencia destinos customizados da chave preservando opções fixas',
+      () async {
+        final repositorio = await RepositorioLocalDaSala.criar();
+
+        expect(await repositorio.carregarDestinosDaChave(), [
+          'Portaria',
+          'Maker Space',
+        ]);
+
+        await repositorio.adicionarDestinoCustomizado('Biblioteca');
+        await repositorio.renomearDestinoCustomizado(
+          'Biblioteca',
+          'Coordenação',
+        );
+        await repositorio.adicionarDestinoCustomizado('Armário');
+        await repositorio.removerDestinoCustomizado('Armário');
+
+        expect(await repositorio.carregarDestinosDaChave(), [
+          'Portaria',
+          'Maker Space',
+          'Coordenação',
+        ]);
+      },
+    );
   });
 }

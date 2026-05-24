@@ -227,7 +227,7 @@ void main() {
       );
     });
 
-    test('testa ação devolvi a chave para portaria sem fechar a sala', () {
+    test('testa ação guardo a chave em destino sem fechar a sala', () {
       final controlador = ControladorDaSala();
       final momentoPegou = DateTime(2026, 1, 2, 14, 20);
       final momentoDevolveu = DateTime(2026, 1, 2, 14, 35);
@@ -239,25 +239,26 @@ void main() {
           )
           .situacao;
 
-      final resultado = controlador.devolverChaveParaPortaria(
+      final resultado = controlador.guardarChaveEmDestino(
         situacaoAtual: comChave,
         pessoaLogada: 'Lucas',
+        destino: 'Biblioteca',
         momento: momentoDevolveu,
       );
 
       expect(resultado.sucesso, isTrue);
-      expect(resultado.mensagem, 'Lucas devolveu a chave para a portaria.');
+      expect(resultado.mensagem, 'Lucas guardou a chave em Biblioteca.');
       expect(resultado.situacao.estado, EstadoDaSala.fechada);
       expect(
         resultado.situacao.localizacaoDaChave,
-        LocalizacaoDaChave.naPortaria(),
+        LocalizacaoDaChave.guardadaEm('Biblioteca'),
       );
       expect(resultado.situacao.historico, hasLength(2));
       _esperarUltimaAtualizacao(
         resultado.situacao,
         pessoa: 'Lucas',
         momento: momentoDevolveu,
-        descricao: 'Lucas devolveu a chave para a portaria.',
+        descricao: 'Lucas guardou a chave em Biblioteca.',
       );
     });
 
@@ -530,9 +531,10 @@ void main() {
         final controlador = ControladorDaSala();
         final situacaoInicial = SituacaoDaSala.inicial();
 
-        final resultado = controlador.devolverChaveParaPortaria(
+        final resultado = controlador.guardarChaveEmDestino(
           situacaoAtual: situacaoInicial,
           pessoaLogada: 'Lucas',
+          destino: 'Biblioteca',
           momento: DateTime(2026, 1, 2, 15),
         );
 
@@ -540,7 +542,7 @@ void main() {
           resultado,
           situacaoEsperada: situacaoInicial,
           mensagemEsperada:
-              'Lucas precisa estar com a chave para devolver para a portaria.',
+              'Lucas precisa estar com a chave ou ser responsável pela sala aberta para guardar a chave.',
         );
       });
     });

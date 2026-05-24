@@ -91,6 +91,8 @@ Prazo-alvo: 6 dias.
 - [ ] Na portaria.
 - [ ] Na sala.
 - [ ] Com uma pessoa.
+- [x] Guardada em destino escolhido.
+  - Destinos fixos `Portaria` e `Maker Space`, com destinos customizados locais, documentados em `documentos/funcionalidades/008-destinos-customizados-da-chave.md`.
 
 ### Ações principais
 
@@ -100,6 +102,8 @@ Prazo-alvo: 6 dias.
 - [ ] Chave ficou comigo.
 - [ ] Passei a chave para outra pessoa.
 - [ ] Devolvi a chave para a portaria.
+- [x] Guardei a chave em um destino escolhido.
+  - A UI principal usa `Guardar chave` e permite escolher/cadastrar destinos.
 
 ### Regras iniciais sugeridas
 
@@ -111,6 +115,7 @@ Prazo-alvo: 6 dias.
   - ficou com outra pessoa;
   - devolvi para a portaria.
 - [ ] Só é possível devolver a chave se ela estiver com a pessoa logada.
+- [x] Ao guardar a chave, o usuário escolhe entre destinos fixos e destinos customizados locais.
 - [ ] Só é possível passar a chave para outra pessoa se ela estiver com a pessoa logada ou se a sala estiver aberta, a chave estiver guardada na sala, e a pessoa logada for quem abriu/responde pela sala.
 - [ ] Toda ação gera um item no histórico com data/hora, pessoa e descrição.
 
@@ -289,6 +294,9 @@ Definition of done:
   - Ações rápidas mostram apenas caminhos válidos para o estado/perfil atual.
   - `Abrir sala`/`Fechar sala` aparece condicionado à pessoa com a chave ou responsável pela sala aberta.
   - `Transferir para` também aparece para o responsável pela sala aberta quando a chave está guardada na sala, permitindo entregar a chave a outra pessoa sem fechar a sala.
+- [x] Permitir guardar a chave em destinos fixos ou customizados.
+  - Documentado em `documentos/funcionalidades/008-destinos-customizados-da-chave.md`.
+  - A tela principal usa `Guardar chave`, abre seletor de destino e permite cadastrar destino local antes de salvar a movimentação.
 - [~] Criar área visual divertida com mascote/placeholder do mascote.
   - O cabeçalho usa ícone de chave e identidade Prototipe; o mascote/imagem ainda pode voltar como decoração leve no polimento final sem competir com o status.
 - [x] Adicionar navegação inferior entre Início e Histórico.

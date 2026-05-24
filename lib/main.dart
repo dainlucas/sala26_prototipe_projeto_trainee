@@ -98,7 +98,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                         aoPegarChaveNaPortaria: _pegarChaveNaPortaria,
                         aoAbrirSala: _abrirSala,
                         aoFecharSala: _fecharSala,
-                        aoDevolverChaveParaPortaria: _devolverChaveParaPortaria,
+                        aoGuardarChave: _guardarChave,
                         aoPassarChaveParaOutraPessoa:
                             _passarChaveParaOutraPessoa,
                       ),
@@ -233,56 +233,174 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     await _aplicarResultadoDaAcao(resultado);
   }
 
-  Future<void> _devolverChaveParaPortaria(_DadosLocaisRestaurados dados) async {
+  Future<void> _guardarChave(_DadosLocaisRestaurados dados) async {
     final perfil = _perfilObrigatorio(dados);
     if (perfil == null) {
       return;
     }
 
-    final validacao = ControladorDaSala().devolverChaveParaPortaria(
-      situacaoAtual: dados.situacao,
-      pessoaLogada: perfil,
-      momento: DateTime.now(),
-    );
-
-    if (!validacao.sucesso) {
-      await _aplicarResultadoDaAcao(validacao);
+    final destino = await _escolherDestinoDaChave(dados);
+    if (destino == null) {
       return;
     }
 
-    final confirmou = await showDialog<bool>(
+    final resultado = ControladorDaSala().guardarChaveEmDestino(
+      situacaoAtual: dados.situacao,
+      pessoaLogada: perfil,
+      destino: destino,
+      momento: DateTime.now(),
+    );
+
+    await _aplicarResultadoDaAcao(resultado);
+  }
+
+  Future<String?> _escolherDestinoDaChave(_DadosLocaisRestaurados dados) {
+    return showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (contextoDoSheet) {
+        var destinos = List<String>.from(dados.destinosDaChave);
+
+        Future<void> recarregar(StateSetter setSheetState) async {
+          final repositorio = await RepositorioLocalDaSala.criar();
+          final destinosAtualizados = await repositorio
+              .carregarDestinosDaChave();
+          if (!contextoDoSheet.mounted) {
+            return;
+          }
+          setSheetState(() {
+            destinos = destinosAtualizados;
+          });
+        }
+
+        return StatefulBuilder(
+          builder: (contextoDoSheet, setSheetState) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Onde a chave vai ficar?',
+                      style: Theme.of(contextoDoSheet).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final destino in destinos)
+                      ListTile(
+                        leading: const Icon(Icons.place_outlined),
+                        title: Text(destino),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        onTap: () => Navigator.of(contextoDoSheet).pop(destino),
+                        trailing:
+                            RepositorioLocalDaSala.destinosFixosDaChave
+                                .contains(destino)
+                            ? null
+                            : Wrap(
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Renomear $destino',
+                                    icon: const Icon(Icons.edit_outlined),
+                                    onPressed: () async {
+                                      final novoDestino =
+                                          await _pedirNomeDestino(
+                                            titulo: 'Renomear destino',
+                                            valorInicial: destino,
+                                          );
+                                      if (novoDestino == null) {
+                                        return;
+                                      }
+                                      final repositorio =
+                                          await RepositorioLocalDaSala.criar();
+                                      await repositorio
+                                          .renomearDestinoCustomizado(
+                                            destino,
+                                            novoDestino,
+                                          );
+                                      await recarregar(setSheetState);
+                                    },
+                                  ),
+                                  IconButton(
+                                    tooltip: 'Apagar $destino',
+                                    icon: const Icon(Icons.delete_outline),
+                                    onPressed: () async {
+                                      final repositorio =
+                                          await RepositorioLocalDaSala.criar();
+                                      await repositorio
+                                          .removerDestinoCustomizado(destino);
+                                      await recarregar(setSheetState);
+                                    },
+                                  ),
+                                ],
+                              ),
+                      ),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final novoDestino = await _pedirNomeDestino(
+                          titulo: 'Adicionar destino',
+                        );
+                        if (novoDestino == null) {
+                          return;
+                        }
+                        final repositorio =
+                            await RepositorioLocalDaSala.criar();
+                        await repositorio.adicionarDestinoCustomizado(
+                          novoDestino,
+                        );
+                        await recarregar(setSheetState);
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Adicionar destino'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<String?> _pedirNomeDestino({
+    required String titulo,
+    String? valorInicial,
+  }) {
+    final controlador = TextEditingController(text: valorInicial);
+    return showDialog<String>(
       context: context,
       builder: (contextoDoDialogo) {
         return AlertDialog(
-          title: const Text('Devolver chave?'),
-          content: Text(
-            'Confirme que $perfil está devolvendo a chave para a portaria.',
+          title: Text(titulo),
+          content: TextField(
+            controller: controlador,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Nome do destino',
+              hintText: 'Ex: Biblioteca',
+            ),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(contextoDoDialogo).pop(false),
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(),
               child: const Text('Cancelar'),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(contextoDoDialogo).pop(true),
-              child: const Text('Confirmar devolução'),
+              onPressed: () {
+                final nome = controlador.text.trim();
+                Navigator.of(contextoDoDialogo).pop(nome.isEmpty ? null : nome);
+              },
+              child: const Text('Salvar'),
             ),
           ],
         );
       },
     );
-
-    if (confirmou != true) {
-      return;
-    }
-
-    final resultado = ControladorDaSala().devolverChaveParaPortaria(
-      situacaoAtual: dados.situacao,
-      pessoaLogada: perfil,
-      momento: DateTime.now(),
-    );
-
-    await _aplicarResultadoDaAcao(resultado);
   }
 
   Future<void> _passarChaveParaOutraPessoa(
@@ -403,12 +521,14 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
 
     final situacao = await repositorioDaSala.carregarSituacaoAtual();
+    final destinosDaChave = await repositorioDaSala.carregarDestinosDaChave();
     final perfilSelecionado = await repositorioDoPerfil
         .carregarPerfilSelecionado();
 
     return _DadosLocaisRestaurados(
       perfilSelecionado: perfilSelecionado,
       situacao: situacao,
+      destinosDaChave: destinosDaChave,
     );
   }
 }
@@ -497,7 +617,7 @@ class _AbaInicio extends StatelessWidget {
     required this.aoPegarChaveNaPortaria,
     required this.aoAbrirSala,
     required this.aoFecharSala,
-    required this.aoDevolverChaveParaPortaria,
+    required this.aoGuardarChave,
     required this.aoPassarChaveParaOutraPessoa,
   });
 
@@ -506,8 +626,7 @@ class _AbaInicio extends StatelessWidget {
   aoPegarChaveNaPortaria;
   final Future<void> Function(_DadosLocaisRestaurados dados) aoAbrirSala;
   final Future<void> Function(_DadosLocaisRestaurados dados) aoFecharSala;
-  final Future<void> Function(_DadosLocaisRestaurados dados)
-  aoDevolverChaveParaPortaria;
+  final Future<void> Function(_DadosLocaisRestaurados dados) aoGuardarChave;
   final Future<void> Function(_DadosLocaisRestaurados dados, [String? destino])
   aoPassarChaveParaOutraPessoa;
 
@@ -526,7 +645,7 @@ class _AbaInicio extends StatelessWidget {
               aoPegarChaveNaPortaria: aoPegarChaveNaPortaria,
               aoAbrirSala: aoAbrirSala,
               aoFecharSala: aoFecharSala,
-              aoDevolverChaveParaPortaria: aoDevolverChaveParaPortaria,
+              aoGuardarChave: aoGuardarChave,
               aoPassarChaveParaOutraPessoa: aoPassarChaveParaOutraPessoa,
             ),
             const SizedBox(height: 24),
@@ -725,7 +844,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
     required this.aoPegarChaveNaPortaria,
     required this.aoAbrirSala,
     required this.aoFecharSala,
-    required this.aoDevolverChaveParaPortaria,
+    required this.aoGuardarChave,
     required this.aoPassarChaveParaOutraPessoa,
   });
 
@@ -734,8 +853,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
   aoPegarChaveNaPortaria;
   final Future<void> Function(_DadosLocaisRestaurados dados) aoAbrirSala;
   final Future<void> Function(_DadosLocaisRestaurados dados) aoFecharSala;
-  final Future<void> Function(_DadosLocaisRestaurados dados)
-  aoDevolverChaveParaPortaria;
+  final Future<void> Function(_DadosLocaisRestaurados dados) aoGuardarChave;
   final Future<void> Function(_DadosLocaisRestaurados dados, [String? destino])
   aoPassarChaveParaOutraPessoa;
 
@@ -789,9 +907,9 @@ class _AcoesRapidasDaSala extends StatelessWidget {
             children: [
               Expanded(
                 child: _BotaoAcaoPrincipal(
-                  icone: Icons.keyboard_return_outlined,
-                  texto: 'Devolver chave para a portaria',
-                  aoPressionar: () => aoDevolverChaveParaPortaria(dados),
+                  icone: Icons.place_outlined,
+                  texto: 'Guardar chave',
+                  aoPressionar: () => aoGuardarChave(dados),
                 ),
               ),
               const SizedBox(width: 12),
@@ -1196,10 +1314,12 @@ class _DadosLocaisRestaurados {
   const _DadosLocaisRestaurados({
     required this.perfilSelecionado,
     required this.situacao,
+    required this.destinosDaChave,
   });
 
   final String? perfilSelecionado;
   final SituacaoDaSala situacao;
+  final List<String> destinosDaChave;
 }
 
 const _perfisPreDefinidos = ['Lucas', 'Clara', 'Amanda', 'Vitor'];
@@ -1211,6 +1331,7 @@ String _textoDeResponsavelDaChave(SituacaoDaSala situacao) {
     TipoLocalizacaoDaChave.sala =>
       situacao.pessoaUltimaAtualizacao ?? 'Sala 26',
     TipoLocalizacaoDaChave.pessoa => localizacao.nomeDaPessoa ?? 'Alguém',
+    TipoLocalizacaoDaChave.destino => localizacao.nomeDoDestino ?? 'Destino',
   };
 }
 
@@ -1220,6 +1341,8 @@ String _textoDaLocalizacao(LocalizacaoDaChave localizacao) {
     TipoLocalizacaoDaChave.sala => 'Sala 26',
     TipoLocalizacaoDaChave.pessoa =>
       'Com ${localizacao.nomeDaPessoa ?? 'alguém'}',
+    TipoLocalizacaoDaChave.destino =>
+      'Em ${localizacao.nomeDoDestino ?? 'destino'}',
   };
 }
 

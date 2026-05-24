@@ -13,6 +13,7 @@ A referência do v0 mostrou que a tela inicial deve priorizar a leitura rápida 
   - `Localização`;
   - `Última atualização`;
 - seção `Ações rápidas` com botão principal dependente do estado e do perfil;
+- ação `Guardar chave` quando a chave está com o perfil selecionado, abrindo escolha de destino;
 - botão `Abrir sala` ou `Fechar sala` disponível somente quando o perfil atual tem direito de executar a ação;
 - seção `Transferir para` quando a chave está com o perfil atual ou quando a sala está aberta com a chave guardada na sala e o perfil atual foi quem abriu/responde pela sala;
 - `Histórico recente` na aba inicial;
@@ -34,6 +35,7 @@ A referência do v0 mostrou que a tela inicial deve priorizar a leitura rápida 
 - A troca de perfil passou para um modal inferior, mantendo o botão do cabeçalho limpo para a apresentação.
 - O botão `Abrir sala`/`Fechar sala` respeita a condição de posse/responsabilidade da chave.
 - A transferência continua pedindo confirmação antes de persistir.
+- A antiga devolução fixa para a portaria evoluiu para `Guardar chave`, com seleção de `Portaria`, `Maker Space` ou destino customizado local.
 - Quando a sala está aberta e a chave ficou guardada na sala, o perfil que abriu/responde pela sala pode transferir a chave para outra pessoa sem precisar fechar a sala primeiro.
 
 ## Decisões da fatia
@@ -59,6 +61,7 @@ Coberturas adicionadas ou atualizadas:
 - separação entre `Histórico recente` e `Histórico completo`;
 - botão `Abrir sala`/`Fechar sala` condicionado ao perfil com a chave;
 - preservação dos fluxos existentes de persistência, confirmação, transferência e histórico;
+- escolha/cadastro de destino ao guardar a chave;
 - transferência da chave guardada na sala aberta pelo responsável, mantendo a sala aberta e registrando a nova pessoa com a chave.
 
 ## Limitações ainda abertas
