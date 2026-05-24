@@ -25,5 +25,16 @@ void main() {
 
       expect(perfil, 'Clara');
     });
+
+    test('limpa perfil local selecionado', () async {
+      final repositorio = await RepositorioLocalDoPerfil.criar();
+
+      await repositorio.salvarPerfilSelecionado('Amanda');
+      expect(await repositorio.carregarPerfilSelecionado(), 'Amanda');
+
+      await repositorio.limpar();
+
+      expect(await repositorio.carregarPerfilSelecionado(), isNull);
+    });
   });
 }

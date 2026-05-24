@@ -184,10 +184,12 @@ Definition of done:
   - Implementado em `lib/funcionalidades/configuracoes/dados/repositorio_local_do_perfil.dart`.
 - [x] Salvar estado da sala.
 - [x] Salvar histórico.
-- [ ] Restaurar dados ao reabrir o app.
+- [x] Restaurar dados ao reabrir o app.
+  - A tela inicial carrega `RepositorioLocalDaSala` e `RepositorioLocalDoPerfil` ao abrir.
+  - Coberto por teste de widget em `test/widget_test.dart`.
 - [x] Testar serialização/desserialização dos modelos.
   - Coberto por `test/funcionalidades/sala/dados/repositorio_local_da_sala_test.dart`.
-- [ ] Documentar limitações da persistência local.
+- [x] Documentar limitações da persistência local.
   - Trade-offs iniciais registrados em `TRADEOFFS.md`.
   - Fatia inicial documentada em `documentos/funcionalidades/003-persistencia-local-inicial.md`.
 

@@ -166,6 +166,7 @@ Implementação inicial do Marco 2:
 - `SerializadoresDaSala` converte `SituacaoDaSala` para JSON e de volta;
 - `RepositorioLocalDaSala` salva e carrega a situação atual da sala com histórico;
 - `RepositorioLocalDoPerfil` salva e carrega o perfil local selecionado;
+- a tela inicial restaura esses dados locais ao abrir o app e mostra um resumo simples;
 - a documentação da fatia está em `documentos/funcionalidades/003-persistencia-local-inicial.md`.
 
 Limitação:

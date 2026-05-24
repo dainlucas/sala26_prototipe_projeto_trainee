@@ -42,6 +42,38 @@ void main() {
         LocalizacaoDaChave.comPessoa('Clara'),
       );
     });
+
+    test('convertem situação inicial para JSON e de volta', () {
+      final situacaoInicial = SituacaoDaSala.inicial();
+
+      final json = SerializadoresDaSala.situacaoParaJson(situacaoInicial);
+      final restaurada = SerializadoresDaSala.situacaoDeJson(json);
+
+      expect(restaurada, situacaoInicial);
+      expect(restaurada.historico, isEmpty);
+      expect(restaurada.pessoaUltimaAtualizacao, isNull);
+      expect(restaurada.atualizadaEm, isNull);
+    });
+
+    test('preservam as três localizações possíveis da chave', () {
+      final localizacoes = [
+        const LocalizacaoDaChave.naPortaria(),
+        const LocalizacaoDaChave.naSala(),
+        LocalizacaoDaChave.comPessoa('Vitor'),
+      ];
+
+      for (final localizacao in localizacoes) {
+        final situacao = SituacaoDaSala(
+          estado: EstadoDaSala.fechada,
+          localizacaoDaChave: localizacao,
+        );
+
+        final json = SerializadoresDaSala.situacaoParaJson(situacao);
+        final restaurada = SerializadoresDaSala.situacaoDeJson(json);
+
+        expect(restaurada.localizacaoDaChave, localizacao);
+      }
+    });
   });
 
   group('RepositorioLocalDaSala', () {
@@ -90,5 +122,24 @@ void main() {
         expect(historicoCarregado, situacao.historico);
       },
     );
+
+    test('limpa situação salva e volta para situação inicial', () async {
+      final repositorio = await RepositorioLocalDaSala.criar();
+      final situacao = SituacaoDaSala(
+        estado: EstadoDaSala.aberta,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      );
+
+      await repositorio.salvarSituacaoAtual(situacao);
+      expect(await repositorio.carregarSituacaoAtual(), situacao);
+
+      await repositorio.limpar();
+
+      expect(
+        await repositorio.carregarSituacaoAtual(),
+        SituacaoDaSala.inicial(),
+      );
+      expect(await repositorio.carregarHistorico(), isEmpty);
+    });
   });
 }
