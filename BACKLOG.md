@@ -39,7 +39,7 @@ Prazo-alvo: 6 dias.
 - [x] Não haverá botão de copiar mensagem pronta no MVP.
 - [x] Haverá histórico simples.
 - [x] O histórico não poderá ser apagado pelo fluxo normal do app.
-- [x] Haverá confirmações para ações importantes, como devolver a chave para a portaria.
+- [x] Haverá proteções para ações importantes, como guardar a chave em um destino ou transferi-la para outra pessoa.
 - [x] O visual deve usar identidade da Prototipe e um tom divertido com o mascote.
 - [x] Não haverá modo escuro no MVP.
 - [x] O código deve ser simples, mas organizado.
@@ -96,14 +96,15 @@ Prazo-alvo: 6 dias.
 
 ### Ações principais
 
-- [ ] Peguei a chave na portaria.
+- [x] Peguei a chave na portaria ou em um destino onde ela estava guardada.
+  - A UI mostra `Pegar chave na portaria` ou `Pegar chave em <destino>` conforme a localização atual.
 - [ ] Abri a sala.
 - [ ] Fechei a sala.
 - [ ] Chave ficou comigo.
 - [ ] Passei a chave para outra pessoa.
-- [ ] Devolvi a chave para a portaria.
 - [x] Guardei a chave em um destino escolhido.
   - A UI principal usa `Guardar chave` e permite escolher/cadastrar destinos.
+  - Destinos customizados cadastrados no modal aparecem ao reabrir `Guardar chave` e continuam disponíveis após reabrir o app.
 
 ### Regras iniciais sugeridas
 
@@ -113,8 +114,8 @@ Prazo-alvo: 6 dias.
 - [ ] Ao fechar a sala, o usuário precisa escolher o destino da chave:
   - ficou comigo;
   - ficou com outra pessoa;
-  - devolvi para a portaria.
-- [ ] Só é possível devolver a chave se ela estiver com a pessoa logada.
+  - ficou guardada em um destino escolhido.
+- [x] Só é possível guardar a chave se ela estiver com a pessoa logada.
 - [x] Ao guardar a chave, o usuário escolhe entre destinos fixos e destinos customizados locais.
 - [ ] Só é possível passar a chave para outra pessoa se ela estiver com a pessoa logada ou se a sala estiver aberta, a chave estiver guardada na sala, e a pessoa logada for quem abriu/responde pela sala.
 - [ ] Toda ação gera um item no histórico com data/hora, pessoa e descrição.
@@ -258,16 +259,16 @@ Definition of done:
 
 ## Marco 5 — Confirmações e microinterações
 
-- [x] Confirmar devolução da chave para a portaria.
+- [x] Proteger a ação de guardar a chave com escolha explícita de destino.
   - Documentado em `documentos/funcionalidades/006-confirmacoes-e-microinteracoes.md`.
 - [x] Confirmar transferência da chave para outra pessoa.
   - A tela permite escolher outro perfil local e confirmar antes de salvar a transferência.
 - [x] Exibir feedback de sucesso após ações.
-  - Pegar, devolver e passar a chave mostram mensagem de sucesso após persistir a alteração.
+  - Pegar, guardar e passar a chave mostram mensagem de sucesso após persistir a alteração.
 - [x] Exibir mensagens claras para ações inválidas.
   - A interface oculta ações indisponíveis e explica quando a chave está com outra pessoa.
-- [x] Testar pelo menos um diálogo de confirmação.
-  - Coberto por `test/widget_test.dart` nos fluxos de devolução e transferência da chave.
+- [x] Testar pelo menos um diálogo de confirmação ou escolha segura.
+  - Coberto por `test/widget_test.dart` nos fluxos de guardar destino e transferência da chave.
 
 Definition of done:
 
@@ -288,7 +289,8 @@ Definition of done:
 - [x] Criar card principal de status da sala.
 - [x] Mostrar se a sala está aberta ou fechada.
 - [x] Mostrar onde está a chave.
-- [x] Mostrar quem está com a chave/responsável pela última ação relevante.
+- [x] Mostrar quem está com a chave sem confundir local com pessoa.
+  - Quando a chave está em `Portaria`, `Maker Space`, sala ou destino customizado, `Chave com` mostra `Nenhuma pessoa`; a localização aparece separada em `Localização`.
 - [x] Mostrar horário da última atualização.
 - [x] Criar botões de ação com boa usabilidade.
   - Ações rápidas mostram apenas caminhos válidos para o estado/perfil atual.
@@ -296,9 +298,13 @@ Definition of done:
   - `Transferir para` também aparece para o responsável pela sala aberta quando a chave está guardada na sala, permitindo entregar a chave a outra pessoa sem fechar a sala.
 - [x] Permitir guardar a chave em destinos fixos ou customizados.
   - Documentado em `documentos/funcionalidades/008-destinos-customizados-da-chave.md`.
-  - A tela principal usa `Guardar chave`, abre seletor de destino e permite cadastrar destino local antes de salvar a movimentação.
+  - A tela principal usa `Guardar chave`, abre seletor de destino e permite cadastrar, renomear e apagar destino local antes de salvar a movimentação.
+  - Cancelar o seletor, salvar nome vazio ou tentar cadastrar duplicidade não altera estado nem histórico/destinos válidos.
+  - Depois que a chave fica em um destino, a tela volta a oferecer a ação de pegar a chave desse local.
 - [~] Criar área visual divertida com mascote/placeholder do mascote.
   - O cabeçalho usa ícone de chave e identidade Prototipe; o mascote/imagem ainda pode voltar como decoração leve no polimento final sem competir com o status.
+- [ ] Adicionar confirmação antes de apagar destino customizado.
+  - Hoje o botão `Apagar` remove diretamente; aceitável para o MVP local, mas é uma microinteração destrutiva que merece confirmação no polimento.
 - [x] Adicionar navegação inferior entre Início e Histórico.
   - `Início` mostra status, ações e histórico recente.
   - `Histórico` mostra a lista completa.

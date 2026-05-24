@@ -1,19 +1,19 @@
-# Marco 5 — Confirmações e microinterações
+# Marco 5 — Proteções e microinterações
 
-Esta fatia amplia o Marco 5 com duas melhorias de usabilidade: ações sensíveis protegidas por confirmação e ações indisponíveis ocultadas da tela principal.
+Esta fatia amplia o Marco 5 com melhorias de usabilidade: ações sensíveis protegidas por confirmação ou escolha explícita, e ações indisponíveis ocultadas da tela principal.
 
 ## O que foi implementado
 
 - A tela inicial expõe ações de movimentação apenas quando elas fazem sentido para o perfil selecionado.
 - Observação posterior: a ação fixa `Devolver chave para a portaria` foi substituída na UI pelo fluxo mais geral `Guardar chave`, documentado em `documentos/funcionalidades/008-destinos-customizados-da-chave.md`.
 - A tela inicial agora também expõe a ação `Passar chave para outra pessoa` quando a chave está com o perfil selecionado.
-- Antes da devolução, o app valida se o perfil selecionado realmente está com a chave.
+- Antes de guardar a chave, o app valida se o perfil selecionado realmente está com a chave e exige a escolha de um destino.
 - Antes da transferência, o app pede a pessoa de destino e abre um diálogo de confirmação.
-- Ao cancelar uma confirmação:
+- Ao cancelar uma confirmação ou fechar o seletor de destino sem escolher:
   - o estado da sala não muda;
   - o histórico não recebe novo item.
-- Ao confirmar a devolução:
-  - a chave volta para a portaria;
+- Ao escolher um destino para guardar a chave:
+  - a chave fica registrada em `Em <destino>`;
   - o novo estado é salvo localmente;
   - um evento é registrado no histórico;
   - o usuário recebe feedback pela mensagem de sucesso.
@@ -46,8 +46,9 @@ Arquivo atualizado:
 
 Coberturas adicionadas ou atualizadas:
 
-- fluxo histórico de confirmação para devolver a chave à portaria e, após a evolução da UI, seletor de destino para guardar a chave;
+- fluxo atual de seletor de destino para guardar a chave, preservando o histórico legado de confirmação de devolução à portaria;
 - cancelamento sem alteração de estado nem histórico;
+- cancelamento do seletor de destino sem alteração de estado nem histórico;
 - confirmação com persistência do novo estado e novo evento no histórico;
 - pedido de seleção de perfil antes de mostrar ações de movimentação;
 - visibilidade condicional dos botões conforme a localização da chave;

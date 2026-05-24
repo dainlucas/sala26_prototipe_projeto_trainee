@@ -194,7 +194,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
       return;
     }
 
-    final resultado = ControladorDaSala().pegarChaveNaPortaria(
+    final resultado = ControladorDaSala().pegarChaveNoLocal(
       situacaoAtual: dados.situacao,
       pessoaLogada: perfil,
       momento: DateTime.now(),
@@ -271,93 +271,102 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
           setSheetState(() {
             destinos = destinosAtualizados;
           });
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _dadosLocais = _carregarDadosLocais();
+          });
         }
 
         return StatefulBuilder(
           builder: (contextoDoSheet, setSheetState) {
             return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Onde a chave vai ficar?',
-                      style: Theme.of(contextoDoSheet).textTheme.titleLarge
-                          ?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 8),
-                    for (final destino in destinos)
-                      ListTile(
-                        leading: const Icon(Icons.place_outlined),
-                        title: Text(destino),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        onTap: () => Navigator.of(contextoDoSheet).pop(destino),
-                        trailing:
-                            RepositorioLocalDaSala.destinosFixosDaChave
-                                .contains(destino)
-                            ? null
-                            : Wrap(
-                                children: [
-                                  IconButton(
-                                    tooltip: 'Renomear $destino',
-                                    icon: const Icon(Icons.edit_outlined),
-                                    onPressed: () async {
-                                      final novoDestino =
-                                          await _pedirNomeDestino(
-                                            titulo: 'Renomear destino',
-                                            valorInicial: destino,
-                                          );
-                                      if (novoDestino == null) {
-                                        return;
-                                      }
-                                      final repositorio =
-                                          await RepositorioLocalDaSala.criar();
-                                      await repositorio
-                                          .renomearDestinoCustomizado(
-                                            destino,
-                                            novoDestino,
-                                          );
-                                      await recarregar(setSheetState);
-                                    },
-                                  ),
-                                  IconButton(
-                                    tooltip: 'Apagar $destino',
-                                    icon: const Icon(Icons.delete_outline),
-                                    onPressed: () async {
-                                      final repositorio =
-                                          await RepositorioLocalDaSala.criar();
-                                      await repositorio
-                                          .removerDestinoCustomizado(destino);
-                                      await recarregar(setSheetState);
-                                    },
-                                  ),
-                                ],
-                              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Onde a chave vai ficar?',
+                        style: Theme.of(contextoDoSheet).textTheme.titleLarge
+                            ?.copyWith(fontWeight: FontWeight.w700),
                       ),
-                    const SizedBox(height: 8),
-                    OutlinedButton.icon(
-                      onPressed: () async {
-                        final novoDestino = await _pedirNomeDestino(
-                          titulo: 'Adicionar destino',
-                        );
-                        if (novoDestino == null) {
-                          return;
-                        }
-                        final repositorio =
-                            await RepositorioLocalDaSala.criar();
-                        await repositorio.adicionarDestinoCustomizado(
-                          novoDestino,
-                        );
-                        await recarregar(setSheetState);
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Adicionar destino'),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      for (final destino in destinos)
+                        ListTile(
+                          leading: const Icon(Icons.place_outlined),
+                          title: Text(destino),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          onTap: () =>
+                              Navigator.of(contextoDoSheet).pop(destino),
+                          trailing:
+                              RepositorioLocalDaSala.destinosFixosDaChave
+                                  .contains(destino)
+                              ? null
+                              : Wrap(
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Renomear $destino',
+                                      icon: const Icon(Icons.edit_outlined),
+                                      onPressed: () async {
+                                        final novoDestino =
+                                            await _pedirNomeDestino(
+                                              titulo: 'Renomear destino',
+                                              valorInicial: destino,
+                                            );
+                                        if (novoDestino == null) {
+                                          return;
+                                        }
+                                        final repositorio =
+                                            await RepositorioLocalDaSala.criar();
+                                        await repositorio
+                                            .renomearDestinoCustomizado(
+                                              destino,
+                                              novoDestino,
+                                            );
+                                        await recarregar(setSheetState);
+                                      },
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Apagar $destino',
+                                      icon: const Icon(Icons.delete_outline),
+                                      onPressed: () async {
+                                        final repositorio =
+                                            await RepositorioLocalDaSala.criar();
+                                        await repositorio
+                                            .removerDestinoCustomizado(destino);
+                                        await recarregar(setSheetState);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: () async {
+                          final novoDestino = await _pedirNomeDestino(
+                            titulo: 'Adicionar destino',
+                          );
+                          if (novoDestino == null) {
+                            return;
+                          }
+                          final repositorio =
+                              await RepositorioLocalDaSala.criar();
+                          await repositorio.adicionarDestinoCustomizado(
+                            novoDestino,
+                          );
+                          await recarregar(setSheetState);
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Adicionar destino'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -863,6 +872,8 @@ class _AcoesRapidasDaSala extends StatelessWidget {
     final perfil = dados.perfilSelecionado?.trim();
     final temPerfil = perfil != null && perfil.isNotEmpty;
     final chaveNaPortaria = situacao.localizacaoDaChave.estaNaPortaria;
+    final chaveEmDestino = situacao.localizacaoDaChave.estaGuardadaEmDestino;
+    final chaveDisponivelEmLocal = chaveNaPortaria || chaveEmDestino;
     final chaveComPerfil =
         temPerfil && situacao.localizacaoDaChave.estaCom(perfil);
     final chaveComOutraPessoa =
@@ -896,10 +907,12 @@ class _AcoesRapidasDaSala extends StatelessWidget {
           const _AvisoDeEstado(
             texto: 'Escolha um perfil para ver as ações disponíveis.',
           )
-        else if (chaveNaPortaria)
+        else if (chaveDisponivelEmLocal)
           _BotaoAcaoPrincipal(
             icone: Icons.key,
-            texto: 'Pegar chave na portaria',
+            texto: chaveNaPortaria
+                ? 'Pegar chave na portaria'
+                : 'Pegar chave em ${situacao.localizacaoDaChave.nomeDoDestino ?? 'destino'}',
             aoPressionar: () => aoPegarChaveNaPortaria(dados),
           )
         else if (chaveComPerfil)
@@ -935,7 +948,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
           _AvisoDeEstado(
             texto:
                 'A chave está com ${situacao.localizacaoDaChave.nomeDaPessoa}. '
-                'Apenas ${situacao.localizacaoDaChave.nomeDaPessoa} pode devolver ou passar a chave.',
+                'Apenas ${situacao.localizacaoDaChave.nomeDaPessoa} pode guardar ou passar a chave.',
           ),
         if (podeTransferirChave) ...[
           const SizedBox(height: 20),
@@ -1327,11 +1340,10 @@ const _perfisPreDefinidos = ['Lucas', 'Clara', 'Amanda', 'Vitor'];
 String _textoDeResponsavelDaChave(SituacaoDaSala situacao) {
   final localizacao = situacao.localizacaoDaChave;
   return switch (localizacao.tipo) {
-    TipoLocalizacaoDaChave.portaria => 'Portaria',
-    TipoLocalizacaoDaChave.sala =>
-      situacao.pessoaUltimaAtualizacao ?? 'Sala 26',
     TipoLocalizacaoDaChave.pessoa => localizacao.nomeDaPessoa ?? 'Alguém',
-    TipoLocalizacaoDaChave.destino => localizacao.nomeDoDestino ?? 'Destino',
+    TipoLocalizacaoDaChave.portaria ||
+    TipoLocalizacaoDaChave.sala ||
+    TipoLocalizacaoDaChave.destino => 'Nenhuma pessoa',
   };
 }
 

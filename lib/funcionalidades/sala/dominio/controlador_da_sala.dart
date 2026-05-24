@@ -58,13 +58,44 @@ class ControladorDaSala {
       );
     }
 
-    return _sucessoComEvento(
+    return _registrarPegadaDaChave(
       situacaoAtual: situacaoAtual,
       pessoaLogada: pessoa,
       momento: momento,
-      mensagem: '$pessoa pegou a chave na portaria.',
-      estado: situacaoAtual.estado,
-      localizacaoDaChave: LocalizacaoDaChave.comPessoa(pessoa),
+      origem: 'na portaria',
+    );
+  }
+
+  ResultadoAcaoDaSala pegarChaveNoLocal({
+    required SituacaoDaSala situacaoAtual,
+    required String pessoaLogada,
+    required DateTime momento,
+  }) {
+    final pessoa = pessoaLogada.trim();
+    final falhaNome = _falhaSePessoaLogadaInvalida(situacaoAtual, pessoa);
+    if (falhaNome != null) {
+      return falhaNome;
+    }
+
+    final origem = switch (situacaoAtual.localizacaoDaChave.tipo) {
+      TipoLocalizacaoDaChave.portaria => 'na portaria',
+      TipoLocalizacaoDaChave.destino =>
+        'em ${situacaoAtual.localizacaoDaChave.nomeDoDestino ?? 'destino'}',
+      _ => null,
+    };
+
+    if (origem == null) {
+      return ResultadoAcaoDaSala.falha(
+        situacao: situacaoAtual,
+        mensagem: 'A chave não está disponível em um local agora.',
+      );
+    }
+
+    return _registrarPegadaDaChave(
+      situacaoAtual: situacaoAtual,
+      pessoaLogada: pessoa,
+      momento: momento,
+      origem: origem,
     );
   }
 
@@ -366,6 +397,22 @@ class ControladorDaSala {
     return situacaoAtual.estado == EstadoDaSala.aberta &&
         situacaoAtual.localizacaoDaChave.estaNaSala &&
         situacaoAtual.pessoaUltimaAtualizacao == pessoa;
+  }
+
+  ResultadoAcaoDaSala _registrarPegadaDaChave({
+    required SituacaoDaSala situacaoAtual,
+    required String pessoaLogada,
+    required DateTime momento,
+    required String origem,
+  }) {
+    return _sucessoComEvento(
+      situacaoAtual: situacaoAtual,
+      pessoaLogada: pessoaLogada,
+      momento: momento,
+      mensagem: '$pessoaLogada pegou a chave $origem.',
+      estado: situacaoAtual.estado,
+      localizacaoDaChave: LocalizacaoDaChave.comPessoa(pessoaLogada),
+    );
   }
 
   ResultadoAcaoDaSala _sucessoComEvento({

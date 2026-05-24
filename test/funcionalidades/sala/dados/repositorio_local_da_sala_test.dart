@@ -170,5 +170,22 @@ void main() {
         ]);
       },
     );
+
+    test('ignora destinos vazios fixos ou duplicados', () async {
+      final repositorio = await RepositorioLocalDaSala.criar();
+
+      await repositorio.adicionarDestinoCustomizado('  ');
+      await repositorio.adicionarDestinoCustomizado('Portaria');
+      await repositorio.adicionarDestinoCustomizado('Biblioteca');
+      await repositorio.adicionarDestinoCustomizado(' Biblioteca ');
+      await repositorio.renomearDestinoCustomizado('Biblioteca', '   ');
+      await repositorio.renomearDestinoCustomizado('Biblioteca', 'Maker Space');
+
+      expect(await repositorio.carregarDestinosDaChave(), [
+        'Portaria',
+        'Maker Space',
+        'Biblioteca',
+      ]);
+    });
   });
 }

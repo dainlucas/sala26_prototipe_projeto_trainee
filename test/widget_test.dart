@@ -138,6 +138,30 @@ void main() {
     expect(find.textContaining('Histórico:'), findsNothing);
   });
 
+  testWidgets('mostra chave sem pessoa quando está guardada em local', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.guardadaEm('Maker Space'),
+        pessoaUltimaAtualizacao: 'Clara',
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Chave com'), findsOneWidget);
+    expect(find.text('Nenhuma pessoa'), findsOneWidget);
+    expect(find.text('Em Maker Space'), findsOneWidget);
+    expect(find.text('Clara'), findsNothing);
+  });
+
   testWidgets('pede seleção de perfil antes de mostrar ações de movimentação', (
     testador,
   ) async {
@@ -198,10 +222,24 @@ void main() {
     expect(find.text('Passar chave para outra pessoa'), findsNothing);
     expect(
       find.text(
-        'A chave está com Clara. Apenas Clara pode devolver ou passar a chave.',
+        'A chave está com Clara. Apenas Clara pode guardar ou passar a chave.',
       ),
       findsOneWidget,
     );
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.guardadaEm('Maker Space'),
+      ),
+    );
+    await testador.pumpWidget(const SizedBox.shrink());
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Pegar chave em Maker Space'), findsOneWidget);
+    expect(find.text('Guardar chave'), findsNothing);
+    expect(find.text('Passar chave para outra pessoa'), findsNothing);
   });
 
   testWidgets('usa o perfil selecionado ao registrar ação da sala', (
@@ -233,6 +271,41 @@ void main() {
     );
     expect(find.text('Com Clara'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
+  });
+
+  testWidgets('pega a chave quando ela está guardada em destino', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.guardadaEm('Maker Space'),
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Pegar chave em Maker Space'));
+    await testador.tap(find.text('Pegar chave em Maker Space'));
+    await testador.pumpAndSettle();
+
+    final situacaoSalva = await repositorioDaSala.carregarSituacaoAtual();
+
+    expect(
+      situacaoSalva.localizacaoDaChave,
+      LocalizacaoDaChave.comPessoa('Lucas'),
+    );
+    expect(situacaoSalva.historico.single.pessoa, 'Lucas');
+    expect(
+      situacaoSalva.historico.single.descricao,
+      'Lucas pegou a chave em Maker Space.',
+    );
+    expect(find.text('Com Lucas'), findsOneWidget);
   });
 
   testWidgets('mostra estado vazio amigável quando não há histórico', (
@@ -416,10 +489,19 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
-    expect(find.text('Portaria'), findsWidgets);
-    expect(find.text('Maker Space'), findsOneWidget);
+    final seletorDeDestino = find.byType(BottomSheet);
+    expect(
+      find.descendant(of: seletorDeDestino, matching: find.text('Portaria')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: seletorDeDestino, matching: find.text('Maker Space')),
+      findsOneWidget,
+    );
 
-    await testador.tap(find.text('Portaria').last);
+    await testador.tap(
+      find.descendant(of: seletorDeDestino, matching: find.text('Portaria')),
+    );
     await testador.pumpAndSettle();
 
     final situacaoFinal = await repositorioDaSala.carregarSituacaoAtual();
@@ -483,6 +565,275 @@ void main() {
       'Maker Space',
       'Biblioteca',
     ]);
+  });
+
+  testWidgets(
+    'mantém destino customizado visível ao reabrir Guardar chave e reiniciar app',
+    (testador) async {
+      final repositorioDaSala = await RepositorioLocalDaSala.criar();
+      final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+      await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+      await repositorioDaSala.salvarSituacaoAtual(
+        SituacaoDaSala(
+          estado: EstadoDaSala.fechada,
+          localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+        ),
+      );
+
+      await testador.pumpWidget(const AplicativoChave26());
+      await testador.pumpAndSettle();
+
+      await testador.ensureVisible(find.text('Guardar chave'));
+      await testador.tap(find.text('Guardar chave'));
+      await testador.pumpAndSettle();
+
+      await testador.tap(find.text('Adicionar destino'));
+      await testador.pumpAndSettle();
+      await testador.enterText(find.byType(TextField), 'Biblioteca');
+      await testador.tap(find.text('Salvar'));
+      await testador.pumpAndSettle();
+
+      var seletorDeDestino = find.byType(BottomSheet);
+      expect(
+        find.descendant(
+          of: seletorDeDestino,
+          matching: find.text('Biblioteca'),
+        ),
+        findsOneWidget,
+      );
+
+      await testador.tapAt(const Offset(10, 10));
+      await testador.pumpAndSettle();
+
+      await testador.ensureVisible(find.text('Guardar chave'));
+      await testador.tap(find.text('Guardar chave'));
+      await testador.pumpAndSettle();
+
+      seletorDeDestino = find.byType(BottomSheet);
+      expect(
+        find.descendant(
+          of: seletorDeDestino,
+          matching: find.text('Biblioteca'),
+        ),
+        findsOneWidget,
+      );
+
+      await testador.tapAt(const Offset(10, 10));
+      await testador.pumpAndSettle();
+      await testador.pumpWidget(const SizedBox.shrink());
+      await testador.pumpAndSettle();
+      await testador.pumpWidget(const AplicativoChave26());
+      await testador.pumpAndSettle();
+
+      await testador.ensureVisible(find.text('Guardar chave'));
+      await testador.tap(find.text('Guardar chave'));
+      await testador.pumpAndSettle();
+
+      seletorDeDestino = find.byType(BottomSheet);
+      expect(
+        find.descendant(
+          of: seletorDeDestino,
+          matching: find.text('Biblioteca'),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('cancelar escolha de destino não altera estado nem histórico', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+    final situacaoInicial = SituacaoDaSala(
+      estado: EstadoDaSala.fechada,
+      localizacaoDaChave: LocalizacaoDaChave.comPessoa('Clara'),
+      historico: [
+        EventoHistorico(
+          momento: DateTime(2026, 1, 2, 16, 30),
+          pessoa: 'Clara',
+          descricao: 'Clara pegou a chave na portaria.',
+        ),
+      ],
+      pessoaUltimaAtualizacao: 'Clara',
+      atualizadaEm: DateTime(2026, 1, 2, 16, 30),
+    );
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Clara');
+    await repositorioDaSala.salvarSituacaoAtual(situacaoInicial);
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+
+    await testador.tapAt(const Offset(10, 10));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
+    expect(find.text('Com Clara'), findsOneWidget);
+    expect(find.text('Clara guardou a chave em Portaria.'), findsNothing);
+  });
+
+  testWidgets('não adiciona destino customizado com nome vazio', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.text('Adicionar destino'));
+    await testador.pumpAndSettle();
+    await testador.enterText(find.byType(TextField), '   ');
+    await testador.tap(find.text('Salvar'));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+    ]);
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.text('Onde a chave vai ficar?'), findsOneWidget);
+  });
+
+  testWidgets('não duplica destino customizado já existente', (testador) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+    await repositorioDaSala.adicionarDestinoCustomizado('Biblioteca');
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.text('Adicionar destino'));
+    await testador.pumpAndSettle();
+    await testador.enterText(find.byType(TextField), 'Biblioteca');
+    await testador.tap(find.text('Salvar'));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+      'Biblioteca',
+    ]);
+    expect(find.text('Biblioteca'), findsOneWidget);
+  });
+
+  testWidgets('não renomeia destino customizado para nome vazio', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+    await repositorioDaSala.adicionarDestinoCustomizado('Biblioteca');
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.byTooltip('Renomear Biblioteca'));
+    await testador.pumpAndSettle();
+    await testador.enterText(find.byType(TextField), '   ');
+    await testador.tap(find.text('Salvar'));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+      'Biblioteca',
+    ]);
+    expect(find.text('Biblioteca'), findsOneWidget);
+    expect(find.byTooltip('Renomear Biblioteca'), findsOneWidget);
+  });
+
+  testWidgets('permite renomear e apagar destino customizado no seletor', (
+    testador,
+  ) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+    await repositorioDaSala.adicionarDestinoCustomizado('Biblioteca');
+    await repositorioDaSala.adicionarDestinoCustomizado('Laboratório');
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.ensureVisible(find.text('Guardar chave'));
+    await testador.tap(find.text('Guardar chave'));
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.byTooltip('Renomear Biblioteca'));
+    await testador.pumpAndSettle();
+    await testador.enterText(find.byType(TextField), 'Biblioteca Central');
+    await testador.tap(find.text('Salvar'));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+      'Biblioteca Central',
+      'Laboratório',
+    ]);
+    expect(find.text('Biblioteca Central'), findsOneWidget);
+    expect(find.text('Biblioteca'), findsNothing);
+
+    await testador.tap(find.byTooltip('Apagar Laboratório'));
+    await testador.pumpAndSettle();
+
+    expect(await repositorioDaSala.carregarDestinosDaChave(), [
+      'Portaria',
+      'Maker Space',
+      'Biblioteca Central',
+    ]);
+    expect(find.text('Laboratório'), findsNothing);
+    expect(find.text('Biblioteca Central'), findsOneWidget);
   });
 
   testWidgets(

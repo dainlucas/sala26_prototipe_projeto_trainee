@@ -136,6 +136,35 @@ void main() {
       );
     });
 
+    test('testa ação peguei a chave em destino guardado', () {
+      final controlador = ControladorDaSala();
+      final momento = DateTime(2026, 1, 2, 14, 30);
+      final situacaoGuardada = SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.guardadaEm('Maker Space'),
+      );
+
+      final resultado = controlador.pegarChaveNoLocal(
+        situacaoAtual: situacaoGuardada,
+        pessoaLogada: 'Lucas',
+        momento: momento,
+      );
+
+      expect(resultado.sucesso, isTrue);
+      expect(resultado.mensagem, 'Lucas pegou a chave em Maker Space.');
+      expect(resultado.situacao.estado, EstadoDaSala.fechada);
+      expect(
+        resultado.situacao.localizacaoDaChave,
+        LocalizacaoDaChave.comPessoa('Lucas'),
+      );
+      _esperarUltimaAtualizacao(
+        resultado.situacao,
+        pessoa: 'Lucas',
+        momento: momento,
+        descricao: 'Lucas pegou a chave em Maker Space.',
+      );
+    });
+
     test('testa ação abri a sala', () {
       final controlador = ControladorDaSala();
       final momentoPegou = DateTime(2026, 1, 2, 14, 20);
