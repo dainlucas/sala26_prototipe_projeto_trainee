@@ -120,6 +120,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                     _ResumoDosDadosRestaurados(
                       dados: dados,
                       aoPegarChaveNaPortaria: _pegarChaveNaPortaria,
+                      aoDevolverChaveParaPortaria: _devolverChaveParaPortaria,
                     ),
                   ],
                 ),
@@ -158,6 +159,68 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
       momento: DateTime.now(),
     );
 
+    await _aplicarResultadoDaAcao(resultado);
+  }
+
+  Future<void> _devolverChaveParaPortaria(_DadosLocaisRestaurados dados) async {
+    final perfil = dados.perfilSelecionado?.trim();
+
+    if (perfil == null || perfil.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Escolha um perfil antes de alterar a sala.'),
+        ),
+      );
+      return;
+    }
+
+    final validacao = ControladorDaSala().devolverChaveParaPortaria(
+      situacaoAtual: dados.situacao,
+      pessoaLogada: perfil,
+      momento: DateTime.now(),
+    );
+
+    if (!validacao.sucesso) {
+      await _aplicarResultadoDaAcao(validacao);
+      return;
+    }
+
+    final confirmou = await showDialog<bool>(
+      context: context,
+      builder: (contextoDoDialogo) {
+        return AlertDialog(
+          title: const Text('Devolver chave?'),
+          content: Text(
+            'Confirme que $perfil está devolvendo a chave para a portaria.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(true),
+              child: const Text('Confirmar devolução'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmou != true) {
+      return;
+    }
+
+    final resultado = ControladorDaSala().devolverChaveParaPortaria(
+      situacaoAtual: dados.situacao,
+      pessoaLogada: perfil,
+      momento: DateTime.now(),
+    );
+
+    await _aplicarResultadoDaAcao(resultado);
+  }
+
+  Future<void> _aplicarResultadoDaAcao(ResultadoAcaoDaSala resultado) async {
     if (resultado.sucesso) {
       final repositorioDaSala = await RepositorioLocalDaSala.criar();
       await repositorioDaSala.salvarSituacaoAtual(resultado.situacao);
@@ -234,11 +297,14 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
   const _ResumoDosDadosRestaurados({
     required this.dados,
     required this.aoPegarChaveNaPortaria,
+    required this.aoDevolverChaveParaPortaria,
   });
 
   final _DadosLocaisRestaurados dados;
   final Future<void> Function(_DadosLocaisRestaurados dados)
   aoPegarChaveNaPortaria;
+  final Future<void> Function(_DadosLocaisRestaurados dados)
+  aoDevolverChaveParaPortaria;
 
   @override
   Widget build(BuildContext contexto) {
@@ -263,6 +329,11 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
             FilledButton(
               onPressed: () => aoPegarChaveNaPortaria(dados),
               child: const Text('Pegar chave na portaria'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: () => aoDevolverChaveParaPortaria(dados),
+              child: const Text('Devolver chave para a portaria'),
             ),
             const SizedBox(height: 16),
             _HistoricoDaSala(situacao: situacao),
