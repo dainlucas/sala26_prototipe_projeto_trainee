@@ -59,8 +59,8 @@ Prazo-alvo: 6 dias.
   - Decisão: foco em celular/Android.
   - Web fica fora do MVP.
 
-- [ ] Definir o nome técnico do pacote/app.
-  - Sugestão: `chave_26`.
+- [x] Definir o nome técnico do pacote/app.
+  - Decisão: `chave_26`.
 
 - [x] Definir como representar a identidade visual da Prototipe no MVP.
   - Paleta de cores registrada em `documentos/identidade-visual-prototipe.md`.
@@ -119,7 +119,8 @@ Prazo-alvo: 6 dias.
 - [x] Criar projeto Flutter `chave_26`.
 - [x] Verificar build Android.
   - `flutter build apk --debug` gerou `build/app/outputs/flutter-apk/app-debug.apk`.
-- [ ] Verificar execução em Android/celular.
+- [x] Verificar execução em Android/celular.
+  - Confirmado no tablet Android `SM X400`, detectado pelo Flutter como `RXGL202L2RP`, com o app abrindo no dispositivo.
 - [~] Configurar estrutura inicial de pastas.
   - Projeto Flutter criado; estrutura por feature será expandida no Marco 1.
 - [x] Criar README inicial.
