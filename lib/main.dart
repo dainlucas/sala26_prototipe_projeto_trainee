@@ -121,6 +121,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                       dados: dados,
                       aoPegarChaveNaPortaria: _pegarChaveNaPortaria,
                       aoDevolverChaveParaPortaria: _devolverChaveParaPortaria,
+                      aoPassarChaveParaOutraPessoa: _passarChaveParaOutraPessoa,
                     ),
                   ],
                 ),
@@ -220,6 +221,88 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
     await _aplicarResultadoDaAcao(resultado);
   }
 
+  Future<void> _passarChaveParaOutraPessoa(
+    _DadosLocaisRestaurados dados,
+  ) async {
+    final perfil = dados.perfilSelecionado?.trim();
+
+    if (perfil == null || perfil.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Escolha um perfil antes de alterar a sala.'),
+        ),
+      );
+      return;
+    }
+
+    final destino = await showDialog<String>(
+      context: context,
+      builder: (contextoDoDialogo) {
+        final perfisDisponiveis = _SeletorRapidoDePerfil.perfisPreDefinidos
+            .where((pessoa) => pessoa != perfil)
+            .toList();
+
+        return SimpleDialog(
+          title: const Text('Passar chave para quem?'),
+          children: [
+            for (final pessoa in perfisDisponiveis)
+              SimpleDialogOption(
+                onPressed: () => Navigator.of(contextoDoDialogo).pop(pessoa),
+                child: Text(pessoa),
+              ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(),
+              child: const Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (destino == null) {
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    final confirmou = await showDialog<bool>(
+      context: context,
+      builder: (contextoDoDialogo) {
+        return AlertDialog(
+          title: const Text('Passar chave?'),
+          content: Text(
+            'Confirme que $perfil está passando a chave para $destino.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(contextoDoDialogo).pop(true),
+              child: const Text('Confirmar transferência'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmou != true) {
+      return;
+    }
+
+    final resultado = ControladorDaSala().passarChaveParaOutraPessoa(
+      situacaoAtual: dados.situacao,
+      pessoaLogada: perfil,
+      outraPessoa: destino,
+      momento: DateTime.now(),
+    );
+
+    await _aplicarResultadoDaAcao(resultado);
+  }
+
   Future<void> _aplicarResultadoDaAcao(ResultadoAcaoDaSala resultado) async {
     if (resultado.sucesso) {
       final repositorioDaSala = await RepositorioLocalDaSala.criar();
@@ -298,6 +381,7 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
     required this.dados,
     required this.aoPegarChaveNaPortaria,
     required this.aoDevolverChaveParaPortaria,
+    required this.aoPassarChaveParaOutraPessoa,
   });
 
   final _DadosLocaisRestaurados dados;
@@ -305,10 +389,23 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
   aoPegarChaveNaPortaria;
   final Future<void> Function(_DadosLocaisRestaurados dados)
   aoDevolverChaveParaPortaria;
+  final Future<void> Function(_DadosLocaisRestaurados dados)
+  aoPassarChaveParaOutraPessoa;
 
   @override
   Widget build(BuildContext contexto) {
     final situacao = dados.situacao;
+    final perfilSelecionado = dados.perfilSelecionado?.trim();
+    final temPerfilSelecionado =
+        perfilSelecionado != null && perfilSelecionado.isNotEmpty;
+    final chaveNaPortaria = situacao.localizacaoDaChave.estaNaPortaria;
+    final chaveComPerfilSelecionado =
+        temPerfilSelecionado &&
+        situacao.localizacaoDaChave.estaCom(perfilSelecionado);
+    final chaveComOutraPessoa =
+        temPerfilSelecionado &&
+        situacao.localizacaoDaChave.estaComPessoa &&
+        !chaveComPerfilSelecionado;
 
     return Card(
       child: Padding(
@@ -326,15 +423,29 @@ class _ResumoDosDadosRestaurados extends StatelessWidget {
             Text(_textoDaLocalizacao(situacao.localizacaoDaChave)),
             Text(_textoDoHistorico(situacao.historico.length)),
             const SizedBox(height: 12),
-            FilledButton(
-              onPressed: () => aoPegarChaveNaPortaria(dados),
-              child: const Text('Pegar chave na portaria'),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: () => aoDevolverChaveParaPortaria(dados),
-              child: const Text('Devolver chave para a portaria'),
-            ),
+            if (!temPerfilSelecionado)
+              const Text('Escolha um perfil para ver as ações disponíveis.'),
+            if (temPerfilSelecionado && chaveNaPortaria)
+              FilledButton(
+                onPressed: () => aoPegarChaveNaPortaria(dados),
+                child: const Text('Pegar chave na portaria'),
+              ),
+            if (chaveComPerfilSelecionado) ...[
+              OutlinedButton(
+                onPressed: () => aoDevolverChaveParaPortaria(dados),
+                child: const Text('Devolver chave para a portaria'),
+              ),
+              const SizedBox(height: 8),
+              FilledButton.tonal(
+                onPressed: () => aoPassarChaveParaOutraPessoa(dados),
+                child: const Text('Passar chave para outra pessoa'),
+              ),
+            ],
+            if (chaveComOutraPessoa)
+              Text(
+                'A chave está com ${situacao.localizacaoDaChave.nomeDaPessoa}. '
+                'Apenas ${situacao.localizacaoDaChave.nomeDaPessoa} pode devolver ou passar a chave.',
+              ),
             const SizedBox(height: 16),
             _HistoricoDaSala(situacao: situacao),
           ],

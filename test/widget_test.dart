@@ -5,6 +5,7 @@ import 'package:chave_26/funcionalidades/sala/dominio/evento_historico.dart';
 import 'package:chave_26/funcionalidades/sala/dominio/localizacao_da_chave.dart';
 import 'package:chave_26/funcionalidades/sala/dominio/situacao_da_sala.dart';
 import 'package:chave_26/main.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -137,27 +138,70 @@ void main() {
     expect(find.text('Histórico: 0 registros'), findsOneWidget);
   });
 
-  testWidgets('bloqueia ação quando nenhum perfil foi selecionado', (
+  testWidgets('pede seleção de perfil antes de mostrar ações de movimentação', (
+    testador,
+  ) async {
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(
+      find.text('Escolha um perfil para ver as ações disponíveis.'),
+      findsOneWidget,
+    );
+    expect(find.text('Pegar chave na portaria'), findsNothing);
+    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+    expect(find.text('Histórico: 0 registros'), findsOneWidget);
+  });
+
+  testWidgets('mostra apenas ações disponíveis conforme localização da chave', (
     testador,
   ) async {
     final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
+
+    await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
 
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    await testador.ensureVisible(find.text('Pegar chave na portaria'));
-    await testador.tap(find.text('Pegar chave na portaria'));
+    expect(find.text('Pegar chave na portaria'), findsOneWidget);
+    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Passar chave para outra pessoa'), findsNothing);
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
+      ),
+    );
+    await testador.pumpWidget(const SizedBox.shrink());
+    await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
+    expect(find.text('Pegar chave na portaria'), findsNothing);
+    expect(find.text('Devolver chave para a portaria'), findsOneWidget);
+    expect(find.text('Passar chave para outra pessoa'), findsOneWidget);
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.fechada,
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Clara'),
+      ),
+    );
+    await testador.pumpWidget(const SizedBox.shrink());
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Pegar chave na portaria'), findsNothing);
+    expect(find.text('Devolver chave para a portaria'), findsNothing);
+    expect(find.text('Passar chave para outra pessoa'), findsNothing);
     expect(
-      find.text('Escolha um perfil antes de alterar a sala.'),
+      find.text(
+        'A chave está com Clara. Apenas Clara pode devolver ou passar a chave.',
+      ),
       findsOneWidget,
     );
-    expect(
-      await repositorioDaSala.carregarSituacaoAtual(),
-      SituacaoDaSala.inicial(),
-    );
-    expect(find.text('Histórico: 0 registros'), findsOneWidget);
   });
 
   testWidgets('usa o perfil selecionado ao registrar ação da sala', (
@@ -405,33 +449,65 @@ void main() {
   });
 
   testWidgets(
-    'explica quando perfil sem a chave tenta devolver para portaria',
+    'confirma transferência da chave para outra pessoa antes de persistir',
     (testador) async {
       final repositorioDaSala = await RepositorioLocalDaSala.criar();
       final repositorioDoPerfil = await RepositorioLocalDoPerfil.criar();
       final situacaoInicial = SituacaoDaSala(
         estado: EstadoDaSala.fechada,
-        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Vitor'),
+        localizacaoDaChave: LocalizacaoDaChave.comPessoa('Lucas'),
       );
 
-      await repositorioDoPerfil.salvarPerfilSelecionado('Clara');
+      await repositorioDoPerfil.salvarPerfilSelecionado('Lucas');
       await repositorioDaSala.salvarSituacaoAtual(situacaoInicial);
 
       await testador.pumpWidget(const AplicativoChave26());
       await testador.pumpAndSettle();
 
-      await testador.ensureVisible(find.text('Devolver chave para a portaria'));
-      await testador.tap(find.text('Devolver chave para a portaria'));
+      await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
+      await testador.tap(find.text('Passar chave para outra pessoa'));
       await testador.pumpAndSettle();
 
-      expect(find.text('Devolver chave?'), findsNothing);
+      expect(find.text('Passar chave para quem?'), findsOneWidget);
+      expect(find.text('Lucas'), findsNothing);
+      expect(find.text('Clara'), findsOneWidget);
+      expect(find.text('Amanda'), findsOneWidget);
+      expect(find.text('Vitor'), findsOneWidget);
+
+      await testador.tap(find.text('Amanda'));
+      await testador.pumpAndSettle();
+
+      expect(find.text('Passar chave?'), findsOneWidget);
       expect(
-        find.text(
-          'Clara precisa estar com a chave para devolver para a portaria.',
-        ),
+        find.text('Confirme que Lucas está passando a chave para Amanda.'),
         findsOneWidget,
       );
+
+      await testador.tap(find.text('Cancelar'));
+      await testador.pumpAndSettle();
+
       expect(await repositorioDaSala.carregarSituacaoAtual(), situacaoInicial);
+
+      await testador.ensureVisible(find.text('Passar chave para outra pessoa'));
+      await testador.tap(find.text('Passar chave para outra pessoa'));
+      await testador.pumpAndSettle();
+      await testador.tap(find.text('Amanda'));
+      await testador.pumpAndSettle();
+      await testador.tap(find.text('Confirmar transferência'));
+      await testador.pumpAndSettle();
+
+      final situacaoFinal = await repositorioDaSala.carregarSituacaoAtual();
+      expect(
+        situacaoFinal.localizacaoDaChave,
+        LocalizacaoDaChave.comPessoa('Amanda'),
+      );
+      expect(
+        situacaoFinal.historico.single.descricao,
+        'Lucas passou a chave para Amanda.',
+      );
+      expect(find.text('Chave com Amanda'), findsOneWidget);
+      expect(find.text('Histórico: 1 registro'), findsOneWidget);
+      expect(find.text('Lucas passou a chave para Amanda.'), findsWidgets);
     },
   );
 }

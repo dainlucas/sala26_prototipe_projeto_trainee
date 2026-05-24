@@ -1,27 +1,41 @@
 # Marco 5 — Confirmações e microinterações
 
-Esta fatia inicia o Marco 5 com o primeiro fluxo sensível protegido por confirmação: devolver a chave para a portaria.
+Esta fatia amplia o Marco 5 com duas melhorias de usabilidade: ações sensíveis protegidas por confirmação e ações indisponíveis ocultadas da tela principal.
 
 ## O que foi implementado
 
-- A tela inicial agora expõe a ação `Devolver chave para a portaria`.
+- A tela inicial continua expondo a ação `Devolver chave para a portaria` apenas quando ela faz sentido para o perfil selecionado.
+- A tela inicial agora também expõe a ação `Passar chave para outra pessoa` quando a chave está com o perfil selecionado.
 - Antes da devolução, o app valida se o perfil selecionado realmente está com a chave.
-- Se a ação for inválida, o app mostra uma mensagem clara e não altera o estado local.
-- Se a ação for válida, o app abre um diálogo de confirmação antes de salvar.
-- Ao cancelar o diálogo:
+- Antes da transferência, o app pede a pessoa de destino e abre um diálogo de confirmação.
+- Ao cancelar uma confirmação:
   - o estado da sala não muda;
   - o histórico não recebe novo item.
-- Ao confirmar:
+- Ao confirmar a devolução:
   - a chave volta para a portaria;
   - o novo estado é salvo localmente;
   - um evento é registrado no histórico;
   - o usuário recebe feedback pela mensagem de sucesso.
+- Ao confirmar a transferência:
+  - a chave passa para a pessoa escolhida;
+  - o novo estado é salvo localmente;
+  - um evento é registrado no histórico;
+  - o usuário recebe feedback pela mensagem de sucesso.
+
+## Ações disponíveis na tela
+
+Para reduzir erro e deixar o app mais claro, a tela não mostra ações que não podem ser executadas no estado atual:
+
+- Sem perfil selecionado: o app pede para escolher um perfil antes de mostrar ações de movimentação.
+- Chave na portaria com perfil selecionado: mostra `Pegar chave na portaria`.
+- Chave com o perfil selecionado: mostra `Devolver chave para a portaria` e `Passar chave para outra pessoa`.
+- Chave com outra pessoa: oculta as ações e explica quem está com a chave.
 
 ## Decisão desta fatia
 
-O Marco 5 foi iniciado pela devolução da chave porque é uma ação sensível e fácil de acontecer por engano durante a apresentação.
+Ocultar ações indisponíveis foi escolhido em vez de deixar botões inválidos visíveis, porque o protótipo precisa ser rápido de entender durante a apresentação. As regras de domínio continuam protegendo ações inválidas, mas a interface evita oferecer caminhos que o usuário não pode concluir.
 
-A confirmação de transferência de chave para outra pessoa permanece para uma próxima fatia do mesmo marco, para evitar misturar muitos fluxos de UI no mesmo commit.
+A transferência para outra pessoa reaproveita os perfis locais do Marco 3. O diálogo de escolha exclui o perfil atual para evitar transferência para si mesmo.
 
 ## Testes automatizados
 
@@ -29,16 +43,20 @@ Arquivo atualizado:
 
 - `test/widget_test.dart`
 
-Coberturas adicionadas:
+Coberturas adicionadas ou atualizadas:
 
 - diálogo de confirmação para devolver a chave à portaria;
 - cancelamento sem alteração de estado nem histórico;
 - confirmação com persistência do novo estado e novo evento no histórico;
-- mensagem clara quando um perfil sem a chave tenta devolver para a portaria;
-- garantia de que ação inválida não abre confirmação nem altera os dados salvos.
+- pedido de seleção de perfil antes de mostrar ações de movimentação;
+- visibilidade condicional dos botões conforme a localização da chave;
+- mensagem explicativa quando a chave está com outra pessoa;
+- diálogo de escolha da pessoa que receberá a chave;
+- confirmação de transferência antes de persistir;
+- cancelamento da transferência sem alteração de estado;
+- confirmação da transferência com persistência, histórico e feedback.
 
 ## Limitações ainda abertas
 
-- A confirmação de transferência da chave para outra pessoa ainda não foi implementada na UI.
 - As microinterações visuais ainda são simples; refinamento de aparência e hierarquia fica para o marco de UI principal.
-- O botão de devolução ainda está na tela inicial simples, junto dos dados restaurados, para manter a fatia pequena.
+- Os botões ainda ficam dentro do card de dados restaurados, para manter a fatia pequena antes do redesenho visual do Marco 6.

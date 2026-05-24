@@ -255,13 +255,14 @@ Definition of done:
 
 - [x] Confirmar devolução da chave para a portaria.
   - Documentado em `documentos/funcionalidades/006-confirmacoes-e-microinteracoes.md`.
-- [ ] Confirmar transferência da chave para outra pessoa.
-- [~] Exibir feedback de sucesso após ações.
-  - A devolução da chave para a portaria já exibe feedback de sucesso; os demais fluxos entram nas próximas fatias.
-- [~] Exibir mensagens claras para ações inválidas.
-  - A tentativa de devolução por um perfil que não está com a chave já mostra mensagem clara sem alterar dados.
+- [x] Confirmar transferência da chave para outra pessoa.
+  - A tela permite escolher outro perfil local e confirmar antes de salvar a transferência.
+- [x] Exibir feedback de sucesso após ações.
+  - Pegar, devolver e passar a chave mostram mensagem de sucesso após persistir a alteração.
+- [x] Exibir mensagens claras para ações inválidas.
+  - A interface oculta ações indisponíveis e explica quando a chave está com outra pessoa.
 - [x] Testar pelo menos um diálogo de confirmação.
-  - Coberto por `test/widget_test.dart` no fluxo de devolução da chave.
+  - Coberto por `test/widget_test.dart` nos fluxos de devolução e transferência da chave.
 
 Definition of done:
 
