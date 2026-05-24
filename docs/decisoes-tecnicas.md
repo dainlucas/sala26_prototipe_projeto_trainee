@@ -207,16 +207,25 @@ Decisão: UI amigável, divertida e alinhada à Prototipe.
 Direção visual:
 
 - tela inicial com card grande de status;
-- cores claras e vivas;
+- cores claras, vivas e baseadas na paleta da Prototipe;
 - mascote/placeholder do mascote;
 - botões grandes e óbvios;
 - texto simples;
 - foco em celular.
 
+Paleta registrada:
+
+- a paleta oficial/referencial da Prototipe está documentada em `docs/identidade-visual-prototipe.md`;
+- o gradiente principal recomendado vai de `#0397DD` para `#274299`, passando por `#0E7CC7` e `#1D58AA`;
+- títulos podem usar o creme `#FDFBDB`;
+- detalhes claros podem usar `#F7FBFF`;
+- contornos/contrastes escuros podem usar `#060D5B`;
+- cores do mascote incluem roxo `#444EDB`, roxo sombra `#383EAA`, azul claro `#3D9EDD` e preto `#161617`.
+
 Pendente:
 
-- definir cores oficiais ou aproximadas da Prototipe;
-- definir se existe arquivo real do mascote para usar.
+- transformar a paleta em constantes Dart dentro do tema do app;
+- aplicar o gradiente e as cores da marca na UI principal.
 
 ## Testes
 

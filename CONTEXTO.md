@@ -135,9 +135,42 @@ Decisões tomadas para o desenvolvimento inicial:
 - ao fechar a sala, o usuário deverá escolher se a chave ficou com ele, foi passada para outra pessoa ou voltou para a portaria;
 - o app deverá ter uma interface amigável, divertida e alinhada à identidade visual da Prototipe;
 - o mascote da Prototipe já foi incluído como asset local;
-- as cores oficiais da Prototipe serão adicionadas/ajustadas depois;
+- a paleta de cores da Prototipe foi registrada em `docs/identidade-visual-prototipe.md`;
 - o app terá poucos testes automatizados, mas úteis;
 - o app terá README, backlog e documentação.
+
+## Identidade visual da Prototipe
+
+A interface deve usar como referência a paleta visual da Prototipe registrada em `docs/identidade-visual-prototipe.md`.
+
+Cores principais:
+
+- azul ciano do fundo: `#0397DD`;
+- azul médio: `#0E7CC7`;
+- azul royal: `#1D58AA`;
+- azul índigo escuro: `#274299`;
+- azul marinho/contorno: `#060D5B`;
+- creme dos títulos: `#FDFBDB`;
+- branco dos detalhes/logo: `#F7FBFF`.
+
+Cores de apoio do mascote:
+
+- roxo principal: `#444EDB`;
+- roxo sombra: `#383EAA`;
+- azul claro/barriga: `#3D9EDD`;
+- preto dos óculos: `#161617`.
+
+Gradiente de fundo recomendado:
+
+```css
+background: linear-gradient(
+  90deg,
+  #0397DD 0%,
+  #0E7CC7 35%,
+  #1D58AA 70%,
+  #274299 100%
+);
+```
 
 ## Disciplina de documentação
 

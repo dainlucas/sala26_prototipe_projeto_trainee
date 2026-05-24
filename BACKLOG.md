@@ -48,6 +48,7 @@ Prazo-alvo: 6 dias.
 - [x] Poderemos usar Riverpod para organização de estado.
 - [x] Poderemos usar SharedPreferences com JSON para persistência local simples.
 - [x] Decisões, bibliotecas, regras, limitações e mudanças relevantes devem ser documentadas constantemente conforme o desenvolvimento.
+- [x] Nomes de classes, variáveis, enums, atributos e métodos ligados ao domínio do app devem ser em português para facilitar a leitura e a explicação do projeto.
 
 ---
 
@@ -60,10 +61,10 @@ Prazo-alvo: 6 dias.
 - [ ] Definir o nome técnico do pacote/app.
   - Sugestão: `chave_26`.
 
-- [ ] Definir como representar a identidade visual da Prototipe no MVP.
-  - Cores principais serão informadas depois.
+- [x] Definir como representar a identidade visual da Prototipe no MVP.
+  - Paleta de cores registrada em `docs/identidade-visual-prototipe.md`.
   - Mascote/imagem já incluído em `assets/images/mascote_prototipe.png`.
-  - Enquanto isso, a paleta de cores continua provisória.
+  - Pendente para a implementação visual: transformar a paleta em constantes Dart e aplicar na UI.
 
 - [x] Definir biblioteca de estado.
   - Decisão: Riverpod pode ser usado.
@@ -141,12 +142,14 @@ Definition of done:
 
 ## Marco 1 — Domínio e regras de negócio
 
-- [ ] Criar modelos de domínio:
-  - `RoomStatus`.
-  - `KeyLocation`.
-  - `RoomSnapshot`.
-  - `HistoryEvent`.
-- [ ] Criar serviço/controlador de regras da sala.
+Observação de nomenclatura: no domínio do app, usar nomes em português para facilitar a leitura, o aprendizado e a apresentação do projeto. Exemplos: `EstadoDaSala`, `LocalizacaoDaChave`, `SituacaoDaSala`, `EventoHistorico` e `ControladorDaSala`.
+
+- [ ] Criar modelos de domínio com nomes em português:
+  - `EstadoDaSala`.
+  - `LocalizacaoDaChave`.
+  - `SituacaoDaSala`.
+  - `EventoHistorico`.
+- [ ] Criar serviço/controlador de regras da sala com nome em português, por exemplo `ControladorDaSala`.
 - [ ] Testar ação “peguei a chave”.
 - [ ] Testar ação “abri a sala”.
 - [ ] Testar ação “fechei a sala com chave comigo”.
