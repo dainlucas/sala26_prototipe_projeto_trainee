@@ -38,21 +38,33 @@ Evolução futura:
 
 - Firebase, Supabase ou API própria poderiam sincronizar estado e histórico entre membros.
 
-## Login
+## Perfis locais
 
-Decisão: login local simples.
+Decisão: perfis locais simples e pré-definidos para o protótipo.
 
-O usuário informará seu nome no app. Esse nome será salvo localmente e usado nas ações e no histórico.
+Em vez de login real ou campo livre de nome, o app terá um setor simples de configurações para selecionar um perfil local.
+
+Perfis do protótipo:
+
+- Lucas;
+- Clara;
+- Amanda;
+- Vitor.
+
+O perfil selecionado será salvo localmente e usado nas ações e no histórico.
 
 Motivo:
 
 - o app precisa diferenciar quem está com a chave;
-- login real seria complexo demais para o MVP;
-- o nome local resolve a necessidade da demonstração.
+- login real seria complexo demais para o protótipo;
+- perfis pré-definidos facilitam a apresentação em um único aparelho;
+- a troca de perfil simula pessoas diferentes usando o app sem criar autenticação.
 
 Limitação:
 
-- não há verificação de identidade.
+- não há verificação de identidade;
+- qualquer pessoa com acesso ao aparelho pode trocar o perfil;
+- isso serve para demonstração, não para controle oficial.
 
 ## Estado e regras
 
@@ -101,7 +113,7 @@ Explicação simples:
 
 Riverpod é uma biblioteca para organizar o estado do app, como:
 
-- nome da pessoa logada;
+- perfil local selecionado;
 - sala aberta ou fechada;
 - localização da chave;
 - histórico de ações.
@@ -137,9 +149,15 @@ Opções consideradas:
 Motivo da decisão:
 
 - menor setup;
-- suficiente para salvar nome, estado atual e histórico simples;
+- suficiente para salvar perfil selecionado, estado atual e histórico simples;
 - reduz risco técnico no prazo de 6 dias;
 - evita complexidade de banco local para poucos dados.
+
+Detalhamento de trade-off:
+
+- a `SituacaoDaSala` será salva inteira como um único JSON, incluindo o histórico;
+- essa escolha reduz complexidade e evita inconsistência entre estado atual e histórico no protótipo;
+- os trade-offs dessa decisão estão registrados em `TRADEOFFS.md`.
 
 Limitação:
 
@@ -186,9 +204,9 @@ lib/
     tema/
       tema_app.dart
   funcionalidades/
-    autenticacao/
-      tela_login.dart
-      controlador_usuario.dart
+    configuracoes/
+      tela_configuracoes.dart
+      controlador_perfil_local.dart
     sala/
       dominio/
         estado_da_sala.dart

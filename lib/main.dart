@@ -79,7 +79,7 @@ class TelaInicialChave26 extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Próximo passo: implementar login local, estado da sala e histórico.',
+                'Próximo passo: implementar perfis locais, estado da sala e histórico.',
                 textAlign: TextAlign.center,
                 style: Theme.of(contexto).textTheme.bodyMedium,
               ),

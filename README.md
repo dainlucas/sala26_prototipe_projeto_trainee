@@ -19,7 +19,7 @@ Este projeto é um MVP para teste de trainee. O foco é:
 
 Entra no MVP:
 
-- login local por nome;
+- perfis locais pré-definidos para demonstração;
 - status da sala;
 - localização da chave;
 - ações principais da chave/sala;
@@ -43,6 +43,8 @@ Fica fora do MVP:
 - Dart 3.12.0
 - Riverpod para organização de estado
 - SharedPreferences com JSON para persistência local simples
+
+As principais escolhas conscientes e limitações do protótipo estão registradas em `TRADEOFFS.md`.
 
 ## Ambiente WSL
 

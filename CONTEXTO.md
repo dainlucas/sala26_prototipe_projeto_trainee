@@ -126,11 +126,12 @@ Decisões tomadas para o desenvolvimento inicial:
 - Web fica fora do MVP;
 - o app será funcional, não apenas visual;
 - o funcionamento será local/offline, sem backend;
-- haverá login local simples por nome para identificar quem está usando o app;
-- o nome da pessoa logada será usado nas ações e no histórico;
+- haverá perfis locais pré-definidos para identificar quem está usando o app no protótipo;
+- o perfil local selecionado será usado nas ações e no histórico;
 - o app usará Flutter com Dart;
 - o app poderá usar Riverpod para organização de estado;
 - o app poderá usar SharedPreferences com JSON para persistência local simples;
+- os trade-offs do protótipo ficam documentados em `TRADEOFFS.md`;
 - o usuário deverá poder transferir a chave para outra pessoa;
 - ao fechar a sala, o usuário deverá escolher se a chave ficou com ele, foi passada para outra pessoa ou voltou para a portaria;
 - o app deverá ter uma interface amigável, divertida e alinhada à identidade visual da Prototipe;

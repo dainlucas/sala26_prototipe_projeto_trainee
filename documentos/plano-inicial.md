@@ -15,7 +15,7 @@ O projeto será um MVP para teste de trainee, com visual amigável, divertido e 
 
 Entram no MVP:
 
-- login local por nome;
+- perfis locais pré-definidos para demonstração;
 - status da sala;
 - localização da chave;
 - ações principais;
@@ -52,7 +52,7 @@ Motivo: essa combinação equilibra simplicidade, organização e demonstração
 2. Criar projeto Flutter. — concluído com target Android.
 3. Criar modelos e regras de negócio com testes.
 4. Criar persistência local.
-5. Criar login local por nome.
+5. Criar seleção de perfil local em configurações.
 6. Criar tela principal.
 7. Criar histórico.
 8. Criar confirmações.

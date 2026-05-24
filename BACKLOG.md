@@ -32,8 +32,8 @@ Prazo-alvo: 6 dias.
 - [x] O uso principal será em celular Android.
 - [x] Web fica fora do MVP para reduzir distração e manter o foco no celular.
 - [x] A primeira versão será local/offline, para uso por uma pessoa no teste.
-- [x] Haverá login simples/local para diferenciar quem está usando o app.
-- [x] O nome da pessoa logada será usado nas ações e no histórico.
+- [x] Haverá perfis locais pré-definidos para diferenciar quem está usando o app no protótipo.
+- [x] O perfil local selecionado será usado nas ações e no histórico.
 - [x] Não haverá backend no MVP.
 - [x] Não haverá integração com grupo de mensagens no MVP.
 - [x] Não haverá botão de copiar mensagem pronta no MVP.
@@ -47,6 +47,7 @@ Prazo-alvo: 6 dias.
 - [x] O projeto terá poucos testes automatizados de regras e widgets.
 - [x] Poderemos usar Riverpod para organização de estado.
 - [x] Poderemos usar SharedPreferences com JSON para persistência local simples.
+- [x] Decisões de trade-off do protótipo devem ser registradas em `TRADEOFFS.md` para revisão futura antes de uma versão profissional.
 - [x] Decisões, bibliotecas, regras, limitações e mudanças relevantes devem ser documentadas constantemente conforme o desenvolvimento.
 - [x] Nomes de classes, variáveis, enums, atributos e métodos ligados ao domínio do app devem ser em português para facilitar a leitura e a explicação do projeto.
 - [x] Pastas alteráveis do projeto devem usar nomes em português quando isso não quebrar convenções obrigatórias do Flutter/Android.
@@ -74,6 +75,7 @@ Prazo-alvo: 6 dias.
 - [x] Definir persistência local.
   - Decisão: SharedPreferences com JSON pode ser usado.
   - Motivo: reduz setup e mantém simplicidade para o MVP.
+  - Trade-offs documentados em `TRADEOFFS.md`.
 
 ---
 
@@ -176,12 +178,13 @@ Definition of done:
 
 - [ ] Criar repositório local para estado atual.
 - [ ] Criar repositório local para histórico.
-- [ ] Salvar nome da pessoa logada.
+- [ ] Salvar perfil local selecionado.
 - [ ] Salvar estado da sala.
 - [ ] Salvar histórico.
 - [ ] Restaurar dados ao reabrir o app.
 - [ ] Testar serialização/desserialização dos modelos.
 - [ ] Documentar limitações da persistência local.
+  - Trade-offs iniciais registrados em `TRADEOFFS.md`.
 
 Definition of done:
 
@@ -191,19 +194,20 @@ Definition of done:
 
 ---
 
-## Marco 3 — Login local simples
+## Marco 3 — Perfis locais simples
 
-- [ ] Criar tela inicial para informar o nome.
-- [ ] Validar nome obrigatório.
-- [ ] Salvar nome localmente.
-- [ ] Usar nome logado nas ações.
-- [ ] Permitir trocar usuário em uma tela/configuração simples.
-- [ ] Testar fluxo básico de login/local.
+- [ ] Criar setor de configurações simples para escolher perfil.
+- [ ] Disponibilizar perfis pré-definidos: Lucas, Clara, Amanda e Vitor.
+- [ ] Validar perfil obrigatório.
+- [ ] Salvar perfil selecionado localmente.
+- [ ] Usar perfil selecionado nas ações.
+- [ ] Permitir trocar perfil em uma tela/configuração simples.
+- [ ] Testar fluxo básico de seleção/troca de perfil local.
 
 Definition of done:
 
-- O usuário informa o nome antes de usar o app.
-- As ações aparecem no histórico com esse nome.
+- O usuário escolhe um perfil antes de usar o app.
+- As ações aparecem no histórico com esse perfil.
 
 ---
 
@@ -301,8 +305,8 @@ Definition of done:
   - Impacto: aceitável para teste de trainee, mas não suficiente para uso real em grupo.
   - Futuro: backend ou banco em nuvem.
 
-- [ ] Login local não prova identidade real.
-  - Impacto: qualquer pessoa pode digitar qualquer nome.
+- [ ] Perfil local não prova identidade real.
+  - Impacto: qualquer pessoa com acesso ao aparelho pode trocar o perfil selecionado.
   - Futuro: autenticação real ou código de acesso.
 
 - [ ] Sem integração com grupo de mensagens.
@@ -322,7 +326,7 @@ Definition of done:
 3. Criar o projeto Flutter.
 4. Implementar domínio com testes primeiro.
 5. Implementar persistência local.
-6. Implementar login local.
+6. Implementar perfis locais em configurações.
 7. Implementar UI principal.
 8. Implementar histórico.
 9. Implementar confirmações.
