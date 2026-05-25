@@ -4,7 +4,7 @@ App Flutter/Dart para acompanhar o estado da sala 26 da Prototipe.
 
 ## Objetivo
 
-O Chave 26 resolve um problema simples e real: saber rapidamente se a sala 26 está aberta ou fechada, onde está a chave, quem está responsável por ela e quais foram as últimas movimentações.
+O Sala 26 resolve um problema simples e real: saber rapidamente se a sala 26 está aberta ou fechada, onde está a chave, quem está responsável por ela e quais foram as últimas movimentações.
 
 Este projeto é um MVP para teste de trainee. O foco é:
 
