@@ -118,8 +118,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 ## Imagens
 
 <img width="1244" height="784" alt="image" src="https://github.com/user-attachments/assets/1ee27017-e8be-469b-8772-980f4cc06402" />
+
 ---
+
 <img width="1245" height="778" alt="image" src="https://github.com/user-attachments/assets/5a4e15ce-22de-4182-9eb0-fa965987bd66" />
+
 ---
+
 <img width="1242" height="776" alt="image" src="https://github.com/user-attachments/assets/b007b7d3-1ae5-4af6-95bc-16cf65cb41f1" />
 
