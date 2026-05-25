@@ -1,4 +1,4 @@
-# Chave 26
+# Sala 26
 
 App Flutter/Dart para acompanhar o estado da sala 26 da Prototipe.
 
