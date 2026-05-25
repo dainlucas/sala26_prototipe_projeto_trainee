@@ -795,26 +795,6 @@ class _CardStatusDaSala extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: aberta
-                      ? CoresPrototipe.azulCiano
-                      : CoresPrototipe.textoSecundario,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  aberta ? 'Ativa' : 'Inativa',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
             ],
           ),
           const Padding(

@@ -1001,6 +1001,8 @@ void main() {
     expect(find.byTooltip('Trocar perfil'), findsOneWidget);
     expect(find.text('Sala 26'), findsOneWidget);
     expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Ativa'), findsNothing);
+    expect(find.text('Inativa'), findsNothing);
     expect(find.text('Chave com'), findsOneWidget);
     expect(find.text('Lucas'), findsWidgets);
     expect(find.text('Localização'), findsOneWidget);
