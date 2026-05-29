@@ -20,6 +20,8 @@ class CoresPrototipe {
   static const ciano = Color(0xFF039CF5);
   static const indigo = Color(0xFF193ADC);
   static const navy = Color(0xFF0A1C2E);
+  static const cinzaFechadoEscuro = Color(0xFF4B5563);
+  static const cinzaFechado = Color(0xFF6B7280);
   static const branco = Color(0xFFFCFCFD);
   static const offWhite = Color(0xFFEAEAEB);
   static const cinzaAzulado = Color(0xFF7F8FAC);
@@ -53,6 +55,13 @@ class CoresPrototipe {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [navy, azulRoyal, ciano],
+    stops: [0, 0.55, 1],
+  );
+
+  static const gradienteFechada = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [cinzaFechadoEscuro, cinzaFechado, cinzaSuave],
     stops: [0, 0.55, 1],
   );
 }
@@ -784,25 +793,40 @@ class _AbaInicio extends StatelessWidget {
 
   @override
   Widget build(BuildContext contexto) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _CardStatusDaSala(situacao: dados.situacao),
-            const SizedBox(height: 24),
-            _AcoesRapidasDaSala(
-              dados: dados,
-              aoPegarChaveNaPortaria: aoPegarChaveNaPortaria,
-              aoAbrirSala: aoAbrirSala,
-              aoFecharSala: aoFecharSala,
-              aoGuardarChave: aoGuardarChave,
-              aoPassarChaveParaOutraPessoa: aoPassarChaveParaOutraPessoa,
-            ),
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (contexto, restricoes) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (contexto, restricoesDoStatus) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: restricoesDoStatus.maxHeight,
+                        ),
+                        child: _CardStatusDaSala(situacao: dados.situacao),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              _AcoesRapidasDaSala(
+                dados: dados,
+                aoPegarChaveNaPortaria: aoPegarChaveNaPortaria,
+                aoAbrirSala: aoAbrirSala,
+                aoFecharSala: aoFecharSala,
+                aoGuardarChave: aoGuardarChave,
+                aoPassarChaveParaOutraPessoa: aoPassarChaveParaOutraPessoa,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -944,79 +968,137 @@ class _CardStatusDaSala extends StatelessWidget {
 
   @override
   Widget build(BuildContext contexto) {
-    final aberta = situacao.estado == EstadoDaSala.aberta;
-
     return _SuperficieElevada(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  gradient: aberta ? CoresPrototipe.gradientePrincipal : null,
-                  color: aberta ? null : CoresPrototipe.containerSecundario,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(
-                  Icons.key,
-                  color: aberta
-                      ? CoresPrototipe.branco
-                      : CoresPrototipe.azulRoyal,
-                  size: 32,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Sala 26',
-                      style: TextStyle(
-                        color: CoresPrototipe.textoSecundario,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      aberta ? 'Aberta' : 'Fechada',
-                      style: const TextStyle(
-                        color: CoresPrototipe.textoPrincipal,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          _ResumoVisualDaSala(situacao: situacao),
+          const SizedBox(height: 18),
+          _GradeDeInformacoesDaChave(situacao: situacao),
+          const SizedBox(height: 18),
+          _AtividadeRecenteDaHome(situacao: situacao),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResumoVisualDaSala extends StatelessWidget {
+  const _ResumoVisualDaSala({required this.situacao});
+
+  final SituacaoDaSala situacao;
+
+  @override
+  Widget build(BuildContext contexto) {
+    final aberta = situacao.estado == EstadoDaSala.aberta;
+    final corDeSombra = aberta
+        ? CoresPrototipe.azulPrimario
+        : CoresPrototipe.cinzaFechado;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+      decoration: BoxDecoration(
+        gradient: aberta
+            ? CoresPrototipe.gradientePrincipal
+            : CoresPrototipe.gradienteFechada,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: corDeSombra.withValues(alpha: 0.2),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 22),
-            child: Divider(height: 1, color: CoresPrototipe.contornoSuave),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              color: CoresPrototipe.branco.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(
+                color: CoresPrototipe.branco.withValues(alpha: 0.22),
+              ),
+            ),
+            child: const Icon(
+              Icons.key,
+              color: CoresPrototipe.branco,
+              size: 36,
+            ),
           ),
-          _LinhaDeInformacao(
+          const SizedBox(height: 14),
+          const Text(
+            'Sala 26',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: CoresPrototipe.branco,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            aberta ? 'Sala aberta' : 'Sala fechada',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: CoresPrototipe.branco,
+              fontSize: 34,
+              fontWeight: FontWeight.w800,
+              height: 1.05,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _fraseDeStatusDaChave(situacao),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: CoresPrototipe.branco.withValues(alpha: 0.88),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GradeDeInformacoesDaChave extends StatelessWidget {
+  const _GradeDeInformacoesDaChave({required this.situacao});
+
+  final SituacaoDaSala situacao;
+
+  @override
+  Widget build(BuildContext contexto) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: _LinhaDeInformacao(
             icone: Icons.person_outline,
-            rotulo: 'Chave com',
+            rotulo: 'Responsável',
             valor: _textoDeResponsavelDaChave(situacao),
           ),
-          const SizedBox(height: 16),
-          _LinhaDeInformacao(
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _LinhaDeInformacao(
             icone: Icons.location_on_outlined,
             rotulo: 'Localização',
             valor: _textoDaLocalizacao(situacao.localizacaoDaChave),
           ),
-          const SizedBox(height: 16),
-          _LinhaDeInformacao(
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _LinhaDeInformacao(
             icone: Icons.schedule_outlined,
             rotulo: 'Última atualização',
             valor: _formatarAtualizacao(situacao.atualizadaEm),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -1034,39 +1116,124 @@ class _LinhaDeInformacao extends StatelessWidget {
 
   @override
   Widget build(BuildContext contexto) {
-    return Row(
-      children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: const BoxDecoration(
-            color: CoresPrototipe.superficieContainerAlta,
-            shape: BoxShape.circle,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: CoresPrototipe.superficieContainerAlta,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: CoresPrototipe.offWhite),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icone, color: CoresPrototipe.azulPrimario, size: 20),
+          const SizedBox(height: 8),
+          Text(
+            rotulo,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: CoresPrototipe.textoSecundario,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-          child: Icon(icone, color: CoresPrototipe.azulPrimario, size: 20),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                rotulo,
-                style: const TextStyle(
-                  color: CoresPrototipe.textoSecundario,
-                  fontSize: 12,
-                ),
+          const SizedBox(height: 3),
+          Text(
+            valor,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: CoresPrototipe.textoPrincipal,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              height: 1.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AtividadeRecenteDaHome extends StatelessWidget {
+  const _AtividadeRecenteDaHome({required this.situacao});
+
+  final SituacaoDaSala situacao;
+
+  @override
+  Widget build(BuildContext contexto) {
+    final eventosRecentes = situacao.historico.reversed.take(13).toList();
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: CoresPrototipe.branco,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: CoresPrototipe.offWhite),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Atividade recente',
+            style: TextStyle(
+              color: CoresPrototipe.textoPrincipal,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (eventosRecentes.isEmpty)
+            const Text(
+              'Nenhuma movimentação registrada.',
+              style: TextStyle(
+                color: CoresPrototipe.textoSecundario,
+                fontSize: 13,
               ),
-              const SizedBox(height: 2),
-              Text(
-                valor,
-                style: const TextStyle(
-                  color: CoresPrototipe.textoPrincipal,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+            )
+          else
+            for (final evento in eventosRecentes) ...[
+              _ItemDeAtividadeRecente(evento: evento),
+              if (evento != eventosRecentes.last)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Divider(height: 1, color: CoresPrototipe.offWhite),
                 ),
-              ),
             ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ItemDeAtividadeRecente extends StatelessWidget {
+  const _ItemDeAtividadeRecente({required this.evento});
+
+  final EventoHistorico evento;
+
+  @override
+  Widget build(BuildContext contexto) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _formatarHorario(evento.momento),
+          style: const TextStyle(
+            color: CoresPrototipe.ciano,
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            evento.descricao,
+            style: const TextStyle(
+              color: CoresPrototipe.textoSecundario,
+              fontSize: 13,
+              height: 1.2,
+            ),
           ),
         ),
       ],
@@ -1108,11 +1275,20 @@ class _AcoesRapidasDaSala extends StatelessWidget {
         situacao.localizacaoDaChave.estaComPessoa &&
         !chaveComPerfil;
     final salaAberta = situacao.estado == EstadoDaSala.aberta;
+    final responsavelDaSalaAberta =
+        salaAberta && situacao.localizacaoDaChave.estaNaSala
+        ? situacao.pessoaUltimaAtualizacao?.trim()
+        : null;
+    final temResponsavelDaSalaAberta =
+        responsavelDaSalaAberta != null && responsavelDaSalaAberta.isNotEmpty;
     final responsavelPelaSalaAberta =
         temPerfil &&
-        salaAberta &&
-        situacao.localizacaoDaChave.estaNaSala &&
-        situacao.pessoaUltimaAtualizacao == perfil;
+        temResponsavelDaSalaAberta &&
+        responsavelDaSalaAberta == perfil;
+    final salaAbertaComOutroResponsavel =
+        temPerfil &&
+        temResponsavelDaSalaAberta &&
+        responsavelDaSalaAberta != perfil;
     final podeTransferirChave = chaveComPerfil || responsavelPelaSalaAberta;
 
     return Column(
@@ -1171,18 +1347,24 @@ class _AcoesRapidasDaSala extends StatelessWidget {
             texto: 'Fechar sala',
             aoPressionar: () => aoFecharSala(dados),
           )
+        else if (salaAbertaComOutroResponsavel)
+          _AvisoDeEstado(
+            texto:
+                'A sala foi aberta por $responsavelDaSalaAberta. '
+                'Apenas $responsavelDaSalaAberta pode fechar ou transferir a chave.',
+          )
         else if (chaveComOutraPessoa)
           _AvisoDeEstado(
             texto:
                 'A chave está com ${situacao.localizacaoDaChave.nomeDaPessoa}. '
-                'Apenas ${situacao.localizacaoDaChave.nomeDaPessoa} pode guardar ou passar a chave.',
+                'Apenas ${situacao.localizacaoDaChave.nomeDaPessoa} pode guardar ou transferir a chave.',
           ),
         if (podeTransferirChave) ...[
           const SizedBox(height: 20),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 4),
             child: Text(
-              'Passar a chave para',
+              'Transferir chave',
               style: TextStyle(
                 color: CoresPrototipe.textoSecundario,
                 fontSize: 14,
@@ -1200,25 +1382,6 @@ class _AcoesRapidasDaSala extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (final pessoa in _perfisPreDefinidos.where(
-                  (pessoa) => pessoa != perfil,
-                ))
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: _AtalhoDeTransferencia(
-                      nome: pessoa,
-                      aoPressionar: () =>
-                          aoPassarChaveParaOutraPessoa(dados, pessoa),
-                    ),
-                  ),
-              ],
             ),
           ),
         ],
@@ -1276,39 +1439,6 @@ class _AvisoDeEstado extends StatelessWidget {
             child: Text(
               texto,
               style: const TextStyle(color: CoresPrototipe.textoSecundario),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AtalhoDeTransferencia extends StatelessWidget {
-  const _AtalhoDeTransferencia({
-    required this.nome,
-    required this.aoPressionar,
-  });
-
-  final String nome;
-  final VoidCallback aoPressionar;
-
-  @override
-  Widget build(BuildContext contexto) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(24),
-      onTap: aoPressionar,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _AvatarDePerfil(nome: nome, selecionado: false, tamanho: 48),
-          const SizedBox(height: 6),
-          Text(
-            nome,
-            style: const TextStyle(
-              color: CoresPrototipe.textoSecundario,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -1514,21 +1644,16 @@ class _SuperficieElevada extends StatelessWidget {
 }
 
 class _AvatarDePerfil extends StatelessWidget {
-  const _AvatarDePerfil({
-    required this.nome,
-    required this.selecionado,
-    this.tamanho = 28,
-  });
+  const _AvatarDePerfil({required this.nome, required this.selecionado});
 
   final String nome;
   final bool selecionado;
-  final double tamanho;
 
   @override
   Widget build(BuildContext contexto) {
     return Container(
-      width: tamanho,
-      height: tamanho,
+      width: 28,
+      height: 28,
       decoration: BoxDecoration(
         color: selecionado
             ? CoresPrototipe.azulPrimario
@@ -1542,7 +1667,7 @@ class _AvatarDePerfil extends StatelessWidget {
           color: selecionado
               ? CoresPrototipe.branco
               : CoresPrototipe.textoContainerSecundario,
-          fontSize: tamanho >= 40 ? 18 : 12,
+          fontSize: 12,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -1566,11 +1691,15 @@ const _perfisPreDefinidos = ['Lucas', 'Clara', 'Amanda', 'Vitor'];
 
 String _textoDeResponsavelDaChave(SituacaoDaSala situacao) {
   final localizacao = situacao.localizacaoDaChave;
+  final responsavelDaSala = situacao.pessoaUltimaAtualizacao?.trim();
   return switch (localizacao.tipo) {
     TipoLocalizacaoDaChave.pessoa => localizacao.nomeDaPessoa ?? 'Alguém',
+    TipoLocalizacaoDaChave.sala =>
+      responsavelDaSala == null || responsavelDaSala.isEmpty
+          ? 'Ninguém'
+          : responsavelDaSala,
     TipoLocalizacaoDaChave.portaria ||
-    TipoLocalizacaoDaChave.sala ||
-    TipoLocalizacaoDaChave.destino => 'Nenhuma pessoa',
+    TipoLocalizacaoDaChave.destino => 'Ninguém',
   };
 }
 
@@ -1582,6 +1711,18 @@ String _textoDaLocalizacao(LocalizacaoDaChave localizacao) {
       'Com ${localizacao.nomeDaPessoa ?? 'alguém'}',
     TipoLocalizacaoDaChave.destino =>
       'Em ${localizacao.nomeDoDestino ?? 'destino'}',
+  };
+}
+
+String _fraseDeStatusDaChave(SituacaoDaSala situacao) {
+  final localizacao = situacao.localizacaoDaChave;
+  return switch (localizacao.tipo) {
+    TipoLocalizacaoDaChave.pessoa =>
+      'A chave está com ${localizacao.nomeDaPessoa ?? 'alguém'}.',
+    TipoLocalizacaoDaChave.portaria => 'A chave está disponível na portaria.',
+    TipoLocalizacaoDaChave.sala => 'A chave está disponível na Sala 26.',
+    TipoLocalizacaoDaChave.destino =>
+      'A chave está em ${localizacao.nomeDoDestino ?? 'um destino'}.',
   };
 }
 
@@ -1614,6 +1755,12 @@ String _formatarAtualizacao(DateTime? momento) {
   final dia = _doisDigitos(momento.day);
   final mes = _doisDigitos(momento.month);
   return '$dia/$mes/${momento.year} às $hora:$minuto';
+}
+
+String _formatarHorario(DateTime momento) {
+  final hora = _doisDigitos(momento.hour);
+  final minuto = _doisDigitos(momento.minute);
+  return '$hora:$minuto';
 }
 
 String _formatarMomento(DateTime momento) {

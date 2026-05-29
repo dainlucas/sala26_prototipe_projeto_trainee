@@ -40,7 +40,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Escolher perfil'), findsOneWidget);
-    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Portaria'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
@@ -83,7 +83,7 @@ void main() {
 
     expect(find.text('Clara'), findsOneWidget);
     expect(await repositorioDoPerfil.carregarPerfilSelecionado(), 'Clara');
-    expect(find.text('Aberta'), findsOneWidget);
+    expect(find.text('Sala aberta'), findsOneWidget);
     expect(find.text('Sala 26'), findsWidgets);
   });
 
@@ -113,7 +113,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Clara'), findsWidgets);
-    expect(find.text('Aberta'), findsOneWidget);
+    expect(find.text('Sala aberta'), findsOneWidget);
     expect(find.text('Sala 26'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
@@ -136,7 +136,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Vitor'), findsWidgets);
-    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Com Vitor'), findsOneWidget);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
@@ -159,8 +159,8 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Chave com'), findsOneWidget);
-    expect(find.text('Nenhuma pessoa'), findsOneWidget);
+    expect(find.text('Responsável'), findsOneWidget);
+    expect(find.text('Ninguém'), findsOneWidget);
     expect(find.text('Em Maker Space'), findsOneWidget);
     expect(find.text('Clara'), findsNothing);
   });
@@ -225,7 +225,28 @@ void main() {
     expect(find.text('Escolher pessoa'), findsNothing);
     expect(
       find.text(
-        'A chave está com Clara. Apenas Clara pode guardar ou passar a chave.',
+        'A chave está com Clara. Apenas Clara pode guardar ou transferir a chave.',
+      ),
+      findsOneWidget,
+    );
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.aberta,
+        localizacaoDaChave: const LocalizacaoDaChave.naSala(),
+        pessoaUltimaAtualizacao: 'Clara',
+      ),
+    );
+    await testador.pumpWidget(const SizedBox.shrink());
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('Fechar sala'), findsNothing);
+    expect(find.text('Transferir chave'), findsNothing);
+    expect(find.text('Escolher pessoa'), findsNothing);
+    expect(
+      find.text(
+        'A sala foi aberta por Clara. Apenas Clara pode fechar ou transferir a chave.',
       ),
       findsOneWidget,
     );
@@ -418,8 +439,9 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.textContaining('Histórico:'), findsNothing);
-    expect(find.text('Movimentação número 30.'), findsNothing);
+    expect(find.text('Movimentação número 30.'), findsOneWidget);
     expect(find.text('10/03/2026 às 08:29'), findsOneWidget);
+    expect(find.text('Movimentação número 1.'), findsNothing);
 
     await testador.tap(find.text('Histórico'));
     await testador.pumpAndSettle();
@@ -965,7 +987,7 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Fechar sala'), findsOneWidget);
-    expect(find.text('Passar a chave para'), findsOneWidget);
+    expect(find.text('Transferir chave'), findsOneWidget);
     expect(find.text('Escolher pessoa'), findsOneWidget);
 
     await testador.ensureVisible(find.text('Escolher pessoa'));
@@ -1018,17 +1040,17 @@ void main() {
     expect(find.text('Prototipe'), findsOneWidget);
     expect(find.byTooltip('Trocar perfil'), findsOneWidget);
     expect(find.text('Sala 26'), findsOneWidget);
-    expect(find.text('Fechada'), findsOneWidget);
+    expect(find.text('Sala fechada'), findsOneWidget);
     expect(find.text('Ativa'), findsNothing);
     expect(find.text('Inativa'), findsNothing);
-    expect(find.text('Chave com'), findsOneWidget);
+    expect(find.text('Responsável'), findsOneWidget);
     expect(find.text('Lucas'), findsWidgets);
     expect(find.text('Localização'), findsOneWidget);
     expect(find.text('Com Lucas'), findsOneWidget);
     expect(find.text('Última atualização'), findsOneWidget);
     expect(find.text('24/05/2026 às 12:10'), findsOneWidget);
     expect(find.text('O que você quer fazer agora?'), findsOneWidget);
-    expect(find.text('Passar a chave para'), findsOneWidget);
+    expect(find.text('Transferir chave'), findsOneWidget);
     expect(find.text('Histórico recente'), findsNothing);
   });
 
@@ -1055,6 +1077,7 @@ void main() {
 
       var situacao = await repositorioDaSala.carregarSituacaoAtual();
       expect(situacao.estado, EstadoDaSala.aberta);
+      expect(situacao.pessoaUltimaAtualizacao, 'Lucas');
       expect(situacao.historico.last.descricao, 'Lucas abriu a sala 26.');
 
       expect(find.text('Fechar sala'), findsOneWidget);
@@ -1210,8 +1233,8 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.text('Histórico recente'), findsNothing);
-    expect(find.text('Movimentação completa 4.'), findsNothing);
-    expect(find.text('Movimentação completa 1.'), findsNothing);
+    expect(find.text('Movimentação completa 4.'), findsOneWidget);
+    expect(find.text('Movimentação completa 1.'), findsOneWidget);
 
     await testador.tap(find.text('Histórico'));
     await testador.pumpAndSettle();
