@@ -2,7 +2,7 @@
 <resources>
     <!-- Android 12+ usa SplashScreen API nativa antes da Activity desenhar. -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowSplashScreenBackground">@color/prototipe_branco</item>
+        <item name="android:windowSplashScreenBackground">@color/prototipe_navy</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/prototipe_branco</item>
         <item name="android:windowBackground">@drawable/launch_background</item>

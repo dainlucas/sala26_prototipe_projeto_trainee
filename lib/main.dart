@@ -14,22 +14,47 @@ void main() {
 }
 
 class CoresPrototipe {
-  static const azulCiano = Color(0xFF0397DD);
-  static const azulMarinho = Color(0xFF060D5B);
-  static const roxo = Color(0xFF444EDB);
-  static const superficie = Color(0xFFF8FAFD);
-  static const superficieCard = Color(0xFFFFFFFF);
-  static const superficieContainer = Color(0xFFECEEF3);
-  static const superficieContainerAlta = Color(0xFFE6E8ED);
-  static const textoPrincipal = Color(0xFF191C20);
-  static const textoSecundario = Color(0xFF42474E);
-  static const contornoSuave = Color(0xFFC2C7CE);
-  static const containerPrimario = Color(0xFFC8E6FF);
-  static const textoContainerPrimario = Color(0xFF001E2F);
-  static const containerSecundario = Color(0xFFD2E5F5);
-  static const textoContainerSecundario = Color(0xFF0B1D29);
-  static const containerTerciario = Color(0xFFDFE0FF);
-  static const textoContainerTerciario = Color(0xFF00105C);
+  static const azulPrimario = Color(0xFF0C6AF2);
+  static const azulRoyal = Color(0xFF1251EA);
+  static const azulLuminoso = Color(0xFF4595F2);
+  static const ciano = Color(0xFF039CF5);
+  static const indigo = Color(0xFF193ADC);
+  static const navy = Color(0xFF0A1C2E);
+  static const branco = Color(0xFFFCFCFD);
+  static const offWhite = Color(0xFFEAEAEB);
+  static const cinzaAzulado = Color(0xFF7F8FAC);
+  static const cinzaSuave = Color(0xFFB3B9C5);
+
+  static const azulCiano = ciano;
+  static const azulMarinho = navy;
+  static const roxo = indigo;
+  static const superficie = branco;
+  static const superficieCard = branco;
+  static const superficieContainer = offWhite;
+  static const superficieContainerAlta = Color(0xFFE6F2FE);
+  static const textoPrincipal = navy;
+  static const textoSecundario = cinzaAzulado;
+  static const contornoSuave = cinzaSuave;
+  static const containerPrimario = Color(0xFFD8EBFF);
+  static const textoContainerPrimario = navy;
+  static const containerSecundario = Color(0xFFEAF3FF);
+  static const textoContainerSecundario = navy;
+  static const containerTerciario = Color(0xFFE7EAFE);
+  static const textoContainerTerciario = indigo;
+
+  static const gradientePrincipal = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [indigo, azulPrimario, ciano],
+    stops: [0, 0.5, 1],
+  );
+
+  static const gradienteEscuro = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [navy, azulRoyal, ciano],
+    stops: [0, 0.55, 1],
+  );
 }
 
 class AplicativoChave26 extends StatelessWidget {
@@ -41,11 +66,61 @@ class AplicativoChave26 extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Chave 26',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CoresPrototipe.azulCiano,
-          brightness: Brightness.light,
+        colorScheme: const ColorScheme.light(
+          primary: CoresPrototipe.azulPrimario,
+          onPrimary: CoresPrototipe.branco,
+          primaryContainer: CoresPrototipe.containerPrimario,
+          onPrimaryContainer: CoresPrototipe.textoContainerPrimario,
+          secondary: CoresPrototipe.azulRoyal,
+          onSecondary: CoresPrototipe.branco,
+          secondaryContainer: CoresPrototipe.containerSecundario,
+          onSecondaryContainer: CoresPrototipe.textoContainerSecundario,
+          tertiary: CoresPrototipe.ciano,
+          onTertiary: CoresPrototipe.navy,
+          tertiaryContainer: CoresPrototipe.containerTerciario,
+          onTertiaryContainer: CoresPrototipe.textoContainerTerciario,
+          surface: CoresPrototipe.branco,
+          onSurface: CoresPrototipe.textoPrincipal,
+          outline: CoresPrototipe.contornoSuave,
         ),
         scaffoldBackgroundColor: CoresPrototipe.superficie,
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: CoresPrototipe.azulPrimario,
+            foregroundColor: CoresPrototipe.branco,
+            disabledBackgroundColor: CoresPrototipe.offWhite,
+            disabledForegroundColor: CoresPrototipe.cinzaAzulado,
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: CoresPrototipe.azulPrimario,
+            side: const BorderSide(color: CoresPrototipe.contornoSuave),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: CoresPrototipe.ciano),
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: CoresPrototipe.branco,
+          indicatorColor: CoresPrototipe.containerPrimario,
+          iconTheme: WidgetStateProperty.resolveWith((estados) {
+            return IconThemeData(
+              color: estados.contains(WidgetState.selected)
+                  ? CoresPrototipe.azulPrimario
+                  : CoresPrototipe.textoSecundario,
+            );
+          }),
+          labelTextStyle: WidgetStateProperty.resolveWith((estados) {
+            return TextStyle(
+              color: estados.contains(WidgetState.selected)
+                  ? CoresPrototipe.azulPrimario
+                  : CoresPrototipe.textoSecundario,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            );
+          }),
+        ),
         useMaterial3: true,
       ),
       home: const TelaInicialChave26(),
@@ -78,7 +153,7 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
           future: _dadosLocais,
           builder: (contexto, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const _TelaDeCarregamento();
             }
 
             final dados = snapshot.data!;
@@ -566,6 +641,39 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
   }
 }
 
+class _TelaDeCarregamento extends StatelessWidget {
+  const _TelaDeCarregamento();
+
+  @override
+  Widget build(BuildContext contexto) {
+    return const DecoratedBox(
+      decoration: BoxDecoration(gradient: CoresPrototipe.gradienteEscuro),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image(
+              image: AssetImage('recursos/imagens/icone_sala_26.png'),
+              width: 120,
+              height: 120,
+              semanticLabel: 'Icone do aplicativo Chave 26',
+            ),
+            SizedBox(height: 24),
+            SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: CoresPrototipe.branco,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _CabecalhoChave26 extends StatelessWidget {
   const _CabecalhoChave26({
     required this.perfilSelecionado,
@@ -582,9 +690,9 @@ class _CabecalhoChave26 extends StatelessWidget {
 
     return DecoratedBox(
       decoration: const BoxDecoration(
-        color: CoresPrototipe.superficie,
+        color: CoresPrototipe.branco,
         border: Border(
-          bottom: BorderSide(color: CoresPrototipe.contornoSuave, width: 0.6),
+          bottom: BorderSide(color: CoresPrototipe.offWhite, width: 1),
         ),
       ),
       child: Padding(
@@ -596,15 +704,15 @@ class _CabecalhoChave26 extends StatelessWidget {
               height: 40,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: CoresPrototipe.branco,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: CoresPrototipe.contornoSuave),
+                border: Border.all(color: CoresPrototipe.offWhite),
               ),
               child: Transform.scale(
                 scale: 1.18,
                 child: Image.asset(
-                  'recursos/imagens/logo.png',
-                  semanticLabel: 'Logo da Prototipe',
+                  'recursos/imagens/icone_sala_26.png',
+                  semanticLabel: 'Logo do Chave 26',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -641,6 +749,8 @@ class _CabecalhoChave26 extends StatelessWidget {
                 icon: _AvatarDePerfil(nome: nome ?? '?', selecionado: true),
                 label: Text(temPerfil ? nome : 'Escolher perfil'),
                 style: FilledButton.styleFrom(
+                  backgroundColor: CoresPrototipe.containerSecundario,
+                  foregroundColor: CoresPrototipe.azulRoyal,
                   padding: const EdgeInsets.only(left: 6, right: 10),
                   minimumSize: const Size(0, 44),
                 ),
@@ -703,31 +813,64 @@ class _AbaInicio extends StatelessWidget {
   }
 }
 
-class _AbaHistorico extends StatelessWidget {
+class _AbaHistorico extends StatefulWidget {
   const _AbaHistorico({required this.dados, required this.aoLimparHistorico});
 
   final _DadosLocaisRestaurados dados;
   final Future<void> Function(_DadosLocaisRestaurados dados) aoLimparHistorico;
 
   @override
+  State<_AbaHistorico> createState() => _AbaHistoricoState();
+}
+
+class _AbaHistoricoState extends State<_AbaHistorico> {
+  static const _todasAsDatas = 'todas';
+
+  String _dataSelecionada = _todasAsDatas;
+
+  @override
   Widget build(BuildContext contexto) {
+    final historico = widget.dados.situacao.historico;
+    final datasDisponiveis = _datasDisponiveis(historico);
+    final mostrarFiltro = datasDisponiveis.length > 1;
+    final eventosFiltrados = _dataSelecionada == _todasAsDatas
+        ? historico
+        : historico
+              .where(
+                (evento) => _chaveDaData(evento.momento) == _dataSelecionada,
+              )
+              .toList();
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (mostrarFiltro) ...[
+              _FiltroDeDataDoHistorico(
+                dataSelecionada: _dataSelecionada,
+                datasDisponiveis: datasDisponiveis,
+                aoSelecionar: (novaData) {
+                  setState(() {
+                    _dataSelecionada = novaData;
+                  });
+                },
+              ),
+              const SizedBox(height: 12),
+            ],
             _HistoricoDaSala(
-              situacao: dados.situacao,
+              situacao: widget.dados.situacao,
               titulo: 'Histórico de movimentações',
+              eventos: eventosFiltrados,
             ),
             const SizedBox(height: 12),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
-                onPressed: dados.situacao.historico.isEmpty
+                onPressed: historico.isEmpty
                     ? null
-                    : () => aoLimparHistorico(dados),
+                    : () => widget.aoLimparHistorico(widget.dados),
                 icon: const Icon(Icons.delete_sweep_outlined, size: 18),
                 label: const Text('Limpar histórico da demo'),
               ),
@@ -735,6 +878,67 @@ class _AbaHistorico extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  List<DateTime> _datasDisponiveis(List<EventoHistorico> historico) {
+    final datasPorChave = <String, DateTime>{};
+    for (final evento in historico) {
+      datasPorChave[_chaveDaData(evento.momento)] = DateTime(
+        evento.momento.year,
+        evento.momento.month,
+        evento.momento.day,
+      );
+    }
+
+    final datas = datasPorChave.values.toList()
+      ..sort((primeira, segunda) => segunda.compareTo(primeira));
+    return datas;
+  }
+}
+
+class _FiltroDeDataDoHistorico extends StatelessWidget {
+  const _FiltroDeDataDoHistorico({
+    required this.dataSelecionada,
+    required this.datasDisponiveis,
+    required this.aoSelecionar,
+  });
+
+  final String dataSelecionada;
+  final List<DateTime> datasDisponiveis;
+  final ValueChanged<String> aoSelecionar;
+
+  @override
+  Widget build(BuildContext contexto) {
+    return DropdownButtonFormField<String>(
+      key: const Key('filtro-data-historico'),
+      initialValue: dataSelecionada,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: 'Filtrar por data',
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 10,
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      items: [
+        const DropdownMenuItem(
+          value: _AbaHistoricoState._todasAsDatas,
+          child: Text('Todas as datas'),
+        ),
+        for (final data in datasDisponiveis)
+          DropdownMenuItem(
+            value: _chaveDaData(data),
+            child: Text(_formatarData(data)),
+          ),
+      ],
+      onChanged: (valor) {
+        if (valor != null) {
+          aoSelecionar(valor);
+        }
+      },
     );
   }
 }
@@ -758,16 +962,15 @@ class _CardStatusDaSala extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: aberta
-                      ? CoresPrototipe.containerPrimario
-                      : CoresPrototipe.containerSecundario,
+                  gradient: aberta ? CoresPrototipe.gradientePrincipal : null,
+                  color: aberta ? null : CoresPrototipe.containerSecundario,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Icon(
                   Icons.key,
                   color: aberta
-                      ? CoresPrototipe.textoContainerPrimario
-                      : CoresPrototipe.textoContainerSecundario,
+                      ? CoresPrototipe.branco
+                      : CoresPrototipe.azulRoyal,
                   size: 32,
                 ),
               ),
@@ -846,7 +1049,7 @@ class _LinhaDeInformacao extends StatelessWidget {
             color: CoresPrototipe.superficieContainerAlta,
             shape: BoxShape.circle,
           ),
-          child: Icon(icone, color: CoresPrototipe.textoSecundario, size: 20),
+          child: Icon(icone, color: CoresPrototipe.azulPrimario, size: 20),
         ),
         const SizedBox(width: 14),
         Expanded(
@@ -1067,12 +1270,13 @@ class _AvisoDeEstado extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 56),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: CoresPrototipe.superficieContainer,
+        color: CoresPrototipe.containerSecundario,
+        border: Border.all(color: CoresPrototipe.offWhite),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: CoresPrototipe.textoSecundario),
+          const Icon(Icons.info_outline, color: CoresPrototipe.ciano),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -1124,15 +1328,17 @@ class _HistoricoDaSala extends StatelessWidget {
     required this.situacao,
     required this.titulo,
     this.limite,
+    this.eventos,
   });
 
   final SituacaoDaSala situacao;
   final String titulo;
   final int? limite;
+  final List<EventoHistorico>? eventos;
 
   @override
   Widget build(BuildContext contexto) {
-    var eventosMaisRecentes = situacao.historico.reversed.toList();
+    var eventosMaisRecentes = (eventos ?? situacao.historico).reversed.toList();
     if (limite != null && eventosMaisRecentes.length > limite!) {
       eventosMaisRecentes = eventosMaisRecentes.take(limite!).toList();
     }
@@ -1298,14 +1504,15 @@ class _SuperficieElevada extends StatelessWidget {
       decoration: BoxDecoration(
         color: CoresPrototipe.superficieCard,
         borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: CoresPrototipe.offWhite),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x24000000),
-            blurRadius: 8,
-            offset: Offset(0, 2),
+            color: Color(0x180A1C2E),
+            blurRadius: 14,
+            offset: Offset(0, 6),
           ),
           BoxShadow(
-            color: Color(0x12000000),
+            color: Color(0x0F0A1C2E),
             blurRadius: 2,
             offset: Offset(0, 1),
           ),
@@ -1334,7 +1541,7 @@ class _AvatarDePerfil extends StatelessWidget {
       height: tamanho,
       decoration: BoxDecoration(
         color: selecionado
-            ? CoresPrototipe.azulCiano
+            ? CoresPrototipe.azulPrimario
             : CoresPrototipe.containerSecundario,
         shape: BoxShape.circle,
       ),
@@ -1343,7 +1550,7 @@ class _AvatarDePerfil extends StatelessWidget {
         nome.characters.first.toUpperCase(),
         style: TextStyle(
           color: selecionado
-              ? Colors.white
+              ? CoresPrototipe.branco
               : CoresPrototipe.textoContainerSecundario,
           fontSize: tamanho >= 40 ? 18 : 12,
           fontWeight: FontWeight.w700,
@@ -1386,6 +1593,18 @@ String _textoDaLocalizacao(LocalizacaoDaChave localizacao) {
     TipoLocalizacaoDaChave.destino =>
       'Em ${localizacao.nomeDoDestino ?? 'destino'}',
   };
+}
+
+String _formatarData(DateTime momento) {
+  final dia = _doisDigitos(momento.day);
+  final mes = _doisDigitos(momento.month);
+  return '$dia/$mes/${momento.year}';
+}
+
+String _chaveDaData(DateTime momento) {
+  final mes = _doisDigitos(momento.month);
+  final dia = _doisDigitos(momento.day);
+  return '${momento.year}-$mes-$dia';
 }
 
 String _formatarAtualizacao(DateTime? momento) {

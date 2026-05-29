@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="prototipe_azul_ciano">#0397DD</color>
-    <color name="prototipe_azul_medio">#0E7CC7</color>
-    <color name="prototipe_azul_royal">#1D58AA</color>
-    <color name="prototipe_azul_indigo">#274299</color>
-    <color name="prototipe_azul_marinho">#060D5B</color>
-    <color name="prototipe_branco">#FFFFFF</color>
+    <color name="prototipe_azul_primario">#0C6AF2</color>
+    <color name="prototipe_azul_royal">#1251EA</color>
+    <color name="prototipe_azul_luminoso">#4595F2</color>
+    <color name="prototipe_ciano">#039CF5</color>
+    <color name="prototipe_indigo">#193ADC</color>
+    <color name="prototipe_navy">#0A1C2E</color>
+    <color name="prototipe_branco">#FCFCFD</color>
+    <color name="prototipe_off_white">#EAEAEB</color>
+    <color name="prototipe_cinza_azulado">#7F8FAC</color>
+    <color name="prototipe_cinza_suave">#B3B9C5</color>
 </resources>

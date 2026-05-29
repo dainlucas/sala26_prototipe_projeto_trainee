@@ -23,14 +23,14 @@ void main() {
     expect(find.text('Prototipe'), findsOneWidget);
   });
 
-  testWidgets('mostra logo da Prototipe no cabeçalho inicial', (
+  testWidgets('mostra logo do Chave 26 no cabeçalho inicial', (
     testador,
   ) async {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
     expect(
-      find.image(const AssetImage('recursos/imagens/logo.png')),
+      find.image(const AssetImage('recursos/imagens/icone_sala_26.png')),
       findsOneWidget,
     );
   });
@@ -1103,6 +1103,65 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Histórico apagado para a demonstração.'), findsOneWidget);
+  });
+
+  testWidgets('filtra histórico completo por data', (testador) async {
+    final repositorioDaSala = await RepositorioLocalDaSala.criar();
+    final historico = [
+      EventoHistorico(
+        momento: DateTime(2026, 5, 23, 18),
+        pessoa: 'Clara',
+        descricao: 'Clara guardou a chave na portaria.',
+      ),
+      EventoHistorico(
+        momento: DateTime(2026, 5, 24, 8),
+        pessoa: 'Lucas',
+        descricao: 'Lucas pegou a chave na portaria.',
+      ),
+      EventoHistorico(
+        momento: DateTime(2026, 5, 24, 9),
+        pessoa: 'Amanda',
+        descricao: 'Amanda abriu a sala 26.',
+      ),
+    ];
+
+    await repositorioDaSala.salvarSituacaoAtual(
+      SituacaoDaSala(
+        estado: EstadoDaSala.aberta,
+        localizacaoDaChave: const LocalizacaoDaChave.naSala(),
+        historico: historico,
+        pessoaUltimaAtualizacao: 'Amanda',
+        atualizadaEm: historico.last.momento,
+      ),
+    );
+
+    await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Filtrar por data'), findsOneWidget);
+    expect(find.text('Todas as datas'), findsOneWidget);
+    expect(find.text('Amanda abriu a sala 26.'), findsOneWidget);
+    expect(find.text('Lucas pegou a chave na portaria.'), findsOneWidget);
+    expect(find.text('Clara guardou a chave na portaria.'), findsOneWidget);
+
+    await testador.tap(find.byKey(const Key('filtro-data-historico')));
+    await testador.pumpAndSettle();
+    await testador.tap(find.text('24/05/2026').last);
+    await testador.pumpAndSettle();
+
+    expect(find.text('Amanda abriu a sala 26.'), findsOneWidget);
+    expect(find.text('Lucas pegou a chave na portaria.'), findsOneWidget);
+    expect(find.text('Clara guardou a chave na portaria.'), findsNothing);
+
+    await testador.tap(find.byKey(const Key('filtro-data-historico')));
+    await testador.pumpAndSettle();
+    await testador.tap(find.text('Todas as datas').last);
+    await testador.pumpAndSettle();
+
+    expect(find.text('Clara guardou a chave na portaria.'), findsOneWidget);
   });
 
   testWidgets('usa menu inferior para separar início e histórico completo', (
