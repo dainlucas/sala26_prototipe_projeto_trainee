@@ -1,0 +1,426 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+\geometry{a4paper, margin=2.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\setlist[itemize]{leftmargin=1.2cm}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\definecolor{prototipeAzul}{HTML}{0397DD}
+\definecolor{prototipeRoyal}{HTML}{1D58AA}
+\definecolor{prototipeMarinho}{HTML}{060D5B}
+\definecolor{prototipeCreme}{HTML}{FDFBDB}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{prototipeMarinho}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{prototipeRoyal}}
+  {\thesubsection}{1em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Chave 26}
+\rhead{Relatório do Projeto}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge\bfseries\color{prototipeMarinho} Relatório do Projeto Chave 26\par}
+    \vspace{0.7cm}
+    {\Large Aplicativo para controle simples da Sala 26 da Prototipe\par}
+    \vspace{1.5cm}
+
+    {\large Relatório em linguagem simples, com resumo do funcionamento, tecnologias, decisões, limitações e estado atual do projeto.\par}
+
+    \vfill
+
+    {\large Projeto: \textbf{Chave 26}\par}
+    {\large Plataforma principal: \textbf{Android / celular}\par}
+    {\large Data do relatório: \textbf{29 de maio de 2026}\par}
+
+    \vspace*{1.5cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Resumo executivo}
+
+O \textbf{Chave 26} é um aplicativo criado para resolver um problema simples do dia a dia da Prototipe: saber rapidamente se a sala 26 está aberta ou fechada, onde está a chave e quem foi a última pessoa responsável pela movimentação.
+
+Hoje, esse tipo de informação costuma depender de mensagens em grupo, como ``sala aberta'' ou ``chave comigo''. O problema é que, com o tempo, essas mensagens ficam espalhadas e pode ser difícil saber qual é a situação mais recente. O aplicativo centraliza essa informação em uma tela simples.
+
+O projeto foi construído como um \textbf{MVP}, ou seja, uma primeira versão funcional para validar a ideia. Ele não tenta ser um sistema completo de produção. A prioridade foi entregar algo funcional, claro, bonito, fácil de apresentar e com regras bem definidas.
+
+\section{Objetivo do projeto}
+
+O objetivo principal do Chave 26 é permitir que uma pessoa abra o aplicativo e entenda, em poucos segundos:
+
+\begin{itemize}
+    \item se a sala 26 está aberta ou fechada;
+    \item onde está a chave;
+    \item se a chave está com alguém, na sala ou guardada em algum local;
+    \item quem fez a última alteração;
+    \item quando essa alteração aconteceu;
+    \item quais foram as movimentações recentes.
+\end{itemize}
+
+Em linguagem simples, o aplicativo funciona como um painel de situação da sala. Ele mostra o estado atual e guarda um histórico das ações importantes.
+
+\section{Público-alvo}
+
+O aplicativo foi pensado para membros e trainees da Prototipe que usam a sala 26 ou precisam saber se ela está disponível.
+
+Como esta é uma versão de demonstração, o app usa perfis locais pré-definidos, em vez de login real. Isso permite simular pessoas diferentes usando o mesmo celular durante uma apresentação.
+
+\section{O que o aplicativo faz}
+
+\subsection{Tela principal}
+
+A tela principal mostra o nome do app, o perfil selecionado, a situação da sala e as ações que podem ser feitas naquele momento. A interface foi organizada para dar prioridade ao que importa primeiro: saber se a sala está aberta ou fechada e onde está a chave.
+
+As principais informações exibidas são:
+
+\begin{itemize}
+    \item status da sala: aberta ou fechada;
+    \item pessoa responsável, quando houver;
+    \item localização da chave;
+    \item horário da última atualização;
+    \item histórico recente.
+\end{itemize}
+
+\subsection{Perfis locais}
+
+O aplicativo possui quatro perfis locais para demonstração:
+
+\begin{itemize}
+    \item Lucas;
+    \item Clara;
+    \item Amanda;
+    \item Vitor.
+\end{itemize}
+
+Esses perfis não são contas reais. Eles servem para identificar quem está realizando cada ação durante o protótipo. A troca de perfil acontece pela própria tela do app e a escolha fica salva no aparelho.
+
+\subsection{Ações da chave e da sala}
+
+O aplicativo permite registrar ações ligadas à sala e à chave, como:
+
+\begin{itemize}
+    \item pegar a chave na portaria ou em outro local onde ela esteja guardada;
+    \item abrir a sala;
+    \item fechar a sala;
+    \item guardar a chave em um destino escolhido;
+    \item passar a chave para outra pessoa;
+    \item registrar automaticamente a movimentação no histórico.
+\end{itemize}
+
+As ações aparecem conforme a situação atual. Por exemplo, se a chave está com outra pessoa, o app não oferece uma ação que o usuário atual não pode fazer. Isso reduz erro e deixa a experiência mais simples.
+
+\subsection{Destinos da chave}
+
+Além da portaria, o aplicativo permite que a chave seja guardada em outros locais. Existem destinos fixos e destinos personalizados.
+
+Destinos fixos atuais:
+
+\begin{itemize}
+    \item Portaria;
+    \item Maker Space.
+\end{itemize}
+
+Também é possível cadastrar, renomear e remover destinos personalizados no próprio app. Esses destinos ficam salvos localmente no aparelho.
+
+\subsection{Histórico}
+
+Toda ação importante gera um item no histórico. O histórico mostra:
+
+\begin{itemize}
+    \item quem fez a ação;
+    \item qual foi a ação;
+    \item data e horário da movimentação.
+\end{itemize}
+
+O histórico aparece em ordem do mais recente para o mais antigo. Também existe uma aba própria para consultar o histórico completo, incluindo filtro por data.
+
+\section{Tecnologias utilizadas}
+
+\begin{longtable}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Tecnologia} & \textbf{Uso no projeto} \\
+\hline
+Flutter & Framework usado para construir o aplicativo mobile. Ele permite criar interfaces visuais para celular usando uma única base de código. \\
+\hline
+Dart & Linguagem de programação usada pelo Flutter. Todo o app foi escrito em Dart. \\
+\hline
+Material 3 & Base visual usada para botões, menus, diálogos, navegação e componentes de interface. \\
+\hline
+Riverpod & Biblioteca usada para organizar o estado do app. No projeto, ela é usada de forma simples, sem arquitetura excessiva. \\
+\hline
+SharedPreferences & Tecnologia usada para salvar dados pequenos diretamente no aparelho, como perfil selecionado, situação da sala, histórico e destinos customizados. \\
+\hline
+JSON & Formato usado para transformar os dados da sala em texto e salvar no armazenamento local. \\
+\hline
+Flutter Test & Ferramenta usada para criar testes automatizados de regras e de interface. \\
+\hline
+Android SDK & Conjunto de ferramentas usado para gerar e testar o aplicativo Android. \\
+\hline
+OpenJDK 17 & Ferramenta necessária para o processo de build Android. \\
+\hline
+\end{longtable}
+
+\section{Organização técnica do projeto}
+
+O projeto foi organizado de forma simples, separando as partes principais:
+
+\begin{itemize}
+    \item \textbf{Domínio}: contém as regras da sala, os estados possíveis e as ações permitidas.
+    \item \textbf{Dados}: contém a parte de salvar e carregar informações no aparelho.
+    \item \textbf{Interface}: fica concentrada na tela principal do app.
+    \item \textbf{Testes}: validam regras importantes e comportamentos da tela.
+    \item \textbf{Documentação}: registra decisões, progresso, funcionalidades e limitações.
+\end{itemize}
+
+Os nomes ligados ao assunto do app foram escritos em português, como \texttt{EstadoDaSala}, \texttt{LocalizacaoDaChave}, \texttt{SituacaoDaSala}, \texttt{EventoHistorico} e \texttt{ControladorDaSala}. Isso facilita a explicação do projeto para pessoas que estão aprendendo ou avaliando o código.
+
+\section{Principais regras de funcionamento}
+
+O aplicativo possui regras para evitar registros incoerentes. Algumas delas são:
+
+\begin{itemize}
+    \item a sala só pode ser aberta por quem está com a chave;
+    \item não é possível abrir a sala se ela já está aberta;
+    \item não é possível fechar a sala se ela já está fechada;
+    \item não é possível transferir a chave para a própria pessoa;
+    \item não é possível registrar movimentação sem perfil selecionado;
+    \item nomes vazios são bloqueados nas ações importantes;
+    \item guardar a chave exige informar um destino;
+    \item toda ação válida registra um evento no histórico;
+    \item ações inválidas não alteram a situação salva.
+\end{itemize}
+
+Essas regras ficam protegidas no código principal de domínio, não apenas na tela. Isso é importante porque a interface ajuda o usuário, mas a regra real precisa estar protegida na lógica do sistema.
+
+\section{Persistência dos dados}
+
+O app funciona de forma local e offline. Isso significa que os dados ficam salvos no próprio aparelho.
+
+São salvos localmente:
+
+\begin{itemize}
+    \item situação atual da sala;
+    \item localização atual da chave;
+    \item histórico de movimentações;
+    \item perfil local selecionado;
+    \item destinos personalizados da chave.
+\end{itemize}
+
+A situação da sala e o histórico são salvos juntos em um único JSON. Para este protótipo, isso torna a implementação mais simples e reduz o risco de o estado atual ficar separado do histórico.
+
+\section{Identidade visual}
+
+O projeto usa a identidade visual da Prototipe como referência. A documentação registra uma paleta com tons de azul, ciano, índigo, marinho, branco e creme.
+
+Também foram usados assets locais, incluindo:
+
+\begin{itemize}
+    \item logo;
+    \item mascote da Prototipe;
+    \item ícone do app Chave 26.
+\end{itemize}
+
+O aplicativo Android também recebeu personalização nativa:
+
+\begin{itemize}
+    \item nome exibido como ``Chave 26'';
+    \item ícone personalizado no launcher;
+    \item splash screen nativa com logo;
+    \item configuração específica para Android 12 ou superior.
+\end{itemize}
+
+\section{Testes e qualidade}
+
+O projeto possui testes automatizados cobrindo regras de negócio, persistência e interface.
+
+Na verificação realizada para este relatório:
+
+\begin{itemize}
+    \item \texttt{flutter test}: todos os testes passaram;
+    \item \texttt{flutter analyze}: nenhum problema encontrado.
+\end{itemize}
+
+Os testes cobrem pontos como:
+
+\begin{itemize}
+    \item criação e comparação dos modelos da sala;
+    \item abertura e fechamento da sala;
+    \item transferência da chave;
+    \item bloqueio de ações inválidas;
+    \item salvamento e carregamento local;
+    \item restauração dos dados ao abrir o app;
+    \item histórico vazio e histórico com itens;
+    \item filtro de histórico por data;
+    \item destinos personalizados;
+    \item troca de perfil;
+    \item visibilidade das ações conforme a situação atual.
+\end{itemize}
+
+\section{Documentação existente}
+
+O projeto possui documentação contínua, distribuída em arquivos específicos:
+
+\begin{itemize}
+    \item \texttt{README.md}: visão geral do projeto e comandos principais.
+    \item \texttt{CONTEXTO.md}: problema, objetivo, público e decisões gerais.
+    \item \texttt{BACKLOG.md}: planejamento, marcos, progresso e pendências.
+    \item \texttt{TRADEOFFS.md}: escolhas conscientes e limitações aceitas.
+    \item \texttt{documentos/decisoes-tecnicas.md}: stack, arquitetura e decisões técnicas.
+    \item \texttt{documentos/plano-inicial.md}: plano original do MVP.
+    \item \texttt{documentos/identidade-visual-prototipe.md}: cores e referências visuais.
+    \item \texttt{documentos/funcionalidades/}: registro das funcionalidades implementadas por etapa.
+\end{itemize}
+
+\section{Fluxogramas do projeto}
+
+Os fluxogramas abaixo registram visualmente a evolução dos marcos do projeto e ajudam a entender, de forma mais direta, como as etapas foram organizadas.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{marco1.png}
+    \caption{Fluxograma do Marco 1.}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{marco2.png}
+    \caption{Fluxograma do Marco 2.}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{marco3.png}
+    \caption{Fluxograma do Marco 3.}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{marco4.png}
+    \caption{Fluxograma do Marco 4.}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.62\textwidth]{marco5.png}
+    \caption{Fluxograma do Marco 5.}
+\end{figure}
+
+\clearpage
+
+\section{O que ficou dentro do MVP}
+
+Entraram no MVP:
+
+\begin{itemize}
+    \item app mobile com foco em Android;
+    \item funcionamento local e offline;
+    \item perfis locais pré-definidos;
+    \item estado da sala;
+    \item localização da chave;
+    \item ações principais da chave e da sala;
+    \item transferência da chave;
+    \item histórico simples;
+    \item destinos fixos e customizados;
+    \item persistência local;
+    \item confirmações para ações importantes;
+    \item interface principal organizada;
+    \item ícone e abertura nativa Android personalizados;
+    \item testes automatizados;
+    \item documentação do projeto.
+\end{itemize}
+
+\section{O que ficou fora do MVP}
+
+Ficaram fora desta primeira versão:
+
+\begin{itemize}
+    \item backend;
+    \item login real;
+    \item autenticação por senha;
+    \item sincronização entre vários celulares;
+    \item notificações;
+    \item integração com grupo de mensagens;
+    \item painel web;
+    \item modo escuro;
+    \item auditoria oficial contra alterações locais.
+\end{itemize}
+
+Esses itens não foram esquecidos. Eles ficaram fora porque aumentariam o tamanho e o risco do projeto. Para um protótipo de trainee, a decisão foi priorizar um app simples, funcional e demonstrável.
+
+\section{Limitações atuais}
+
+As principais limitações do projeto são:
+
+\begin{itemize}
+    \item os dados ficam apenas no aparelho onde o app está instalado;
+    \item outro celular não vê automaticamente a mesma situação da sala;
+    \item não há login real, então o perfil selecionado não prova identidade;
+    \item qualquer pessoa com acesso ao aparelho pode trocar o perfil;
+    \item o histórico local não deve ser tratado como auditoria oficial;
+    \item ao desinstalar o app, os dados podem ser perdidos;
+    \item \texttt{SharedPreferences} é suficiente para poucos dados, mas não é a melhor escolha para histórico grande;
+    \item não há busca avançada, relatórios ou sincronização;
+    \item destinos personalizados são locais ao aparelho;
+    \item a confirmação visual para apagar destino customizado ainda pode ser melhorada;
+    \item o tema visual ainda está concentrado em \texttt{lib/main.dart} e pode ser separado em uma pasta própria futuramente.
+\end{itemize}
+
+\section{Possíveis evoluções futuras}
+
+Se o projeto virar um sistema usado oficialmente, os próximos passos recomendados seriam:
+
+\begin{itemize}
+    \item criar login real para membros;
+    \item sincronizar a situação da sala entre vários celulares;
+    \item usar backend com banco de dados central;
+    \item adicionar notificações;
+    \item criar auditoria confiável das movimentações;
+    \item permitir permissões por tipo de usuário;
+    \item criar busca e filtros mais completos no histórico;
+    \item gerar relatórios de uso;
+    \item transformar destinos em configuração administrável;
+    \item revisar a persistência local e migrar para banco mais robusto, se necessário.
+\end{itemize}
+
+Tecnologias possíveis para uma versão mais completa incluem Firebase, Supabase, API própria, SQLite, Drift, Hive ou Isar. A escolha dependeria do tamanho real do uso e da necessidade de sincronização.
+
+\section{Conclusão}
+
+O Chave 26 entrega uma solução simples para um problema real: saber a situação da sala 26 e da chave sem depender de mensagens espalhadas em grupo.
+
+O projeto foi construído como um protótipo funcional, com foco em Android, funcionamento offline, interface clara, regras de negócio testadas, persistência local e documentação consistente.
+
+Ele ainda não é uma solução oficial multiusuário, porque não possui login real, backend ou sincronização. Mesmo assim, como MVP, cumpre bem o papel de validar a ideia, demonstrar o fluxo principal e mostrar uma base técnica organizada para futuras evoluções.
+
+\end{document}
