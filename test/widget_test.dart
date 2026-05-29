@@ -23,9 +23,7 @@ void main() {
     expect(find.text('Prototipe'), findsOneWidget);
   });
 
-  testWidgets('mostra logo do Chave 26 no cabeçalho inicial', (
-    testador,
-  ) async {
+  testWidgets('mostra logo do Chave 26 no cabeçalho inicial', (testador) async {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
@@ -319,7 +317,12 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico recente'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsNothing);
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Histórico de movimentações'), findsOneWidget);
     expect(
       find.text('Ainda não há movimentações registradas.'),
       findsOneWidget,
@@ -361,7 +364,12 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico recente'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsNothing);
+
+    await testador.tap(find.text('Histórico'));
+    await testador.pumpAndSettle();
+
+    expect(find.text('Histórico de movimentações'), findsOneWidget);
     expect(find.text('Vitor'), findsOneWidget);
     expect(
       find.text('Vitor devolveu a chave para a portaria.'),
@@ -410,11 +418,14 @@ void main() {
     await testador.pumpAndSettle();
 
     expect(find.textContaining('Histórico:'), findsNothing);
-    expect(find.text('Movimentação número 30.'), findsOneWidget);
-    expect(find.text('10/03/2026 às 08:29'), findsWidgets);
+    expect(find.text('Movimentação número 30.'), findsNothing);
+    expect(find.text('10/03/2026 às 08:29'), findsOneWidget);
 
     await testador.tap(find.text('Histórico'));
     await testador.pumpAndSettle();
+
+    expect(find.text('Movimentação número 30.'), findsOneWidget);
+    expect(find.text('10/03/2026 às 08:29'), findsWidgets);
 
     final itemMaisAntigo = find.text('Movimentação número 1.');
     expect(itemMaisAntigo.hitTestable(), findsNothing);
@@ -459,6 +470,13 @@ void main() {
     );
 
     await testador.pumpWidget(const AplicativoChave26());
+    await testador.pumpAndSettle();
+
+    expect(find.text('01/01/2026 às 00:00'), findsNothing);
+    expect(find.text('05/09/2026 às 07:03'), findsNothing);
+    expect(find.text('31/12/2026 às 23:59'), findsOneWidget);
+
+    await testador.tap(find.text('Histórico'));
     await testador.pumpAndSettle();
 
     expect(find.text('01/01/2026 às 00:00'), findsOneWidget);
@@ -1008,10 +1026,10 @@ void main() {
     expect(find.text('Localização'), findsOneWidget);
     expect(find.text('Com Lucas'), findsOneWidget);
     expect(find.text('Última atualização'), findsOneWidget);
-    expect(find.text('Hoje, 12:10'), findsOneWidget);
+    expect(find.text('24/05/2026 às 12:10'), findsOneWidget);
     expect(find.text('O que você quer fazer agora?'), findsOneWidget);
     expect(find.text('Passar a chave para'), findsOneWidget);
-    expect(find.text('Histórico recente'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsNothing);
   });
 
   testWidgets(
@@ -1191,8 +1209,8 @@ void main() {
     await testador.pumpWidget(const AplicativoChave26());
     await testador.pumpAndSettle();
 
-    expect(find.text('Histórico recente'), findsOneWidget);
-    expect(find.text('Movimentação completa 4.'), findsOneWidget);
+    expect(find.text('Histórico recente'), findsNothing);
+    expect(find.text('Movimentação completa 4.'), findsNothing);
     expect(find.text('Movimentação completa 1.'), findsNothing);
 
     await testador.tap(find.text('Histórico'));

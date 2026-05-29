@@ -800,12 +800,6 @@ class _AbaInicio extends StatelessWidget {
               aoGuardarChave: aoGuardarChave,
               aoPassarChaveParaOutraPessoa: aoPassarChaveParaOutraPessoa,
             ),
-            const SizedBox(height: 24),
-            _HistoricoDaSala(
-              situacao: dados.situacao,
-              titulo: 'Histórico recente',
-              limite: 3,
-            ),
           ],
         ),
       ),
@@ -1327,21 +1321,17 @@ class _HistoricoDaSala extends StatelessWidget {
   const _HistoricoDaSala({
     required this.situacao,
     required this.titulo,
-    this.limite,
     this.eventos,
   });
 
   final SituacaoDaSala situacao;
   final String titulo;
-  final int? limite;
   final List<EventoHistorico>? eventos;
 
   @override
   Widget build(BuildContext contexto) {
-    var eventosMaisRecentes = (eventos ?? situacao.historico).reversed.toList();
-    if (limite != null && eventosMaisRecentes.length > limite!) {
-      eventosMaisRecentes = eventosMaisRecentes.take(limite!).toList();
-    }
+    final eventosMaisRecentes = (eventos ?? situacao.historico).reversed
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
