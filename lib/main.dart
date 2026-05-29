@@ -20,8 +20,8 @@ class CoresPrototipe {
   static const ciano = Color(0xFF039CF5);
   static const indigo = Color(0xFF193ADC);
   static const navy = Color(0xFF0A1C2E);
-  static const cinzaFechadoEscuro = Color(0xFF4B5563);
-  static const cinzaFechado = Color(0xFF6B7280);
+  static const cinzaFechadoEscuro = Color(0xFF334155);
+  static const cinzaFechado = Color(0xFF64748B);
   static const branco = Color(0xFFFCFCFD);
   static const offWhite = Color(0xFFEAEAEB);
   static const cinzaAzulado = Color(0xFF7F8FAC);
@@ -61,8 +61,8 @@ class CoresPrototipe {
   static const gradienteFechada = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [cinzaFechadoEscuro, cinzaFechado, cinzaSuave],
-    stops: [0, 0.55, 1],
+    colors: [navy, cinzaFechado],
+    stops: [0, 1],
   );
 }
 
@@ -185,6 +185,11 @@ class _TelaInicialChave26State extends State<TelaInicialChave26> {
                         aoGuardarChave: _guardarChave,
                         aoPassarChaveParaOutraPessoa:
                             _passarChaveParaOutraPessoa,
+                        aoAbrirHistorico: () {
+                          setState(() {
+                            _indiceDaAba = 1;
+                          });
+                        },
                       ),
                       _AbaHistorico(
                         dados: dados,
@@ -780,6 +785,7 @@ class _AbaInicio extends StatelessWidget {
     required this.aoFecharSala,
     required this.aoGuardarChave,
     required this.aoPassarChaveParaOutraPessoa,
+    required this.aoAbrirHistorico,
   });
 
   final _DadosLocaisRestaurados dados;
@@ -790,6 +796,7 @@ class _AbaInicio extends StatelessWidget {
   final Future<void> Function(_DadosLocaisRestaurados dados) aoGuardarChave;
   final Future<void> Function(_DadosLocaisRestaurados dados, [String? destino])
   aoPassarChaveParaOutraPessoa;
+  final VoidCallback aoAbrirHistorico;
 
   @override
   Widget build(BuildContext contexto) {
@@ -808,7 +815,10 @@ class _AbaInicio extends StatelessWidget {
                         constraints: BoxConstraints(
                           minHeight: restricoesDoStatus.maxHeight,
                         ),
-                        child: _CardStatusDaSala(situacao: dados.situacao),
+                        child: _CardStatusDaSala(
+                          situacao: dados.situacao,
+                          aoAbrirHistorico: aoAbrirHistorico,
+                        ),
                       ),
                     );
                   },
@@ -962,9 +972,13 @@ class _FiltroDeDataDoHistorico extends StatelessWidget {
 }
 
 class _CardStatusDaSala extends StatelessWidget {
-  const _CardStatusDaSala({required this.situacao});
+  const _CardStatusDaSala({
+    required this.situacao,
+    required this.aoAbrirHistorico,
+  });
 
   final SituacaoDaSala situacao;
+  final VoidCallback aoAbrirHistorico;
 
   @override
   Widget build(BuildContext contexto) {
@@ -976,7 +990,10 @@ class _CardStatusDaSala extends StatelessWidget {
           const SizedBox(height: 18),
           _GradeDeInformacoesDaChave(situacao: situacao),
           const SizedBox(height: 18),
-          _AtividadeRecenteDaHome(situacao: situacao),
+          _AtividadeRecenteDaHome(
+            situacao: situacao,
+            aoAbrirHistorico: aoAbrirHistorico,
+          ),
         ],
       ),
     );
@@ -1157,13 +1174,17 @@ class _LinhaDeInformacao extends StatelessWidget {
 }
 
 class _AtividadeRecenteDaHome extends StatelessWidget {
-  const _AtividadeRecenteDaHome({required this.situacao});
+  const _AtividadeRecenteDaHome({
+    required this.situacao,
+    required this.aoAbrirHistorico,
+  });
 
   final SituacaoDaSala situacao;
+  final VoidCallback aoAbrirHistorico;
 
   @override
   Widget build(BuildContext contexto) {
-    final eventosRecentes = situacao.historico.reversed.take(13).toList();
+    final eventosRecentes = situacao.historico.reversed.take(5).toList();
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -1201,6 +1222,17 @@ class _AtividadeRecenteDaHome extends StatelessWidget {
                   child: Divider(height: 1, color: CoresPrototipe.offWhite),
                 ),
             ],
+          if (eventosRecentes.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: aoAbrirHistorico,
+                icon: const Icon(Icons.history, size: 18),
+                label: const Text('Ver histórico completo'),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -1322,7 +1354,7 @@ class _AcoesRapidasDaSala extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _BotaoAcaoPrincipal(
+                child: _BotaoAcaoSecundaria(
                   icone: Icons.place_outlined,
                   texto: 'Guardar chave',
                   aoPressionar: () => aoGuardarChave(dados),
@@ -1408,6 +1440,33 @@ class _BotaoAcaoPrincipal extends StatelessWidget {
       icon: Icon(icone),
       label: Text(texto),
       style: FilledButton.styleFrom(
+        minimumSize: const Size.fromHeight(56),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
+class _BotaoAcaoSecundaria extends StatelessWidget {
+  const _BotaoAcaoSecundaria({
+    required this.icone,
+    required this.texto,
+    required this.aoPressionar,
+  });
+
+  final IconData icone;
+  final String texto;
+  final VoidCallback aoPressionar;
+
+  @override
+  Widget build(BuildContext contexto) {
+    return OutlinedButton.icon(
+      onPressed: aoPressionar,
+      icon: Icon(icone),
+      label: Text(texto),
+      style: OutlinedButton.styleFrom(
+        backgroundColor: CoresPrototipe.containerSecundario,
         minimumSize: const Size.fromHeight(56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
@@ -1716,11 +1775,15 @@ String _textoDaLocalizacao(LocalizacaoDaChave localizacao) {
 
 String _fraseDeStatusDaChave(SituacaoDaSala situacao) {
   final localizacao = situacao.localizacaoDaChave;
+  final responsavelDaSala = situacao.pessoaUltimaAtualizacao?.trim();
   return switch (localizacao.tipo) {
     TipoLocalizacaoDaChave.pessoa =>
       'A chave está com ${localizacao.nomeDaPessoa ?? 'alguém'}.',
     TipoLocalizacaoDaChave.portaria => 'A chave está disponível na portaria.',
-    TipoLocalizacaoDaChave.sala => 'A chave está disponível na Sala 26.',
+    TipoLocalizacaoDaChave.sala =>
+      responsavelDaSala == null || responsavelDaSala.isEmpty
+          ? 'A chave está na Sala 26.'
+          : 'A chave está sob responsabilidade de $responsavelDaSala.',
     TipoLocalizacaoDaChave.destino =>
       'A chave está em ${localizacao.nomeDoDestino ?? 'um destino'}.',
   };

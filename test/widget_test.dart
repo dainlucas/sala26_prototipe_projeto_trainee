@@ -114,6 +114,10 @@ void main() {
 
     expect(find.text('Clara'), findsWidgets);
     expect(find.text('Sala aberta'), findsOneWidget);
+    expect(
+      find.text('A chave está sob responsabilidade de Clara.'),
+      findsOneWidget,
+    );
     expect(find.text('Sala 26'), findsWidgets);
     expect(find.textContaining('Histórico:'), findsNothing);
   });
